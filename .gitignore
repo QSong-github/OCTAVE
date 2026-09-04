@@ -1,0 +1,37 @@
+# data, embeddings, model weights, logs — never committed (see README for where they come from)
+*.npz
+*.npy
+*.pth
+*.pt
+*.bin
+*.safetensors
+*.h5
+*.h5ad
+data/
+methods/
+logs/
+results/hest_emb/
+results/emb_xen/
+# python / latex build artefacts
+__pycache__/
+*.pyc
+*.aux
+*.log
+*.blg
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex*
+*.toc
+# editor backups
+*.bak*
+*~
+.DS_Store
+
+# manuscript, figures and result files are kept out of this repository
+paper/
+results/
+docs/
+*.pdf
+*.xlsx
+*.json
