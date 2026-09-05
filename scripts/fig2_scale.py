@@ -77,7 +77,7 @@ names = sorted(SPEC)
 print(f"独立样本 {len(names)}")
 
 fig = plt.figure(figsize=(183 * MM, 74 * MM))
-gs = fig.add_gridspec(1, 3, width_ratios=[1.35, 1.0, 1.15], wspace=0.46,
+gs = fig.add_gridspec(1, 2, width_ratios=[1.35, 1.15], wspace=0.40,
                       left=0.075, right=0.985, top=0.735, bottom=0.155)
 
 
@@ -107,33 +107,16 @@ ax.set_ylabel("shortfall of the domain oracle\nrelative to the trained model (%)
 ax.set_ylim(0, max(100, float(np.nanmax(gm)) * 1.15))
 ax.set_title("the shortfall depends on the scale\nat which it is measured",
              fontsize=7.4, pad=6)
-ax.text(0.98, 0.62, f"grey: {len(names)} independent\nspecimens\nred: median",
-        transform=ax.transAxes, ha="right", va="top", fontsize=5.9,
-        color=P["grey_d"], linespacing=1.5)
-letter(ax, "a", x=-0.22)
-
-# ── b
-ax = fig.add_subplot(gs[1])
 k = sum(1 for s in names if SPEC[s]["gap"][0] > SPEC[s]["scalar"])
 Pv = signp(k, len(names))
-for s in names:
-    ax.plot([0, 1], [SPEC[s]["scalar"], SPEC[s]["gap"][0]], "-o", lw=1.0, ms=4,
-            color=P["grey_m"], mfc=P["blue"], mec=P["blue"], alpha=0.9, zorder=2)
-mo = float(np.median([SPEC[s]["scalar"] for s in names]))
-mf = float(np.median([SPEC[s]["gap"][0] for s in names]))
-ax.plot([0, 1], [mo, mf], "-o", lw=2.6, ms=6, color=P["red"], zorder=4)
-ax.annotate(f"median\n{mo:.0f}%", (0, mo), textcoords="offset points", xytext=(-9, 0),
-            ha="right", va="center", fontsize=6.4, color=P["red"], fontweight="bold")
-ax.annotate(f"median\n{mf:.0f}%", (1, mf), textcoords="offset points", xytext=(9, 0),
-            ha="left", va="center", fontsize=6.4, color=P["red"], fontweight="bold")
-ax.set_xlim(-0.45, 1.45); ax.set_xticks([0, 1])
-ax.set_xticklabels(["scalar\nscore", "finest\nband"], fontsize=6.8)
-ax.set_ylim(0, 104); ax.set_ylabel("shortfall (%)", labelpad=2)
-ax.set_title(f"{k}/{len(names)} specimens,\nexact $P$ = {Pv:.4f}", fontsize=7.4, pad=6)
-letter(ax, "b", x=-0.30)
+ax.text(0.98, 0.97, f"grey: {len(names)} independent specimens\nred: median\n"
+        f"finest band > scalar in {k}/{len(names)} specimens\n(exact $P$ = {Pv:.4f})",
+        transform=ax.transAxes, ha="right", va="top", fontsize=5.9,
+        color=P["grey_d"], linespacing=1.5)
+letter(ax, "a", x=-0.12)
 
-# ── c
-ax = fig.add_subplot(gs[2])
+# ── b (formerly c)
+ax = fig.add_subplot(gs[1])
 for key, col, lab in (("vt", P["grey_d"], "measured"),
                       ("vb", P["red"], "domains only"),
                       ("vr", P["blue"], "trained model")):
@@ -146,13 +129,14 @@ vt0 = 100 * float(np.nanmedian([SPEC[s]["vt"][0] for s in names]))
 vr0 = 100 * float(np.nanmedian([SPEC[s]["vr"][0] for s in names]))
 ax.set_title(f"at the finest band: measurement {vt0:.0f}%,\npredictions {vr0:.0f}%", fontsize=7.4, pad=6)
 ax.legend(fontsize=6.0, loc="upper left", handlelength=1.3)
-letter(ax, "c", x=-0.26)
+letter(ax, "b", x=-0.26)
 
 fig.suptitle("What the scalar hides: the same comparison, resolved over scale",
              fontsize=9.2, y=0.985, fontweight="bold")
 os.makedirs(OUT, exist_ok=True)
 fig.savefig(os.path.join(OUT, "Fig2_scale.pdf"))
 print("-> figures/Fig2_scale.pdf")
+mo = float(np.median([SPEC[s]["scalar"] for s in names])); mf = float(np.median([SPEC[s]["gap"][0] for s in names]))
 print(f"  标量中位 {mo:.1f}%  最细带中位 {mf:.1f}%  比值 {mf/mo:.2f}x")
 print(f"  {k}/{len(names)} 样本，P = {Pv:.5f}")
 print(f"  标量对应 sigma ~ {SIG[j]:.0f} um（第 {j+1}/{len(SIG)} 档）")
