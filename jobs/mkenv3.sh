@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH --job-name=mkenv3
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=04:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-V=/blue/qsong1/wang.qing/systema4ST/venv_stmethods
-M=/blue/qsong1/wang.qing/systema4ST/methods
+V=/path/to/systema4ST/venv_stmethods
+M=/path/to/systema4ST/methods
 source $V/bin/activate
 echo "节点 $(hostname)"
 echo "=== 补装 mkenv2 暴露的缺口 ==="

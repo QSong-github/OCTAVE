@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Path Foundation 两段式第二段（tfpf 环境）：读 224 块分片，/255，serving_default → output_0，存 .npy。"""
 import os, sys, argparse, numpy as np, h5py
-TOK = open("/blue/qsong1/wang.qing/.cache/huggingface/token").read().strip(); os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
+TOK = open("/path/to/.cache/huggingface/token").read().strip(); os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
 import tensorflow as tf
 from huggingface_hub import snapshot_download
 ap = argparse.ArgumentParser(); ap.add_argument("--h5", required=True); ap.add_argument("--out", required=True); ap.add_argument("--batch", type=int, default=128); a = ap.parse_args()

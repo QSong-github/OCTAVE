@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 Image.MAX_IMAGE_PIXELS = None
 
-ROOT = "/blue/qsong1/wang.qing/systema4ST"
+ROOT = "/path/to/systema4ST"
 sys.path.insert(0, os.path.join(ROOT, "src"))
 import evaluate as E
 from baselines import ridge_predict
@@ -208,7 +208,7 @@ print(f"ROI x{x0:.0f} y{y0:.0f} bins={nsel} 窗内域数={ndom}（中位梯度�
 DOWN = float(open(os.path.join(ROOT, f"istar_run/{TAG}_{FOLD}/level-downsample.txt")).read()
              .split()[0]) if os.path.exists(
     os.path.join(ROOT, f"istar_run/{TAG}_{FOLD}/level-downsample.txt")) else 4.000053157559005
-HEP = os.path.join("/blue/qsong1/wang.qing/spatial2exp/he2st_align",
+HEP = os.path.join("/path/to/spatial2exp/he2st_align",
                    f"istar_run/{TAG}_{FOLD}/he-raw.jpg")
 hp = pxl[m][tem][sel] / DOWN
 crop = Image.open(HEP).crop((int(hp[:, 0].min()), int(hp[:, 1].min()),

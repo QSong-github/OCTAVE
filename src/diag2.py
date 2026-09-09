@@ -7,8 +7,8 @@
 import glob, numpy as np, openslide, h5py, torch, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from hd_embed import build, embed
-PA = "/blue/qsong1/wang.qing/spatial2exp/he2st_align"
-D = "/blue/qsong1/wang.qing/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2"
+PA = "/path/to/spatial2exp/he2st_align"
+D = "/path/to/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2"
 A = glob.glob(f"{PA}/data/virtualST/*P2/*PYRAMIDAL*.tif*")[0]
 J = f"{D}/Visium_HD_Human_Colon_Cancer_P2_PYRAMIDAL.tif"
 L = f"{D}/Visium_HD_Human_Colon_Cancer_P2_LOSSLESS.tif"

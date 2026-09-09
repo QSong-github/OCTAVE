@@ -97,4 +97,4 @@ dependencies:
       - urllib3==2.7.0
       - werkzeug==3.1.8
       - wrapt==2.4.0
-prefix: /blue/qsong1/wang.qing/miniconda3/envs/tfpf
+prefix: /path/to/miniconda3/envs/tfpf

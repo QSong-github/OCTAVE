@@ -13,13 +13,13 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.metrics import adjusted_rand_score
 
-sys.path.insert(0, "/blue/qsong1/wang.qing/systema4ST/src")
+sys.path.insert(0, "/path/to/systema4ST/src")
 from per_gene_xen import build_operator, per_gene_pcc, block_cv_predict
 
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/emb_xen"
-FROZEN = "/blue/qsong1/wang.qing/systema4ST/results/blocks_xen_bands"
-OUTD = "/blue/qsong1/wang.qing/systema4ST/results/blocks_xen_seeds"
+PREP = "/path/to/systema4ST/data/prepped_xen"
+EMB = "/path/to/systema4ST/results/emb_xen"
+FROZEN = "/path/to/systema4ST/results/blocks_xen_bands"
+OUTD = "/path/to/systema4ST/results/blocks_xen_seeds"
 
 
 def group_means(X, lab):

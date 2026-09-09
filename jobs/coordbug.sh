@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=coordbug
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=64G
 #SBATCH --time=00:30:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1
 python -u src/coordbug.py

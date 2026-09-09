@@ -6,7 +6,7 @@ from scipy import sparse
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 warnings.filterwarnings("ignore")
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"; EMB = "/blue/qsong1/wang.qing/systema4ST/results/hest_emb"; R = "/blue/qsong1/wang.qing/systema4ST/results"; K = 20
+B = "/path/to/he2st/HEST/eval/bench_data"; EMB = "/path/to/systema4ST/results/hest_emb"; R = "/path/to/systema4ST/results"; K = 20
 def per_gene_pcc(P, Y):
     P = P - P.mean(0); Y = Y - Y.mean(0); num = (P * Y).sum(0); den = np.sqrt((P ** 2).sum(0) * (Y ** 2).sum(0))
     with np.errstate(invalid="ignore", divide="ignore"): r = num / den

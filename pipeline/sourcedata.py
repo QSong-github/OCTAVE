@@ -2,7 +2,7 @@
 """抽出每张图实际绘制的逐单元数值，供 source-data 工作簿使用。不重算结论。"""
 import glob, json, os, re
 import numpy as np
-R = "/blue/qsong1/wang.qing/systema4ST/results"
+R = "/path/to/systema4ST/results"
 SH = {}
 def J(p):
     try: return json.load(open(p))

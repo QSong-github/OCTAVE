@@ -15,12 +15,12 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.linear_model import Ridge
 
-sys.path.insert(0, "/blue/qsong1/wang.qing/systema4ST/src")
+sys.path.insert(0, "/path/to/systema4ST/src")
 from per_gene_xen import build_operator, per_gene_pcc
 
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/emb_xen"
-OUTD = "/blue/qsong1/wang.qing/systema4ST/results/blocks_xen_ablate"
+PREP = "/path/to/systema4ST/data/prepped_xen"
+EMB = "/path/to/systema4ST/results/emb_xen"
+OUTD = "/path/to/systema4ST/results/blocks_xen_ablate"
 ALPHAS = [1e2, 1e3, 1e4, 1e5, 1e6]
 NGENES = [50, 100, 200, 400]
 KS = [5, 10, 20, 50, 100, 200]

@@ -3,12 +3,12 @@
 输出与 src/hest_embed_v2.py 完全同格式：results/hest_emb/{sid}_path_foundation.npz，键 X (n,384) float32、bc (object)。
 预处理照模型卡：224×224 RGB，除以 255 到 [0,1]，无均值方差归一化；signatures["serving_default"] → output_0。"""
 import os, sys, glob, json, numpy as np, h5py, time
-TOK = open("/blue/qsong1/wang.qing/.cache/huggingface/token").read().strip()
+TOK = open("/path/to/.cache/huggingface/token").read().strip()
 os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
 import tensorflow as tf
 from huggingface_hub import snapshot_download   # hub 1.x 已移除 from_pretrained_keras；仓库本身是 TF SavedModel
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/hest_emb"
+B = "/path/to/he2st/HEST/eval/bench_data"
+EMB = "/path/to/systema4ST/results/hest_emb"
 ENC = "path_foundation"; BS = 128
 SHARD = int(os.environ.get("SHARD", 0)); NSHARD = int(os.environ.get("NSHARD", 1))
 print("GPU:", tf.config.list_physical_devices("GPU"), flush=True)

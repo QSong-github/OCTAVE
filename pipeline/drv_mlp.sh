@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /blue/qsong1/wang.qing/systema4ST
+cd /path/to/systema4ST
 say(){ echo "[$(date +%H:%M:%S)] $*"; }
 python3 add_mlp.py
 mkdir -p results/mlp_seeds
@@ -11,11 +11,11 @@ say "冒烟：ciga seed0"
 cat > jobs/mlpsmoke.sh <<'SH'
 #!/bin/bash
 #SBATCH -J mlpsmoke
-#SBATCH --qos=qsong1 --partition=hpg-default -c 2 --mem=16G -t 2:00:00
-#SBATCH -o /blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 2:00:00
+#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST; export OMP_NUM_THREADS=2
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST; export OMP_NUM_THREADS=2
 python -u src/hest_effres_ps.py --encoder ciga --skip_sigma --head mlp --seed 0 --out results/mlp_seeds/hest_mlp_ps_ciga_s0.json
 python - <<'PY'
 import json
@@ -33,18 +33,18 @@ say "全量：30 编码器 × 3 种子"
 cat > jobs/mlpall.sh <<SH
 #!/bin/bash
 #SBATCH -J mlpall
-#SBATCH --qos=qsong1 --partition=hpg-default --array=0-89 -c 2 --mem=16G -t 4:00:00
-#SBATCH -o /blue/qsong1/wang.qing/systema4ST/logs/%x_%A_%a.out
+#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-89 -c 2 --mem=16G -t 4:00:00
+#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST; export OMP_NUM_THREADS=2
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST; export OMP_NUM_THREADS=2
 E=($ENC); I=\$SLURM_ARRAY_TASK_ID; N=\${E[\$((I/3))]}; S=\$((I%3))
 O=results/mlp_seeds/hest_mlp_ps_\${N}_s\${S}.json
 [ -s "\$O" ] && exit 0
 python -u src/hest_effres_ps.py --encoder "\$N" --skip_sigma --head mlp --seed \$S --out "\$O"
 SH
 sbatch jobs/mlpall.sh >/dev/null
-while [ "$(squeue -u wang.qing -r -h -n mlpall | wc -l)" -gt 0 ]; do sleep 60; done
+while [ "$(squeue -u $USER -r -h -n mlpall | wc -l)" -gt 0 ]; do sleep 60; done
 echo "  产出 $(ls results/mlp_seeds/*.json | wc -l)/90"
 [ "$(ls results/mlp_seeds/*.json | wc -l)" -ge 90 ] || { grep -l -i "error\|Traceback" logs/mlpall_*.out | head -3 | xargs -I{} tail -5 {}; exit 1; }
 
@@ -56,11 +56,11 @@ grep -c "hest_mlp_ps_" k_sens_mlp.py cohort_spread_mlp.py
 cat > jobs/mlpagg.sh <<'SH'
 #!/bin/bash
 #SBATCH -J mlpagg
-#SBATCH --qos=qsong1 --partition=hpg-default -c 2 --mem=16G -t 1:00:00
-#SBATCH -o /blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 1:00:00
+#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST
 python3 -u k_sens_mlp.py | tail -45
 python3 -u cohort_spread_mlp.py | tail -6
 python3 - <<'PY'

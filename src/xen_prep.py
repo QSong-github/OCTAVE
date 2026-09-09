@@ -17,8 +17,8 @@ Xenium → 与 Visium HD 同构的 16µm 分箱 h5ad。
 import os, sys, json, glob, argparse, numpy as np, anndata as ad, scanpy as sc
 from scipy import sparse
 
-ROOT = "/blue/qsong1/wang.qing/systema4ST/data/xenium"
-OUT  = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"
+ROOT = "/path/to/systema4ST/data/xenium"
+OUT  = "/path/to/systema4ST/data/prepped_xen"
 
 def load_affine(d, name):
     f = os.path.join(d, f"{name}_he_imagealignment.csv")

@@ -19,16 +19,16 @@ HEST 的 patches/<sid>.h5 里已经是**同样中心、同样 224×224** 的切�
 import os, sys, glob, json, argparse, numpy as np, h5py, torch
 from torch.utils.data import Dataset, DataLoader
 
-BLEEP = "/blue/qsong1/wang.qing/systema4ST/methods/BLEEP"
+BLEEP = "/path/to/systema4ST/methods/BLEEP"
 sys.path.insert(0, BLEEP)
-sys.path.insert(0, "/blue/qsong1/wang.qing/he2st/HEST/src")
+sys.path.insert(0, "/path/to/he2st/HEST/src")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config as CFG                                   # BLEEP 的超参
 from models import CLIPModel                           # BLEEP 的模型, 原样
 from hest.bench.st_dataset import load_adata           # HEST 官方数据加载
 import evaluate as E
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
+B = "/path/to/he2st/HEST/eval/bench_data"
 MEAN = np.array([0.485, 0.456, 0.406], np.float32)
 STD = np.array([0.229, 0.224, 0.225], np.float32)
 

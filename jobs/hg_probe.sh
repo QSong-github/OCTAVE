@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=hgprobe
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
 #SBATCH --time=01:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 # 只读代码, 不跑计算。三个方法同源(HisToGene → Hist2ST → THItoGene), 一次看清:
 # 模型构造签名、数据集接口、训练入口、以及各自对输入形状的硬编码假设。
 set -u
-M=/blue/qsong1/wang.qing/systema4ST/methods
+M=/path/to/systema4ST/methods
 for k in HisToGene Hist2ST THItoGene; do
   echo "################################ $k ################################"
   echo "--- 模型类签名 ---"

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """CPU 核对：Path Foundation SavedModel 能否加载、serving_default 对 224 输入给出 384 维。"""
 import os, numpy as np
-TOK = open("/blue/qsong1/wang.qing/.cache/huggingface/token").read().strip()
+TOK = open("/path/to/.cache/huggingface/token").read().strip()
 os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
 import tensorflow as tf
 from huggingface_hub import snapshot_download

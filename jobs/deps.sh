@@ -1,19 +1,19 @@
 #!/bin/bash
 #SBATCH --job-name=deps
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --gres=gpu:l4:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=24:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 # STFlow 的 setup.py 没有 install_requires, 逐个试错要烧很多轮。
 # 改为扫出全部仓库的 import, 一次性解析并安装缺失的顶层模块, 然后直接冒烟。
 set -u
-V=/blue/qsong1/wang.qing/systema4ST/venv_np1
-M=/blue/qsong1/wang.qing/systema4ST/methods
-B=/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data
-OUT=/blue/qsong1/wang.qing/systema4ST/stflow_run
-export HF_HOME=/blue/qsong1/wang.qing/systema4ST/.hf
+V=/path/to/systema4ST/venv_np1
+M=/path/to/systema4ST/methods
+B=/path/to/he2st/HEST/eval/bench_data
+OUT=/path/to/systema4ST/stflow_run
+export HF_HOME=/path/to/systema4ST/.hf
 source $V/bin/activate
 echo "节点 $(hostname)"
 

@@ -388,4 +388,4 @@ dependencies:
       - zarr==3.1.6
       - zict==3.0.0
       - zipp==4.1.0
-prefix: /blue/qsong1/wang.qing/miniconda3/envs/hest
+prefix: /path/to/miniconda3/envs/hest

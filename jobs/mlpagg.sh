@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J mlpagg
-#SBATCH --qos=qsong1 --partition=hpg-default -c 2 --mem=16G -t 1:00:00
-#SBATCH -o /blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 1:00:00
+#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST
 python3 -u k_sens_mlp.py | tail -45
 python3 -u cohort_spread_mlp.py | tail -6
 python3 - <<'PY'

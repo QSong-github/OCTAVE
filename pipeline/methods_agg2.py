@@ -4,7 +4,7 @@
 import glob, json, os, re
 import numpy as np
 from math import comb
-R = "/blue/qsong1/wang.qing/systema4ST/results"
+R = "/path/to/systema4ST/results"
 
 
 def signp(k, n):

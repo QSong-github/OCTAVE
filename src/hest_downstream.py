@@ -20,7 +20,7 @@ Pearson 特有的假象。所以每个指标都在【同一把 A_coarse 阶梯�
 """
 import os, sys, glob, json, argparse, numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, "/blue/qsong1/wang.qing/he2st/HEST/src")
+sys.path.insert(0, "/path/to/he2st/HEST/src")
 from scipy import sparse
 from scipy.spatial import cKDTree
 from sklearn.cluster import KMeans
@@ -33,9 +33,9 @@ from hest.bench.trainer import train_test_reg
 import evaluate as E
 from hest_ladder import build_operator, calibrate_sigma
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/hest_emb"
-SAMPLES = "/blue/qsong1/wang.qing/systema4ST/results/hest_samples.json"
+B = "/path/to/he2st/HEST/eval/bench_data"
+EMB = "/path/to/systema4ST/results/hest_emb"
+SAMPLES = "/path/to/systema4ST/results/hest_samples.json"
 MAXRET = 4000          # 检索指标的子采样上限(O(n^2))
 
 

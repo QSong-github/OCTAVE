@@ -5,7 +5,7 @@ from scipy import sparse
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.neighbors import NearestNeighbors
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"; EMB = "/blue/qsong1/wang.qing/systema4ST/results/hest_emb"
+B = "/path/to/he2st/HEST/eval/bench_data"; EMB = "/path/to/systema4ST/results/hest_emb"
 ENCS = ["openmidnight", "midnight12k", "hoptimus0", "dinov2_large", "ciga"]
 SIDS = ["INT1", "INT24", "TENX117", "TENX148", "MEND151", "NCBI643"]     # CCRCC×2, SKCM, COAD, PRAD?, HCC
 def per_gene_pcc(P, Y):

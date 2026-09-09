@@ -2,7 +2,7 @@
 """逐个编码器数真实参数量：用与 hest_embed_v2.py 完全相同的加载路径，数实际被前向用到的那个塔。"""
 import sys, os, json, warnings
 warnings.filterwarnings("ignore")
-sys.path.insert(0, "/blue/qsong1/wang.qing/systema4ST/src")
+sys.path.insert(0, "/path/to/systema4ST/src")
 os.environ.setdefault("HF_HUB_OFFLINE", "1")
 import torch
 from hest_embed_v2 import encoder as load_encoder, ALL_ENC
@@ -17,5 +17,5 @@ for e in sorted(set(ALL_ENC) - {"omiclip_raw", "resnet50", "hibou_b", "gpfm"}):
         del m
     except Exception as ex:
         print("  %-16s 失败: %s" % (e, str(ex)[:60]), flush=True)
-json.dump(out, open("/blue/qsong1/wang.qing/systema4ST/results/encoder_params.json", "w"), indent=1)
+json.dump(out, open("/path/to/systema4ST/results/encoder_params.json", "w"), indent=1)
 print("\n已存 results/encoder_params.json （%d 个）" % len(out))

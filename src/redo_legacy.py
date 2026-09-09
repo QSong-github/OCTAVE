@@ -19,8 +19,8 @@ import evaluate as E, retrieval as R
 from baselines import ridge_predict
 from effres import build_operator, calibrate_sigma, PX_PER_UM, SLIDES, SEB
 
-RAW = "/blue/qsong1/wang.qing/spatial2exp/he2st_align/st_bench/data/{s}/adata_16um.h5ad"
-RES = "/blue/qsong1/wang.qing/systema4ST/results/legacy"
+RAW = "/path/to/spatial2exp/he2st_align/st_bench/data/{s}/adata_16um.h5ad"
+RES = "/path/to/systema4ST/results/legacy"
 EXCLUDE_BASE = ("res2um","res4um","res8um","res16um","res32um","test_")
 EXCLUDE_VAR  = ("_ctx","_grid")
 

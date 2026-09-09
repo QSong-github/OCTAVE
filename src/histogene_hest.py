@@ -22,16 +22,16 @@ HisToGene 在 HEST-benchmark 上的运行 —— 模型原样用作者代码, �
 import os, sys, glob, json, argparse, numpy as np, h5py, torch
 import torch.nn.functional as F
 
-HG = "/blue/qsong1/wang.qing/systema4ST/methods/HisToGene"
+HG = "/path/to/systema4ST/methods/HisToGene"
 sys.path.insert(0, HG)
-sys.path.insert(0, "/blue/qsong1/wang.qing/he2st/HEST/src")
+sys.path.insert(0, "/path/to/he2st/HEST/src")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from vis_model import HisToGene                        # 作者模型, 原样
 from hest.bench.st_dataset import load_adata
 import evaluate as E
 import anndata as ad
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
+B = "/path/to/he2st/HEST/eval/bench_data"
 MAXSPOT = 4000                                          # 见文件头 ②
 
 

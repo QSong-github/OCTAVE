@@ -1,20 +1,20 @@
 #!/bin/bash
 #SBATCH --job-name=istar_gpu
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --gres=gpu:l4:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=72:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 # 阶段 2/3: 官方 iStar 计算(istar 环境, GPU)。全程只用 istar env, 不碰 hest ——
 # hest 在 GPU 分区上 import anndata 会崩, 所以数据准备/评测都拆到 CPU 作业。
 # 图像侧(rescale/preprocess/HIPT 特征/mask)与 train-test 划分无关, 每片只做一次,
 # 再把产物硬链接过继给该片的两个 fold, 省掉一半 GPU 时间。
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
-conda activate /blue/qsong1/wang.qing/miniconda3/envs/istar
-ISTAR=/blue/qsong1/wang.qing/spatial2exp/iStar        # 只读: 官方仓库
-RUN=/blue/qsong1/wang.qing/systema4ST/istar_run
+source /path/to/miniconda3/etc/profile.d/conda.sh
+conda activate /path/to/miniconda3/envs/istar
+ISTAR=/path/to/spatial2exp/iStar        # 只读: 官方仓库
+RUN=/path/to/systema4ST/istar_run
 export PYTHONWARNINGS=ignore
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 

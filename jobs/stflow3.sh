@@ -1,22 +1,22 @@
 #!/bin/bash
 #SBATCH --job-name=stflow3
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --gres=gpu:l4:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=24:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 # STFlow 走 ciga 路线: UNI/GigaPath 都是 HF gated, 但 train.py 的 feature_dim 里
 # 第三个选项 ciga(512d) 对应 Ciga 等人的自监督病理 ResNet18, 权重在 GitHub release, 开放。
 #
 # 对第三方代码只做一处改动: 注释掉 benchmark.py 里【与所选编码器无关的】UNI/GigaPath
 # 无条件下载(第 253-256 行, 属安装脚本残留)。方法本身逻辑一行未动, 改动留痕以备复核。
 set -u
-V=/blue/qsong1/wang.qing/systema4ST/venv_np1
-M=/blue/qsong1/wang.qing/systema4ST/methods/STFlow
-B=/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data
-OUT=/blue/qsong1/wang.qing/systema4ST/stflow_run
-export HF_HOME=/blue/qsong1/wang.qing/systema4ST/.hf
+V=/path/to/systema4ST/venv_np1
+M=/path/to/systema4ST/methods/STFlow
+B=/path/to/he2st/HEST/eval/bench_data
+OUT=/path/to/systema4ST/stflow_run
+export HF_HOME=/path/to/systema4ST/.hf
 source $V/bin/activate
 echo "节点 $(hostname)"; mkdir -p $OUT/weights/ciga $OUT/embed $OUT/results
 

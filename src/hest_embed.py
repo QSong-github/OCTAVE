@@ -23,15 +23,15 @@ if torch.cuda.is_available():
     print(f"device {torch.cuda.get_device_name(0)}", flush=True)
     _ = (torch.rand(64, 64, device="cuda") @ torch.rand(64, 64, device="cuda")).sum().item()
 
-sys.path.insert(0, "/blue/qsong1/wang.qing/he2st/HEST/src")
+sys.path.insert(0, "/path/to/he2st/HEST/src")
 from hest.bench.st_dataset import load_adata            # 官方: barcode 子集 + log1p
 from hest.bench.trainer import train_test_reg           # 官方: alpha=100/(D*G), lsqr, no intercept
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/hest_emb"
+B = "/path/to/he2st/HEST/eval/bench_data"
+EMB = "/path/to/systema4ST/results/hest_emb"
 
 
 # 全部开放权重(无需 HF 授权)。UNI/Virchow2/GigaPath/H-optimus/CONCH 是 gated,
@@ -46,7 +46,7 @@ TIMM_REPOS = {"lunit_vits8": "hf_hub:1aurent/vit_small_patch8_224.lunit_dino",
               "kaiko_vitb16": "hf_hub:1aurent/vit_base_patch16_224.kaiko_ai_towards_large_pathology_fms",
               "kaiko_vits16": "hf_hub:1aurent/vit_small_patch16_224.kaiko_ai_towards_large_pathology_fms",
               "kaiko_vitl14": "hf_hub:1aurent/vit_large_patch14_reg4_dinov2.kaiko_ai_towards_large_pathology_fms"}
-CIGA_CKPT = "/blue/qsong1/wang.qing/systema4ST/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
+CIGA_CKPT = "/path/to/systema4ST/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
 ALL_ENC = ["resnet50", "ciga"] + list(HF_REPOS) + list(TIMM_REPOS)
 
 

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Xenium 多尺度分箱的嵌入：物理视野仍锁 61.4 µm（与 bin 尺度无关）
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST
 FILES=($(ls data/prepped_xen/*_bin8.h5ad data/prepped_xen/*_bin32.h5ad data/prepped_xen/*_bin64.h5ad))
 F=${FILES[$SLURM_ARRAY_TASK_ID]}
 BASE=$(basename "$F" .h5ad); N=${BASE%_bin*}; BIN=${BASE##*_bin}

@@ -23,15 +23,15 @@ if torch.cuda.is_available():
     print(f"device {torch.cuda.get_device_name(0)}", flush=True)
     _ = (torch.rand(64, 64, device="cuda") @ torch.rand(64, 64, device="cuda")).sum().item()
 
-sys.path.insert(0, "/blue/qsong1/wang.qing/he2st/HEST/src")
+sys.path.insert(0, "/path/to/he2st/HEST/src")
 from hest.bench.st_dataset import load_adata            # 官方: barcode 子集 + log1p
 from hest.bench.trainer import train_test_reg           # 官方: alpha=100/(D*G), lsqr, no intercept
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/hest_emb"
+B = "/path/to/he2st/HEST/eval/bench_data"
+EMB = "/path/to/systema4ST/results/hest_emb"
 
 
 # 全部开放权重(无需 HF 授权)。UNI/Virchow2/GigaPath/H-optimus/CONCH 是 gated,
@@ -49,7 +49,7 @@ TIMM_REPOS = {"lunit_vits8": "hf_hub:1aurent/vit_small_patch8_224.lunit_dino",
               "kaiko_vitb16": "hf_hub:1aurent/vit_base_patch16_224.kaiko_ai_towards_large_pathology_fms",
               "kaiko_vits16": "hf_hub:1aurent/vit_small_patch16_224.kaiko_ai_towards_large_pathology_fms",
               "kaiko_vitl14": "hf_hub:1aurent/vit_large_patch14_reg4_dinov2.kaiko_ai_towards_large_pathology_fms"}
-CIGA_CKPT = "/blue/qsong1/wang.qing/systema4ST/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
+CIGA_CKPT = "/path/to/systema4ST/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
 # trident 路径：uni/virchow/gigapath/conch 等 gated 权重已在本地 HF 缓存，
 # HF_HUB_OFFLINE=1 即可加载（job 39212710 实测 13/14 可用，仅 gpfm 的 checkpoint 损坏）。
 TRIDENT_ENC = ["uni_v1", "uni_v2", "virchow", "virchow2", "gigapath", "conch_v1",
@@ -65,7 +65,7 @@ NEW_CLIP = {"plip": "vinid/plip", "quiltnet": "wisdomik/QuiltNet-B-32",
 NEW_HF2 = {"genbio_pathfm": "genbio-ai/genbio-pathfm"}
 # OmiCLIP（Nature Methods 2025）：220 万对 Visium 图块与表达训练，直接针对
 # H&E 与空间转录组的对齐，是本文任务域内最贴题的编码器。权重开放。
-OMICLIP_CKPT = "/blue/qsong1/wang.qing/systema4ST/methods/OmiCLIP/checkpoint.pt"
+OMICLIP_CKPT = "/path/to/systema4ST/methods/OmiCLIP/checkpoint.pt"
 # 2026-09-03 扩集：timm hf-hub（各自 data config 预处理）、SigLIP2、BiomedCLIP、RetCCL、更多 HF/CLIP 通用基线
 NEW_TIMM2 = {"kaiko_vitb8": "hf-hub:1aurent/vit_base_patch8_224.kaiko_ai_towards_large_pathology_fms",
              "lunit_vits16": "hf-hub:1aurent/vit_small_patch16_224.lunit_dino",
@@ -95,7 +95,7 @@ GIGA_FLASH = {"gigapath_flash": "prov-gigapath/prov-gigapath-flash"}
 # 所以不走 NEW_TIMM2 的 resolve_model_data_config。
 MSTAR = {"mstar": "hf-hub:Wangyh/mSTAR"}
 # LitePath / LiteFM（2026-02，arXiv 2602.14010）：Virchow2+H-optimus-1+UNI2 三教师蒸馏；四个发布的图块编码器。
-LITEFM_DIR = "/blue/qsong1/wang.qing/systema4ST/methods/LitePath/inference"
+LITEFM_DIR = "/path/to/systema4ST/methods/LitePath/inference"
 LITEFM = {"litefm": ("small", "LiteFM.pth"), "litefm_s": ("tiny", "LiteFM-S.pth"),
           "litefm_l": ("base", "LiteFM-L.pth"), "litevirchow2": ("small", "LiteVirchow2.pth")}
 ALL_ENC = ["resnet50", "ciga"] + list(HF_REPOS) + list(TIMM_REPOS) + TRIDENT_ENC + NEW_ENC + list(GIGA_FLASH) + list(MSTAR) + list(LITEFM)
@@ -116,7 +116,7 @@ def encoder(name, dev):
         return m.eval().to(dev), None
     if name == "musk":
         import sys as _sys, torchvision as _tv
-        _sys.path.insert(0, "/blue/qsong1/wang.qing/methods/MUSK")
+        _sys.path.insert(0, "/path/to/methods/MUSK")
         from musk import utils as _mu, modeling as _mm      # noqa: F401  注册 timm 模型
         from timm.models import create_model as _cm
         from timm.data.constants import IMAGENET_INCEPTION_MEAN as _M, IMAGENET_INCEPTION_STD as _S

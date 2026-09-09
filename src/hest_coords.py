@@ -16,8 +16,8 @@
 import os, glob, json, csv, numpy as np, anndata as ad
 from scipy.spatial import cKDTree
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
-META = "/blue/qsong1/wang.qing/he2st/HEST/assets/HEST_v1_1_0.csv"
+B = "/path/to/he2st/HEST/eval/bench_data"
+META = "/path/to/he2st/HEST/assets/HEST_v1_1_0.csv"
 
 meta = {r["id"]: r for r in csv.DictReader(open(META, encoding="utf-8-sig"))}
 print(f"元数据 {len(meta)} 条")
@@ -69,6 +69,6 @@ print(f"NN(µm) 中位={np.nanmedian(nn):.1f} 范围=[{np.nanmin(nn):.1f}, {np.n
 print(f"spatial==pxl 的样本: {sum(1 for r in rows if r['rel'].startswith('==pxl'))}/{len(rows)}")
 print(f"50 评测基因全部可得: {sum(1 for r in rows if r['n50']==50)}/{len(rows)}")
 print(f"spot<1000 的样本: {[r['sid'] for r in rows if r['n']<1000]}")
-json.dump(rows, open("/blue/qsong1/wang.qing/systema4ST/results/hest_samples.json", "w"),
+json.dump(rows, open("/path/to/systema4ST/results/hest_samples.json", "w"),
           indent=2, ensure_ascii=False)
 print("\n已存 results/hest_samples.json")

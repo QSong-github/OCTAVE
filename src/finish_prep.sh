@@ -1,10 +1,10 @@
 #!/bin/bash
 # 补齐 P2 的 16µm 数据 + 把 P5 图转金字塔，使 9 张片全部走统一管线
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
 B=https://cf.10xgenomics.com/samples/spatial-exp/3.0.0
-R=/blue/qsong1/wang.qing/systema4ST/data/visiumhd
-cd /blue/qsong1/wang.qing/systema4ST
+R=/path/to/systema4ST/data/visiumhd
+cd /path/to/systema4ST
 
 N=Visium_HD_Human_Colon_Cancer_P2
 if [ ! -d "$R/$N/binned_outputs/square_016um" ]; then

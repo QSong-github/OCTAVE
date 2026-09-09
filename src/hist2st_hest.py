@@ -31,12 +31,12 @@ import os, sys, glob, json, argparse, time
 import numpy as np, h5py, torch
 import torch.nn.functional as F
 
-H2 = "/blue/qsong1/wang.qing/systema4ST/methods/Hist2ST"
+H2 = "/path/to/systema4ST/methods/Hist2ST"
 # shims 必须在 H2 之前：Hist2ST/transformer.py 有一行遗留的 `from easydl import *`，
 # 但该文件不使用 easydl 的任何符号。空垫片避免为一行无用导入而污染 hest 环境。
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "shims"))
 sys.path.insert(1, H2)
-sys.path.insert(0, "/blue/qsong1/wang.qing/he2st/HEST/src")
+sys.path.insert(0, "/path/to/he2st/HEST/src")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from HIST2ST import Hist2ST                              # 作者模型，原样
 from graph_construction import calcADJ                   # 作者的图构造，原样
@@ -45,7 +45,7 @@ from hest.bench.st_dataset import load_adata
 import evaluate as E
 import anndata as ad
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
+B = "/path/to/he2st/HEST/eval/bench_data"
 MAXSPOT = 4000        # 与 histogene_hest.py 一致；calcADJ 是 n×n 稠密阵，4000² = 64MB
 
 

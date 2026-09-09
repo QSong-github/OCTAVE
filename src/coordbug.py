@@ -15,8 +15,8 @@ obsm['pxl'] 走的是另一条路(源自 obs 的 pxl_*_in_fullres, 无 NaN), v3 
 """
 import numpy as np, h5py, glob, os, anndata as ad
 
-SRC = "/blue/qsong1/wang.qing/spatial2exp/he2st_align/data/virtualST"
-H5AD = "/blue/qsong1/wang.qing/spatial2exp/he2st_align/data/binned_16um.h5ad"
+SRC = "/path/to/spatial2exp/he2st_align/data/virtualST"
+H5AD = "/path/to/spatial2exp/he2st_align/data/binned_16um.h5ad"
 SLIDES = ["Visium_HD_Human_Colon_Cancer_P2", "Visium_HD_Human_Colon_Cancer_P5"]
 PX_PER_UM = {SLIDES[0]: 3.6499, SLIDES[1]: 3.6526}      # v3 标定
 UM = 2.0                                                 # within_bench.py 的假设

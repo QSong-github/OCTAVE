@@ -4,8 +4,8 @@
 # 两个平台都可往粗里放（32/64µm）。若 σ 减去噪声地板在各尺度上稳定，
 # 则 σ 测的是模型性质，不是网格的产物。
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST
 BINS=(8 32 64)
 B=${BINS[$SLURM_ARRAY_TASK_ID]}
 echo "=== Xenium 重新分箱 @ ${B}µm ==="

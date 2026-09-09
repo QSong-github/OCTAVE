@@ -18,15 +18,15 @@ HECLIP 的文件头自称 "developed based on the BLEEP"。逐项核对后，实
 import os, sys, glob, json, argparse, numpy as np, h5py, torch
 from torch.utils.data import Dataset, DataLoader
 
-HEC = "/blue/qsong1/wang.qing/systema4ST/methods/HECLIP/code"
+HEC = "/path/to/systema4ST/methods/HECLIP/code"
 sys.path.insert(0, HEC)
-sys.path.insert(0, "/blue/qsong1/wang.qing/he2st/HEST/src")
+sys.path.insert(0, "/path/to/he2st/HEST/src")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from models_hvg import HECLIPModel                      # HECLIP 的模型, 原样
 from hest.bench.st_dataset import load_adata           # HEST 官方数据加载
 import evaluate as E
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
+B = "/path/to/he2st/HEST/eval/bench_data"
 MEAN = np.array([0.485, 0.456, 0.406], np.float32)
 STD = np.array([0.229, 0.224, 0.225], np.float32)
 

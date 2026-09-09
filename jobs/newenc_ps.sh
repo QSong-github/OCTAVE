@@ -1,16 +1,16 @@
 #!/bin/bash
 #SBATCH --job-name=nps
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --partition=hpg-default
 #SBATCH --array=0-11
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=48G
 #SBATCH --time=8:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%A_%a.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%A_%a.out
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1 OMP_NUM_THREADS=4
 ENC=(uni_v1 virchow conch_v1 keep openmidnight hibou_l h0_mini plip quiltnet hoptimus1 genbio_pathfm omiclip)
 E=${ENC[$SLURM_ARRAY_TASK_ID]}

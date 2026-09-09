@@ -2,7 +2,7 @@
 """B 档三个（已授权）探针：hibou_b（trident）、gigapath-flash（timm）、Google Path Foundation（TF-Keras）。"""
 import os, sys, json, warnings, numpy as np
 warnings.filterwarnings("ignore")
-TOK = open("/blue/qsong1/wang.qing/.cache/huggingface/token").read().strip()
+TOK = open("/path/to/.cache/huggingface/token").read().strip()
 os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
 import torch, timm
 from PIL import Image
@@ -41,5 +41,5 @@ print("device", dev, "| timm", timm.__version__, flush=True)
 report("hibou_b", hibou_b)
 report("gigapath_flash", gp_flash)
 report("path_foundation", path_found)
-json.dump(OK, open("/blue/qsong1/wang.qing/systema4ST/results/probe_b_ok.json", "w"), indent=1)
+json.dump(OK, open("/path/to/systema4ST/results/probe_b_ok.json", "w"), indent=1)
 print("成功 %d/3" % len(OK))

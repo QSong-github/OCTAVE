@@ -17,8 +17,8 @@
 import os, sys, json, glob, argparse, numpy as np, anndata as ad, scanpy as sc
 from scipy import sparse
 
-ROOT = "/blue/qsong1/wang.qing/systema4ST/data/visiumhd"
-OUT = "/blue/qsong1/wang.qing/systema4ST/data/prepped"
+ROOT = "/path/to/systema4ST/data/visiumhd"
+OUT = "/path/to/systema4ST/data/prepped"
 
 def prep(name):
     d = os.path.join(ROOT, name)

@@ -10,7 +10,7 @@
 import glob, json, re
 import numpy as np
 from math import comb
-R = "/blue/qsong1/wang.qing/systema4ST/results"
+R = "/path/to/systema4ST/results"
 KEYS = ["svg_top_jaccard", "svg_rank_rho", "hotspot_jaccard",
         "coloc_preserve", "hotspot_recall_selectivity"]
 

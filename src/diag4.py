@@ -10,10 +10,10 @@
 这将直接影响本文头条数字，必须查实。
 """
 import glob, numpy as np, openslide, h5py
-PA = "/blue/qsong1/wang.qing/spatial2exp/he2st_align"
+PA = "/path/to/spatial2exp/he2st_align"
 A = glob.glob(f"{PA}/data/virtualST/*P2/*PYRAMIDAL*.tif*")[0]
-L = "/blue/qsong1/wang.qing/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_LOSSLESS.tif"
-J = "/blue/qsong1/wang.qing/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_PYRAMIDAL.tif"
+L = "/path/to/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_LOSSLESS.tif"
+J = "/path/to/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_PYRAMIDAL.tif"
 
 with h5py.File(f"{PA}/data/binned_16um.h5ad", "r") as h:
     sid = h["obs"]["slide_id"]

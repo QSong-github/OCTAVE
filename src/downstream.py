@@ -26,8 +26,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import adjusted_rand_score
 
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/emb_xen"
+PREP = "/path/to/systema4ST/data/prepped_xen"
+EMB = "/path/to/systema4ST/results/emb_xen"
 
 
 def gene_names(a):

@@ -22,12 +22,12 @@ print(f"  {SEB.H5AD}\n  n_obs={a.n_obs} n_vars={a.n_vars}  var 列={list(a.var.c
 
 print("\n"+"="*72); print("② 原始 16µm 全转录组"); print("="*72)
 for s in SLIDES:
-    p = f"/blue/qsong1/wang.qing/spatial2exp/he2st_align/st_bench/data/{s}/adata_16um.h5ad"
+    p = f"/path/to/spatial2exp/he2st_align/st_bench/data/{s}/adata_16um.h5ad"
     b = ad.read_h5ad(p, backed="r")
     print(f"  [{s[-2:]}] n_obs={b.n_obs} n_vars={b.n_vars} obs={list(b.obs.columns)[:8]} obsm={list(b.obsm.keys())}")
 
 print("\n"+"="*72); print("③ CosMx / MERFISH —— 是否配对 H&E"); print("="*72)
-for p in ["/blue/qsong1/wang.qing/spatial2exp/stbench/cosmx_hs_nsclc.h5ad"]:
+for p in ["/path/to/spatial2exp/stbench/cosmx_hs_nsclc.h5ad"]:
     desc(p, "CosMx NSCLC")
     c = ad.read_h5ad(p, backed="r")
     print(f"    n_obs={c.n_obs} n_vars={c.n_vars}")
@@ -37,11 +37,11 @@ for p in ["/blue/qsong1/wang.qing/spatial2exp/stbench/cosmx_hs_nsclc.h5ad"]:
         v = c.obs[col]
         try: print(f"      {col:24s} nuniq={v.nunique():6d} 例={list(map(str, v.unique()[:3]))}")
         except Exception: pass
-for p in sorted(glob.glob("/blue/qsong1/wang.qing/spatial2exp/**/MERFISH*16um*.h5ad", recursive=True))[:2]:
+for p in sorted(glob.glob("/path/to/spatial2exp/**/MERFISH*16um*.h5ad", recursive=True))[:2]:
     desc(p, "MERFISH 16µm")
 print("\n"+"="*72); print("④ 该目录下所有 H&E / 图像文件"); print("="*72)
 n = 0
-for root in ["/blue/qsong1/wang.qing/spatial2exp"]:
+for root in ["/path/to/spatial2exp"]:
     for d, _, fs in os.walk(root):
         if any(x in d for x in ("miniconda", "site-packages", ".git")): continue
         for f in fs:

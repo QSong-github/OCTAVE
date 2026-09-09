@@ -4,8 +4,8 @@
 # FINDINGS §2.4 在 Visium HD 两片上测到协议效应 0.20–0.30 PCC，是方法间差异(≈0.03)的 10 倍；
 # 本扫描把它扩到 Xenium 16 片 × 4 种划分，检验该结论是否稳健。
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST
 FILES=($(ls data/prepped_xen/*_bin16.h5ad))
 GRIDS=(16 8 4 2)
 N=${#FILES[@]}

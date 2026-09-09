@@ -114,5 +114,5 @@ for lab, k in rows:
     p, q, t = gm(k, "pooled"), gm(k, "perfold"), gm(k, "train")
     print(f"{lab:>26s}{p:>11.4f}{q:>11.4f}{p-q:>+11.4f}{p/base:>10.3f}{t*100:>9.0f}%")
 print(f"{'跨片（无共享组织）':>26s}{0.5785:>11.4f}{'—':>11s}{'—':>11s}{0.5785/base:>10.3f}{'—':>10s}")
-json.dump(OUT, open("/blue/qsong1/wang.qing/systema4ST/results/buffer_cv3.json", "w"),
+json.dump(OUT, open("/path/to/systema4ST/results/buffer_cv3.json", "w"),
           indent=2, ensure_ascii=False)

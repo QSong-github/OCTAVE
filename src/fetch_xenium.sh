@@ -5,9 +5,9 @@
 # 12 张乳腺连续切片（S1-S4 × Top/Mid/Bot）可做「同组织不同切面的 σ 重复性」——
 # 这是任何单张切片都给不了的对照。
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
 B=https://cf.10xgenomics.com/samples/xenium
-R=/blue/qsong1/wang.qing/systema4ST/data/xenium
+R=/path/to/systema4ST/data/xenium
 NAMES=(Human_Breast_Biomarkers_S1_Top:4.0.0 Human_Breast_Biomarkers_S1_Mid:4.0.0 Human_Breast_Biomarkers_S1_Bot:4.0.0 \
        Human_Breast_Biomarkers_S2_Top:4.0.0 Human_Breast_Biomarkers_S2_Mid:4.0.0 Human_Breast_Biomarkers_S2_Bot:4.0.0 \
        Human_Breast_Biomarkers_S3_Top:4.0.0 Human_Breast_Biomarkers_S3_Mid:4.0.0 Human_Breast_Biomarkers_S3_Bot:4.0.0 \

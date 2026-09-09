@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH --job-name=bleep
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --gres=gpu:l4:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=48:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 echo "节点 $(hostname)"; nvidia-smi --query-gpu=name --format=csv,noheader
 # 先在两个最小队列冒烟(5 epoch), 通过再铺开

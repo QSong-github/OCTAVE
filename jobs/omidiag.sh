@@ -1,16 +1,16 @@
 #!/bin/bash
 #SBATCH --job-name=omidiag
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --partition=hpg-b200,hpg-rtx6000,hpg-turin
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=96G
 #SBATCH --time=36:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 set -eu
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 python -c "import timm, open_clip; print('timm', timm.__version__, '| open_clip', open_clip.__version__)"
 WANT=7662370634

@@ -1,24 +1,24 @@
 #!/bin/bash
 #SBATCH --job-name=stflow
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --gres=gpu:l4:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=24:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 # STFlow (ICML'25 Spotlight) —— 按作者发布的方式运行, 不做任何改写。
 # 关键: --feature_encoder resnet50_trunc 无需 gated 权重(UNI/GigaPath 都要申请)。
 # source_dataroot 就是每个队列目录, 与我们盘上 bench_data/<COHORT>/ 布局天然一致。
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-V=/blue/qsong1/wang.qing/systema4ST/venv_stmethods
+V=/path/to/systema4ST/venv_stmethods
 source $V/bin/activate
-M=/blue/qsong1/wang.qing/systema4ST/methods/STFlow
-B=/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data
-OUT=/blue/qsong1/wang.qing/systema4ST/stflow_run
+M=/path/to/systema4ST/methods/STFlow
+B=/path/to/he2st/HEST/eval/bench_data
+OUT=/path/to/systema4ST/stflow_run
 mkdir -p $OUT/embed $OUT/results
-export HF_HOME=/blue/qsong1/wang.qing/systema4ST/.hf
+export HF_HOME=/path/to/systema4ST/.hf
 echo "节点 $(hostname)"; nvidia-smi --query-gpu=name --format=csv,noheader
 
 echo "=== 1. 安装 STFlow ==="

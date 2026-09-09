@@ -21,9 +21,9 @@ from sklearn.linear_model import Ridge
 import evaluate as E
 from effres import build_operator, calibrate_sigma
 
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped"
-EMB  = "/blue/qsong1/wang.qing/systema4ST/results/emb9"
-RES  = "/blue/qsong1/wang.qing/systema4ST/results"
+PREP = "/path/to/systema4ST/data/prepped"
+EMB  = "/path/to/systema4ST/results/emb9"
+RES  = "/path/to/systema4ST/results"
 TISSUE = {  # 组织学分组，用于最终对比
  "Visium_HD_Human_Colon_Cancer_P1": ("人 CRC P1", "肿瘤"),
  "Visium_HD_Human_Colon_Cancer_P2": ("人 CRC P2", "肿瘤"),

@@ -4,8 +4,8 @@
 #   arm=pubcfg  : epochs=100，作者原始 epoch 数（步数 = 片数×100）
 # 两臂之差本身有信息：若 pubcfg（步数少得多）反而更好，说明瓶颈是片数不是步数。
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 COH=(SKCM HCC LUNG PAAD COAD READ IDC LYMPH_IDC PRAD CCRCC)
 N=${#COH[@]}

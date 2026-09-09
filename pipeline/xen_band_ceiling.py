@@ -4,9 +4,9 @@
 Spearman–Brown 校正到全深度 c_full = 2c/(1+c)。基因集与主流水线一致（全场方差最高的 200 个）。"""
 import argparse, json, os, sys, numpy as np, anndata as ad
 from scipy import sparse
-sys.path.insert(0, "/blue/qsong1/wang.qing/systema4ST/src")
+sys.path.insert(0, "/path/to/systema4ST/src")
 from per_gene_xen import build_operator, per_gene_pcc
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"; OUTD = "/blue/qsong1/wang.qing/systema4ST/results/xen_band_ceiling"
+PREP = "/path/to/systema4ST/data/prepped_xen"; OUTD = "/path/to/systema4ST/results/xen_band_ceiling"
 ap = argparse.ArgumentParser(); ap.add_argument("--name", required=True); ap.add_argument("--ngene", type=int, default=200)
 ap.add_argument("--tmax", type=int, default=2048); ap.add_argument("--reps", type=int, default=3); a = ap.parse_args()
 cps = [1]

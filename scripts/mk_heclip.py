@@ -2,12 +2,12 @@
 """由已调试好的 BLEEP/HEST 适配器生成 HECLIP 版本。HECLIP 的文件头自称
    "developed based on the BLEEP"，逐项核对后只有三处实质差异，均在下方处理。"""
 import os, ast
-B = "/blue/qsong1/wang.qing/systema4ST"
+B = "/path/to/systema4ST"
 s = open(os.path.join(B, "src/bleep_hest.py")).read()
 sub = [
  # ① 作者代码路径与模型类
- ('BLEEP = "/blue/qsong1/wang.qing/systema4ST/methods/BLEEP"\nsys.path.insert(0, BLEEP)',
-  'HEC = "/blue/qsong1/wang.qing/systema4ST/methods/HECLIP/code"\nsys.path.insert(0, HEC)'),
+ ('BLEEP = "/path/to/systema4ST/methods/BLEEP"\nsys.path.insert(0, BLEEP)',
+  'HEC = "/path/to/systema4ST/methods/HECLIP/code"\nsys.path.insert(0, HEC)'),
  ('import config as CFG                                   # BLEEP 的超参\n'
   'from models import CLIPModel                           # BLEEP 的模型, 原样',
   'from models_hvg import HECLIPModel                      # HECLIP 的模型, 原样'),

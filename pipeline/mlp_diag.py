@@ -18,8 +18,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import Ridge
 from sklearn.neural_network import MLPRegressor
 warnings.filterwarnings("ignore")
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/hest_emb"
+B = "/path/to/he2st/HEST/eval/bench_data"
+EMB = "/path/to/systema4ST/results/hest_emb"
 ENCS = sys.argv[1].split(",")
 PAIRS = [[c, "0"] for c in sorted(os.listdir(B)) if os.path.isdir(os.path.join(B, c, "adata"))]
 

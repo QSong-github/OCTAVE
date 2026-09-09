@@ -23,8 +23,8 @@ from scipy import sparse
 from scipy.spatial import cKDTree
 import evaluate as E
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
-SAMPLES = "/blue/qsong1/wang.qing/systema4ST/results/hest_samples.json"
+B = "/path/to/he2st/HEST/eval/bench_data"
+SAMPLES = "/path/to/systema4ST/results/hest_samples.json"
 PITCH_UM = 100.0                      # hest_coords.py: 全部样本统一 100µm 栅格
 
 

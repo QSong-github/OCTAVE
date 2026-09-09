@@ -10,7 +10,7 @@ HEST-benchmark 官方协议报告的 PCC 求相关。Systema 在 10 个数据集
 """
 import os, glob, json, numpy as np, anndata as ad
 
-B = "/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data"
+B = "/path/to/he2st/HEST/eval/bench_data"
 cohorts = sorted(os.listdir(B))
 print("队列:", cohorts)
 

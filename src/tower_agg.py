@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """汇总 25 个图像塔的等价 σ —— 判定"≈110µm"是否依赖编码器。"""
 import json, glob, os, numpy as np
-D = "/blue/qsong1/wang.qing/systema4ST/results/tower_sweep"
+D = "/path/to/systema4ST/results/tower_sweep"
 rows = []
 for p in sorted(glob.glob(os.path.join(D, "*.json"))):
     s = json.load(open(p))["_summary"]
@@ -27,6 +27,6 @@ print(f"  Moran 膨胀 中位={np.median(M):.2f}×  范围 [{M.min():.2f}, {M.ma
 best = rows[0]; worst = rows[-1]
 print(f"\n  最强塔 {best['tower']:14s} PCC={best['pcc']['Ridge_HEST']:.4f} 等价σ(pcc)={best['eq_sigma']['Ridge_HEST']['pcc']:.0f}µm")
 print(f"  最弱塔 {worst['tower']:14s} PCC={worst['pcc']['Ridge_HEST']:.4f} 等价σ(pcc)={worst['eq_sigma']['Ridge_HEST']['pcc']:.0f}µm")
-json.dump(rows, open("/blue/qsong1/wang.qing/systema4ST/results/tower_summary.json","w"),
+json.dump(rows, open("/path/to/systema4ST/results/tower_summary.json","w"),
           indent=2, ensure_ascii=False)
 print("\n已存 results/tower_summary.json")

@@ -20,7 +20,7 @@ from scipy import sparse
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 
-S = "/blue/qsong1/wang.qing/systema4ST/src"
+S = "/path/to/systema4ST/src"
 sys.path.insert(0, S)
 from downstream2 import (gene_names, smooth, knn_graph, morans_i, block_cv_predict,
                          jaccard_topq, boundary_by_gradient, boundary_shift_um,
@@ -28,9 +28,9 @@ from downstream2 import (gene_names, smooth, knn_graph, morans_i, block_cv_predi
 from per_gene_xen import build_operator, per_gene_pcc
 from scipy.stats import spearmanr
 
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/emb_xen"
-RES = "/blue/qsong1/wang.qing/systema4ST/results"
+PREP = "/path/to/systema4ST/data/prepped_xen"
+EMB = "/path/to/systema4ST/results/emb_xen"
+RES = "/path/to/systema4ST/results"
 
 
 def group_means(X, lab):

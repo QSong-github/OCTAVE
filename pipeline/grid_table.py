@@ -1,6 +1,6 @@
 import glob, json, os, numpy as np
 from math import comb
-R = "/blue/qsong1/wang.qing/systema4ST/results"
+R = "/path/to/systema4ST/results"
 BINS = [8, 16, 32, 64]
 
 def J(p):

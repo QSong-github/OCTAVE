@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """诊断: 母项目 P2 金字塔 vs 我 vips 转的 P2 金字塔，为何嵌入不等价。"""
 import glob, numpy as np, openslide, h5py
-PA = "/blue/qsong1/wang.qing/spatial2exp/he2st_align"
+PA = "/path/to/spatial2exp/he2st_align"
 A = glob.glob(f"{PA}/data/virtualST/*P2/*PYRAMIDAL*.tif*")[0]
-B = "/blue/qsong1/wang.qing/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_PYRAMIDAL.tif"
+B = "/path/to/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_PYRAMIDAL.tif"
 sa, sb = openslide.OpenSlide(A), openslide.OpenSlide(B)
 print(f"母项目 {A.split('/')[-1]}\n  尺寸={sa.dimensions} 层={sa.level_count}")
 for k in ("openslide.vendor", "tiff.ImageDescription", "tiff.PhotometricInterpretation",

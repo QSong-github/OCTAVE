@@ -4,8 +4,8 @@
 # Hist2ST 对整片做一次前向：4000 token 的 ViT 注意力(4000²×16头×8层) + 4000×4000 稠密 GNN，
 # 大队列的大切片必然超出 22GB。换更大的卡是唯一不改变方法的解法。
 set -u
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 C=$1; ARM=$2
 if [ "$ARM" = "matched" ]; then

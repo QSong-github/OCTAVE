@@ -1,18 +1,18 @@
 #!/bin/bash
 #SBATCH --job-name=oracleds
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --partition=hpg-default
 #SBATCH --array=0-15
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --time=10:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%A_%a.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%A_%a.out
 # 第四步的决定性检验：同一批 bin、同一真值下，已训模型 vs 块预言机的
 # 六个下游读数落差，与标量落差(约22%)、最细带落差(约80%)比对。
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1 OMP_NUM_THREADS=8
 mapfile -t N < <(ls results/blocks_xen_bands/*.json | xargs -n1 basename | sed 's/\.json$//')
 echo "节点 $(hostname)  区域 ${N[$SLURM_ARRAY_TASK_ID]}"

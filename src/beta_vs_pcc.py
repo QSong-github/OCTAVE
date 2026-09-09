@@ -16,12 +16,12 @@ import anndata as ad
 from scipy import sparse
 from scipy.spatial import cKDTree
 
-sys.path.insert(0, "/blue/qsong1/wang.qing/systema4ST/src")
+sys.path.insert(0, "/path/to/systema4ST/src")
 from per_gene_xen import build_operator, per_gene_pcc, block_cv_predict, gene_names
 
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/emb_xen"
-RES = "/blue/qsong1/wang.qing/systema4ST/results"
+PREP = "/path/to/systema4ST/data/prepped_xen"
+EMB = "/path/to/systema4ST/results/emb_xen"
+RES = "/path/to/systema4ST/results"
 
 
 def main():

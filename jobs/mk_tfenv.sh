@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -J tfenv
-#SBATCH --qos=qsong1 --partition=hpg-default -c 4 --mem=32G -t 2:00:00
-#SBATCH -o /blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 4 --mem=32G -t 2:00:00
+#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda create -y -q -n tfpf python=3.11 >/dev/null
 conda activate tfpf
 pip install -q "tensorflow[and-cuda]==2.17.*" "tf-keras==2.17.*" huggingface_hub h5py numpy pillow 2>&1 | tail -2

@@ -17,7 +17,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-BASE = os.environ.get("S4ST", "/blue/qsong1/wang.qing/systema4ST")
+BASE = os.environ.get("S4ST", "/path/to/systema4ST")
 OUT = os.path.join(BASE, "figures")
 K = json.load(open(os.path.join(BASE, "results/k_sensitivity.json")))
 KS = sorted(int(k) for k in K)

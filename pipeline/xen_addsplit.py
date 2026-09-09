@@ -7,9 +7,9 @@ from scipy import sparse
 from scipy.spatial import cKDTree
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
-sys.path.insert(0, "/blue/qsong1/wang.qing/systema4ST/src")
+sys.path.insert(0, "/path/to/systema4ST/src")
 from per_gene_xen import block_cv_predict, build_operator
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"; EMB = "/blue/qsong1/wang.qing/systema4ST/results/emb_xen"; OUTD = "/blue/qsong1/wang.qing/systema4ST/results/xen_addsplit"
+PREP = "/path/to/systema4ST/data/prepped_xen"; EMB = "/path/to/systema4ST/results/emb_xen"; OUTD = "/path/to/systema4ST/results/xen_addsplit"
 ap = argparse.ArgumentParser(); ap.add_argument("--name", required=True); ap.add_argument("--tower", default="hibou_l"); ap.add_argument("--ngene", type=int, default=200); a = ap.parse_args()
 A_ = ad.read_h5ad(f"{PREP}/{a.name}_bin16.h5ad"); px = float(A_.uns["px_per_um"]); xy = np.asarray(A_.obsm["pxl"], np.float64) / px
 Y_all = np.log1p(np.asarray(sparse.csr_matrix(A_.X).todense(), np.float32)); X = np.nan_to_num(np.load(f"{EMB}/emb_{a.tower}_{a.name}.npy").astype(np.float32))

@@ -1,19 +1,19 @@
 #!/bin/bash
 #SBATCH --job-name=stflow4
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --gres=gpu:l4:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=48:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 # CIGA 权重已下好(92MB, 有效 Lightning ckpt), 只是 STFlow 期望 weights/fm_v1/ciga/。
 # 本作业自带闸门: 冒烟产出嵌入才铺开全部队列, 否则立即停, 不烧 GPU。
 set -u
-V=/blue/qsong1/wang.qing/systema4ST/venv_np1
-M=/blue/qsong1/wang.qing/systema4ST/methods/STFlow
-B=/blue/qsong1/wang.qing/he2st/HEST/eval/bench_data
-OUT=/blue/qsong1/wang.qing/systema4ST/stflow_run
-export HF_HOME=/blue/qsong1/wang.qing/systema4ST/.hf
+V=/path/to/systema4ST/venv_np1
+M=/path/to/systema4ST/methods/STFlow
+B=/path/to/he2st/HEST/eval/bench_data
+OUT=/path/to/systema4ST/stflow_run
+export HF_HOME=/path/to/systema4ST/.hf
 source $V/bin/activate
 echo "节点 $(hostname)"
 

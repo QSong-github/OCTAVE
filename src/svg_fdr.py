@@ -91,5 +91,5 @@ for nm in ("Ridge_HEST", "imageKNN"):
     print(f"{nm:14s}{t:>9d}{p:>9d}{f:>9d}{f/max(p,1):>10.3f}{tp/max(t,1):>9.3f}"
           f"{np.mean([res[s][nm]['topK'] for s in SLIDES]):>11.3f}")
 print(f"\n⇒ 名义 FDR 控制在 {a_.fdr}, 真实假发现率见上。差距 = 用预测 ST 做 SVG 分析的代价。")
-json.dump(res, open("/blue/qsong1/wang.qing/systema4ST/results/svg_fdr.json", "w"),
+json.dump(res, open("/path/to/systema4ST/results/svg_fdr.json", "w"),
           indent=2, ensure_ascii=False)

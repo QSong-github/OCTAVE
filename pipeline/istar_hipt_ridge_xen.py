@@ -8,10 +8,10 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 Image.MAX_IMAGE_PIXELS = None
-sys.path.insert(0, "/blue/qsong1/wang.qing/systema4ST/src")
+sys.path.insert(0, "/path/to/systema4ST/src")
 from istar_matched import grid_ij, sample_stack, load_pkl
 from per_gene_xen import build_operator, per_gene_pcc
-RUN = "/blue/qsong1/wang.qing/systema4ST/istar_run"; OUTD = "/blue/qsong1/wang.qing/systema4ST/results/istar_xen_hipt"
+RUN = "/path/to/systema4ST/istar_run"; OUTD = "/path/to/systema4ST/results/istar_xen_hipt"
 ap = argparse.ArgumentParser(); ap.add_argument("--name", required=True); ap.add_argument("--win", type=int, default=1); ap.add_argument("--pca", type=int, default=256); a = ap.parse_args()
 d = f"{RUN}/xen_{a.name}_half/"
 scale = float(open(d + "pixel-size-raw.txt").read()) / float(open(d + "pixel-size.txt").read()); W_he, H_he = Image.open(d + "he.jpg").size

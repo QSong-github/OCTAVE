@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
 warnings.filterwarnings("ignore")
-SRC = "/blue/qsong1/wang.qing/systema4ST/src"
+SRC = "/path/to/systema4ST/src"
 sys.path.insert(0, SRC)
 from hest_effres import build_operator, calibrate_sigma, per_gene_pcc, B, EMB, LADDER
 

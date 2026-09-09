@@ -2,7 +2,7 @@
 """Google Path Foundation（TF SavedModel，CPU）在 Xenium 区域上抽嵌入，协议同 pathfound_embed.py：224×224 RGB /255，无均值方差归一化，
 signatures['serving_default'] → output_0；切块同 hd_embed/xen_embed_all：openslide level 0，中心 obsm['pxl']，边长 ctx_px（61.4 µm 视野），再缩放到 224。"""
 import os, sys, argparse, time, numpy as np, anndata as ad
-TOK = open("/blue/qsong1/wang.qing/.cache/huggingface/token").read().strip(); os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
+TOK = open("/path/to/.cache/huggingface/token").read().strip(); os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
 import tensorflow as tf
 from huggingface_hub import snapshot_download
 import openslide

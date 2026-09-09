@@ -17,8 +17,8 @@ obsm['spatial'] 的 coord.npy 并不是 (array_row, array_col) 本身。继续�
 import numpy as np, h5py, glob, os, anndata as ad
 from scipy.spatial import cKDTree
 
-SRC = "/blue/qsong1/wang.qing/spatial2exp/he2st_align/data/virtualST"
-H5AD = "/blue/qsong1/wang.qing/spatial2exp/he2st_align/data/binned_16um.h5ad"
+SRC = "/path/to/spatial2exp/he2st_align/data/virtualST"
+H5AD = "/path/to/spatial2exp/he2st_align/data/binned_16um.h5ad"
 SLIDES = ["Visium_HD_Human_Colon_Cancer_P2", "Visium_HD_Human_Colon_Cancer_P5"]
 
 px_per_um = {}

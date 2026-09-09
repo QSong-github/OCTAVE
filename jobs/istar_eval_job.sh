@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH --job-name=istar_eval
-#SBATCH --qos=qsong1
+#SBATCH --qos=YOUR_QOS
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --time=04:00:00
-#SBATCH --output=/blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 # 阶段 3/3: 在测试 bin 位置采样官方 iStar 的超分输出算 per-gene PCC(hest 环境, CPU)
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh
+source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1
 export TQDM_DISABLE=1              # 上一阶段日志被进度条刷到 371MB
 export PYTHONWARNINGS=ignore

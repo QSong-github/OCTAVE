@@ -4,7 +4,7 @@
 # 但三个必需文件（矩阵/坐标/scalefactors）已全部落盘 —— 故本轮只补图像，且不以 tar 退出码为准。
 set -u
 B=https://cf.10xgenomics.com/samples/spatial-exp/3.0.0
-ROOT=/blue/qsong1/wang.qing/systema4ST/data/visiumhd
+ROOT=/path/to/systema4ST/data/visiumhd
 NAMES=(Visium_HD_Human_Colon_Cancer_P1 Visium_HD_Human_Colon_Normal_P3 \
        Visium_HD_Human_Pancreas Visium_HD_Mouse_Brain Visium_HD_Mouse_Kidney \
        Visium_HD_Mouse_Embryo Visium_HD_Mouse_Small_Intestine \

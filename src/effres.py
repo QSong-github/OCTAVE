@@ -27,7 +27,7 @@ from align import build_aligner
 from baselines import ridge_predict, bleep
 import st_encoder_bench as SEB
 
-PARENT = "/blue/qsong1/wang.qing/spatial2exp/he2st_align"
+PARENT = "/path/to/spatial2exp/he2st_align"
 SEB.H5AD = os.path.join(PARENT, "data/binned_16um.h5ad")
 SEB.COLLAB = os.path.join(PARENT, "data/binned_16um_dino1024.h5ad")
 SEB.EMBDIR = os.path.join(PARENT, "results")

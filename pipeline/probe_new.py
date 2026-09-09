@@ -7,7 +7,7 @@ import torch, timm
 from PIL import Image
 import numpy as np
 dev = "cuda" if torch.cuda.is_available() else "cpu"
-TOK = open("/blue/qsong1/wang.qing/.cache/huggingface/token").read().strip()
+TOK = open("/path/to/.cache/huggingface/token").read().strip()
 os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
 img = Image.fromarray((np.random.rand(256, 256, 3) * 255).astype(np.uint8))
 OK = {}
@@ -74,7 +74,7 @@ def retccl():
 def hipt256():
     def f():
         url = "https://media.githubusercontent.com/media/mahmoodlab/HIPT/main/HIPT_4K/Checkpoints/vit256_small_dino.pth"
-        dst = "/blue/qsong1/wang.qing/systema4ST/methods/hipt_vit256_small_dino.pth"
+        dst = "/path/to/systema4ST/methods/hipt_vit256_small_dino.pth"
         if not os.path.exists(dst) or os.path.getsize(dst) < 1e6:
             os.makedirs(os.path.dirname(dst), exist_ok=True); urllib.request.urlretrieve(url, dst)
         sd = torch.load(dst, map_location="cpu")
@@ -106,5 +106,5 @@ report("clip_vitl14",   hf_clip("openai/clip-vit-large-patch14"))
 report("pathgen_clip",  hf_clip("jamessyx/pathgenclip-vit-large-patch14-hf"))
 report("siglip2",       hf_clip("google/siglip2-so400m-patch14-384", "siglip"))
 report("biomedclip",    openclip("microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224"))
-json.dump(OK, open("/blue/qsong1/wang.qing/systema4ST/results/probe_new_ok.json", "w"), indent=1)
+json.dump(OK, open("/path/to/systema4ST/results/probe_new_ok.json", "w"), indent=1)
 print("\n成功 %d/17 -> results/probe_new_ok.json" % len(OK))

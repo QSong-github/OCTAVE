@@ -31,7 +31,7 @@ import evaluate as E
 from baselines import ridge_predict
 from effres import build_operator, calibrate_sigma, PX_PER_UM, SLIDES, SEB
 
-RAW = "/blue/qsong1/wang.qing/spatial2exp/he2st_align/st_bench/data/{s}/adata_16um.h5ad"
+RAW = "/path/to/spatial2exp/he2st_align/st_bench/data/{s}/adata_16um.h5ad"
 ap = argparse.ArgumentParser()
 ap.add_argument("--tower", default="hibou_l");    ap.add_argument("--tmax", type=int, default=2048)
 ap.add_argument("--chunk", type=int, default=1200); ap.add_argument("--minfrac", type=float, default=0.005)
@@ -40,7 +40,7 @@ ap.add_argument("--panels", default="20,50,100,200,500,1000,2000,5000,10000,0")
 a_ = ap.parse_args()
 cps = [1]
 while cps[-1] < a_.tmax: cps.append(cps[-1]*2)
-RES = "/blue/qsong1/wang.qing/systema4ST/results"
+RES = "/path/to/systema4ST/results"
 
 def moran_moments(A):
     S0 = float(A.sum()); S1 = 0.5*float(((A + A.T).power(2)).sum())

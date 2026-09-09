@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J refig2
-#SBATCH --qos=qsong1 --partition=hpg-default -c 32 --mem=64G -t 2:00:00
-#SBATCH -o /blue/qsong1/wang.qing/systema4ST/logs/%x_%j.out
+#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 32 --mem=64G -t 2:00:00
+#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
-source /blue/qsong1/wang.qing/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /blue/qsong1/wang.qing/systema4ST
+source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
+cd /path/to/systema4ST
 export MPLBACKEND=Agg OMP_NUM_THREADS=32 OPENBLAS_NUM_THREADS=32 MKL_NUM_THREADS=32
 python -u fig1_iclr.py
 python -u make_figs_new.py M 6 3

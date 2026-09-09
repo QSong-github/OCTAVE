@@ -24,7 +24,7 @@ from scipy import sparse
 import evaluate as E
 from effres import build_operator, calibrate_sigma, PX_PER_UM
 
-PARENT = "/blue/qsong1/wang.qing/spatial2exp/he2st_align"
+PARENT = "/path/to/spatial2exp/he2st_align"
 BINNED = os.path.join(PARENT, "data/binned_16um.h5ad")
 RAW = os.path.join(PARENT, "st_bench/data/{slide}/adata_16um.h5ad")
 SLIDES = ["Visium_HD_Human_Colon_Cancer_P2", "Visium_HD_Human_Colon_Cancer_P5"]

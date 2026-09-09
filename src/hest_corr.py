@@ -17,7 +17,7 @@ from scipy.stats import pearsonr, spearmanr
 
 import sys
 ENC = sys.argv[1] if len(sys.argv) > 1 else "resnet50"
-R = "/blue/qsong1/wang.qing/systema4ST/results"
+R = "/path/to/systema4ST/results"
 L = json.load(open(f"{R}/hest_ladder.json"))
 P = json.load(open(f"{R}/hest_reported_pcc_{ENC}.json" if ENC != "resnet50"
                    else f"{R}/hest_reported_pcc.json"))
@@ -126,6 +126,6 @@ print(f"\n=== 等价 σ 分布 (n={np.isfinite(eqs).sum()}) ===")
 print(f"  中位={np.nanmedian(eqs):.0f}µm  四分位=[{np.nanpercentile(eqs,25):.0f},"
       f"{np.nanpercentile(eqs,75):.0f}]µm  范围=[{np.nanmin(eqs):.0f},{np.nanmax(eqs):.0f}]µm")
 print(f"  低于最粗档(σ>{max(sig_all.values()):.0f}µm)的样本: {int((~np.isfinite(eqs)).sum())}")
-json.dump(rows, open("/blue/qsong1/wang.qing/systema4ST/results/hest_corr.json", "w"),
+json.dump(rows, open("/path/to/systema4ST/results/hest_corr.json", "w"),
           indent=2, ensure_ascii=False, default=float)
 print("\n已存 results/hest_corr.json")

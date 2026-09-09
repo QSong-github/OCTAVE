@@ -22,13 +22,13 @@ from scipy import sparse
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 
-sys.path.insert(0, "/blue/qsong1/wang.qing/systema4ST/src")
+sys.path.insert(0, "/path/to/systema4ST/src")
 from per_gene_xen import (build_operator, calibrate_sigma, per_gene_pcc,
                           block_cv_predict, gene_names)
 
-PREP = "/blue/qsong1/wang.qing/systema4ST/data/prepped_xen"
-EMB = "/blue/qsong1/wang.qing/systema4ST/results/emb_xen"
-OUTD = "/blue/qsong1/wang.qing/systema4ST/results/blocks_xen"
+PREP = "/path/to/systema4ST/data/prepped_xen"
+EMB = "/path/to/systema4ST/results/emb_xen"
+OUTD = "/path/to/systema4ST/results/blocks_xen"
 
 
 def group_means(X, lab):

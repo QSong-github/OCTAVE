@@ -10,7 +10,7 @@ import re, json, time, sys, urllib.request, urllib.parse, difflib, xml.etree.Ele
 SRC, OUT = "paper/refs.bib", "paper/refs.bib"
 bib = open(SRC).read(); LOG = open("results/bib_scholarize.log", "w")
 def log(*a): print(*a, file=LOG, flush=True)
-UA = {"User-Agent": "octave-bib/1.0 (mailto:wangqingai2481@gmail.com)"}
+UA = {"User-Agent": "octave-bib/1.0 (mailto:your-address@example.org)"}
 def get(url, tries=4):
     for k in range(tries):
         try: return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40).read()
