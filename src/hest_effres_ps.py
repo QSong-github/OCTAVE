@@ -92,8 +92,10 @@ def main():
                     help="ridge=官方线性头；mlp=两层 MLP（256→512→50），其余管线完全相同")
     ap.add_argument("--seed", type=int, default=0, help="仅 mlp 用：初始化与早停验证集划分")
     ap.add_argument("--ridge_alpha", type=float, default=None, help="仅 ridge 用：L2 强度；缺省为官方公式 100/(D·G)")
+    ap.add_argument("--alpha_by_cohort", default=None, help="JSON with selected_alpha_by_cohort[c]; overrides --ridge_alpha per cohort")
     ap.add_argument("--mlp_alpha", type=float, default=1e-4, help="仅 mlp 用：L2 强度；1e-4 为首轮全量所用，10 为扫描所得最优")
     args = ap.parse_args()
+    ABC = json.load(open(args.alpha_by_cohort))["selected_alpha_by_cohort"] if args.alpha_by_cohort else None
     args.out = args.out or f"results/hest_effres_{args.encoder}.json"
 
     cps = [1]
@@ -162,7 +164,7 @@ def main():
                         return _m.predict(Z) * sd + mu
                 reg = _Wrap()
             else:
-                reg = Ridge(solver="lsqr", alpha=(args.ridge_alpha if args.ridge_alpha is not None else 100.0 / (Ztr.shape[1] * Ytr.shape[1])),
+                reg = Ridge(solver="lsqr", alpha=(float(ABC[c]) if ABC is not None else (args.ridge_alpha if args.ridge_alpha is not None else 100.0 / (Ztr.shape[1] * Ytr.shape[1]))),
                             random_state=0, fit_intercept=False, max_iter=1000).fit(Ztr, Ytr)
 
             for s in te:
@@ -210,7 +212,7 @@ def main():
                       f"σ(1)={sig[cps[0]]:.0f} σ({cps[-1]})={sig[cps[-1]]:.0f}µm", flush=True)
 
     if args.skip_sigma:
-        json.dump({"encoder": args.encoder, "target": args.target, "head": args.head, "seed": args.seed, "mlp_alpha": args.mlp_alpha, "ridge_alpha": args.ridge_alpha,
+        json.dump({"encoder": args.encoder, "target": args.target, "head": args.head, "seed": args.seed, "mlp_alpha": args.mlp_alpha, "ridge_alpha": args.ridge_alpha, "alpha_by_cohort": ABC,
                    "per_sample_pcc": own_pcc, "mean_pcc": float(np.mean(list(own_pcc.values())))},
                   open(args.out, "w"), indent=2, ensure_ascii=False)
         print(f"[{args.encoder}/{args.target}] {len(own_pcc)} 样本 PCC 均值 "

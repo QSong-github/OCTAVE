@@ -105,6 +105,12 @@ ax.set_xscale("log")
 ax.set_xlabel("band width $\\sigma$ (µm)", labelpad=1)
 ax.set_ylabel("shortfall of the domain oracle\nrelative to the trained model (%)", labelpad=2)
 ax.set_ylim(0, max(100, float(np.nanmax(gm)) * 1.15))
+# 最粗两个带不进入合并检验（附录 B 的带同质性准则）：用浅灰区间标出，避免“图里 12 带、检验 10 带”的疑问
+if len(SIG) >= 12:
+    x0 = float(np.sqrt(SIG[9] * SIG[10])); xr = float(ax.get_xlim()[1])
+    ax.axvspan(x0, xr, color="0.93", zorder=0.5, lw=0)
+    ax.text(float(np.sqrt(x0 * xr)), 52, "not in the\npooled test\n(Appendix B)", ha="center", va="center", fontsize=5.4, color=P["grey_d"], linespacing=1.35)  # 放在区间中部，避开曲线与右上角注释
+    ax.set_xlim(right=xr)
 ax.set_title("the shortfall depends on the scale\nat which it is measured",
              fontsize=7.4, pad=6)
 k = sum(1 for s in names if SPEC[s]["gap"][0] > SPEC[s]["scalar"])

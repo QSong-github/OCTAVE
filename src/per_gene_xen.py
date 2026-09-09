@@ -35,8 +35,8 @@ def gene_names(a):
     return np.asarray(a.var_names).astype(str)
 
 
-def build_operator(xy_um, k=8, cut_um=29.0):
-    """惰性随机游走 W = (I + D^-1 A)/2，邻域半径按 16 µm 栅格设定（同 effres.py）。"""
+def build_operator(xy_um, k=8, cut_um=29.0, lazy=0.5):
+    """惰性随机游走 W = lazy·I + (1-lazy)·D^-1 A（默认 1/2），邻域半径按 16 µm 栅格设定（同 effres.py）。"""
     n = len(xy_um)
     d, idx = cKDTree(xy_um).query(xy_um, k=k + 1)
     d, idx = d[:, 1:], idx[:, 1:]
@@ -48,7 +48,7 @@ def build_operator(xy_um, k=8, cut_um=29.0):
     deg = np.asarray(A.sum(1)).ravel()
     deg[deg == 0] = 1.0
     P = sparse.diags(1.0 / deg) @ A
-    return (sparse.identity(n, format="csr", dtype=np.float32) + P).astype(np.float32) * 0.5
+    return (lazy * sparse.identity(n, format="csr", dtype=np.float32) + (1.0 - lazy) * P).astype(np.float32)
 
 
 def calibrate_sigma(W, xy_um, cps, n_seed=128, seed=0):

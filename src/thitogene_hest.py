@@ -82,7 +82,12 @@ def main():
                          "每任务写自己的 --out，避免并发写同一文件互相覆盖")
     ap.add_argument("--cohorts", default="SKCM,HCC,LUNG,PAAD,COAD,READ,IDC,LYMPH_IDC,PRAD,CCRCC")
     ap.add_argument("--out", default="results/thitogene_hest.json")
+    ap.add_argument("--seed", type=int, default=-1, help="≥0 时固定 random/numpy/torch 种子；-1 为原始未播种运行")
     a_ = ap.parse_args()
+    if a_.seed >= 0:
+        import random as _r; _r.seed(a_.seed); np.random.seed(a_.seed)
+        torch.manual_seed(a_.seed); torch.cuda.manual_seed_all(a_.seed)
+        print(f'seed={a_.seed}', flush=True)
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     rng = np.random.default_rng(0)
     print(f"device={dev}", flush=True)

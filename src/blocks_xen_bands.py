@@ -45,6 +45,10 @@ def main():
     ap.add_argument("--tower", default="hibou_l")
     ap.add_argument("--ngene", type=int, default=200)
     ap.add_argument("--tmax", type=int, default=2048)
+    ap.add_argument("--knn", type=int, default=8)
+    ap.add_argument("--cut_um", type=float, default=29.0)
+    ap.add_argument("--lazy", type=float, default=0.5)
+    ap.add_argument("--tag", default="")
     a = ap.parse_args()
     cps = [1]
     while cps[-1] < a.tmax:
@@ -60,7 +64,7 @@ def main():
     Y = Y_all[:, gidx]
     print(f"[{a.name}] n={len(xy)} bin, {len(gidx)} 基因", flush=True)
 
-    W = build_operator(xy)
+    W = build_operator(xy, k=a.knn, cut_um=a.cut_um, lazy=a.lazy)
     sig = calibrate_sigma(W, xy, cps)
     print(f"  σ: {sig[cps[0]]:.1f} → {sig[cps[-1]]:.0f} µm", flush=True)
 
@@ -127,7 +131,12 @@ def main():
                  for cp in cps}
         bvar = {str(cp): float(np.mean(AB[cp][ok].var(0) / (Mf[ok].var(0) + 1e-12)))
                 for cp in cps}
+        # 审稿意见：最细带上低方差基因的处理——按基因过滤 / 按测量带方差加权 两种口径
+        pg = per_gene_pcc(BM[ok], BT[ok]); tv = BT[ok].var(0); share = tv / (Y[ok].var(0) + 1e-12)
+        q25 = share >= np.percentile(share, 25); thr = share >= 0.05
         R[nm] = {"pcc": p, "sigma_um": e, "sigma_flag": fl, "band_pcc": b,
+                 "band_pcc_q25": float(np.nanmean(pg[q25])), "band_pcc_thr5": float(np.nanmean(pg[thr])) if thr.any() else None,
+                 "band_pcc_wvar": float(np.nansum(pg * tv) / np.sum(tv)), "n_genes_thr5": int(thr.sum()),
                  "fine_var_share": vs, "bands": bands, "band_var": bvar}
         print(f"  {nm:<8s} PCC {p:.4f}  σ {('%.1f' % e) if e else 'n/a'}{fl[:1]}  "
               f"带 PCC {b:.4f}  细带方差占比 {vs:.4f}", flush=True)
@@ -152,9 +161,11 @@ def main():
         print(f"  → {nm}: 整体相对差距 {100*g['overall']:.1f}%  "
               f"细带相对差距 {100*g['fineband']:.1f}%  "
               f"(比 {g['fineband']/g['overall']:.2f}×)" if g["overall"] else "", flush=True)
-    os.makedirs(OUTD, exist_ok=True)
-    json.dump(out, open(f"{OUTD}/{a.name}.json", "w"), indent=1)
-    print(f"→ {OUTD}/{a.name}.json", flush=True)
+    od = OUTD + ("_" + a.tag if a.tag else "")
+    out["operator"] = {"knn": a.knn, "cut_um": a.cut_um, "lazy": a.lazy}
+    os.makedirs(od, exist_ok=True)
+    json.dump(out, open(f"{od}/{a.name}.json", "w"), indent=1)
+    print(f"→ {od}/{a.name}.json", flush=True)
 
 
 if __name__ == "__main__":

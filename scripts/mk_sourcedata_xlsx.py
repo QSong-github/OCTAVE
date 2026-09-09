@@ -409,6 +409,97 @@ for k, v in SD.items():
     sheet(k, cols, rows, PANEL.get(k, ""), v["source"], v.get("note", ""))
 
 # ═══ 索引页放最前
+
+# ── 2026-09-05 审稿意见驱动的新结果 ──
+def _load_dir(d): return {json.load(open(f))["name"]: json.load(open(f)) for f in sorted(glob.glob(os.path.join(R, d, "*.json")))}
+_rows = []
+for _tag in ["base", "k4", "k12", "lazy75"]:
+    for _n, _x in _load_dir(f"blocks_xen_bands_{_tag}").items():
+        _op = _x.get("operator", {}); _r, _o = _x["pred"]["ridge"], _x["pred"]["dom20"]
+        _rows.append([_tag, _op.get("knn"), _op.get("cut_um"), _op.get("lazy"), _n, _x["sigma_um"]["1"], _r["pcc"], _o["pcc"], _r["band_pcc"], _o["band_pcc"], _x["rel_gap"]["dom20"]["overall"], _x["rel_gap"]["dom20"]["fineband"],
+                      _r["band_pcc_q25"], _o["band_pcc_q25"], _r["band_pcc_wvar"], _o["band_pcc_wvar"], _r["band_pcc_thr5"], _o["band_pcc_thr5"], _r["n_genes_thr5"]])
+sheet("Operator_sensitivity", ["setting", "knn", "cut_um", "lazy", "region", "sigma1_um", "pcc_ridge", "pcc_oracle", "beta1_ridge", "beta1_oracle", "delta_scalar", "delta_fine",
+                               "beta1_ridge_q25", "beta1_oracle_q25", "beta1_ridge_wvar", "beta1_oracle_wvar", "beta1_ridge_thr5", "beta1_oracle_thr5", "n_genes_thr5"],
+      _rows, "Appendix F, Table operator", "results/blocks_xen_bands_{base,k4,k12,lazy75}/*.json", "src/blocks_xen_bands.py --knn/--cut_um/--lazy; base reproduces blocks_xen_bands")
+_rows = []
+for _n, _c in _load_dir("xen_band_ceiling").items():
+    for _cp in _c["cps"]:
+        _rows.append([_n, _c["n_bins"], _c["n_genes"], _c["reps"], _cp, _c["c_half"][str(_cp)], _c["c_full"][str(_cp)], float(np.sqrt(max(_c["c_full"][str(_cp)], 0)))])
+    _rows.append([_n, _c["n_bins"], _c["n_genes"], _c["reps"], "scalar", _c["scalar_c_half"], _c["scalar_c_full"], float(np.sqrt(max(_c["scalar_c_full"], 0)))])
+sheet("Band_reliability", ["region", "n_bins", "n_genes", "reps", "t", "c_half", "c_full (Spearman-Brown)", "sqrt(c_full) ceiling"], _rows, "Appendix I.4, Table reliab", "results/xen_band_ceiling/*.json", "xen_band_ceiling.py: binomial split-half of counts, same operator and bands")
+_rows = []
+for _f in sorted(glob.glob(os.path.join(R, "hest_controls_*.json"))):
+    if "summary" in _f: continue
+    _e = os.path.basename(_f)[len("hest_controls_"):-5]; _C = json.load(open(_f))["samples"]; _B = J(f"hest_blocks_{_e}.json")["samples"]; _P = J(f"hest_effres_ps_{_e}.json")["per_sample_pcc"]; _S = J(f"hest_rsel_ps_{_e}.json")["per_sample_pcc"]
+    for _s, _v in _C.items():
+        _rows.append([_e, _s, _v["cohort"], _v["n"], _P.get(_s), _S.get(_s), _B[_s]["blk_k20"], _v["oracle_image"], _v["oracle_coord"], _v["oracle_random"], _v["trainonly_image"], _v.get("n_train_samples"), _v.get("clusters_unseen_in_train")])
+sheet("Controls_HEST", ["encoder", "sample", "cohort", "n_spots", "pcc_ridge_official", "pcc_ridge_cohort_selected", "oracle_image_published (blk_k20)", "oracle_image_recomputed", "oracle_coordinate", "oracle_random_matched", "trainonly_image", "n_train_samples", "clusters_unseen_in_train"],
+      _rows, "Appendix I.5, Table controls_hest", "results/hest_controls_*.json, hest_blocks_*.json, hest_effres_ps_*.json", "hest_controls.py; published oracle used in the paper")
+_rows = []; _drows = []
+for _n, _d in _load_dir("xen_controls").items():
+    for _K in ("K20", "K200"):
+        _k = _d[_K]; _rows.append([_n, _d["n"], _K[1:], _d["ridge"]["pcc"], _k["oracle_image"]["pcc"], _k["oracle_coord"]["pcc"], _k["oracle_random_matched"]["pcc"], _k["trainonly_image"]["pcc"], _k["trainonly_coord"]["pcc"]])
+    for _nm, _v in _d["degradations"].items():
+        _drows.append([_n, _nm, _v["strength"], _v["pcc"], _v["flag"], _d["ridge"]["pcc"], _v["bands"]["1"], _d["K20"]["oracle_image"]["bands"]["1"]] + [_v["bands"][str(c)] for c in (2, 4, 8, 16, 32)])
+sheet("Controls_Xenium", ["region", "n_bins", "K", "pcc_ridge", "oracle_image", "oracle_coordinate", "oracle_random_matched", "trainonly_image", "trainonly_coordinate"], _rows, "Appendix I.5, Table controls_xen", "results/xen_controls/*.json", "xen_controls.py; same 16x16 block CV as the ridge")
+sheet("Degradations", ["region", "degradation", "strength", "pcc_after", "match_flag", "pcc_ridge_target", "beta1", "beta1_oracle_K20", "beta_t2", "beta_t4", "beta_t8", "beta_t16", "beta_t32"], _drows, "Appendix I.5, Table degrade", "results/xen_controls/*.json", "strength bisected to the ridge's scalar PCC (tol 0.004); hotspot removal hi-limited")
+_rows = []
+_orig = J("thitogene_hest.json")
+for _run, _m in [("original", _orig)] + [(f"seed{sd}", {k: v for f in glob.glob(os.path.join(R, "thito_seeds", f"thitogene_*_s{sd}.json")) for k, v in json.load(open(f)).items()}) for sd in (1, 2)]:
+    for _s, _v in _m.items(): _rows.append([_run, _s, _v["cohort"], _v["pcc"]])
+sheet("THItoGene_runs", ["run", "sample", "cohort", "pcc"], _rows, "Appendix G", "results/thitogene_hest.json, results/thito_seeds/*.json", "original = unseeded first run (Table 7); seed1/seed2 via --seed")
+if os.path.exists(os.path.join(R, "hest_octave_delta.json")):
+    _o = J("hest_octave_delta.json")
+    sheet("HEST_octave_delta", ["encoder", "n_cohorts", "delta_scalar", "delta_fine", "cohorts_oracle_above_scalar", "cohorts_oracle_above_fine", "cohorts_fine_gap_larger", "beta1_ridge", "beta1_oracle", "pcc_ridge", "pcc_oracle", "sigma1_um", "pitch_um"],
+          [[d["enc"], d["n_coh"], d["ds"], d["df"], d["oracle_above_scalar"], d["oracle_above_fine"], d["fine_gap_larger"], d["b1r"], d["b1o"], d["pr"], d["po"], d["sig1"], d["pitch"]] for d in _o],
+          "Appendix (benchmark-scale OCTAVE)", "results/hest_octave_delta.json", "scripts/hest_octave_delta.py; ridge official alpha (hest_effres_ps[_full]), oracle bands (hest_oracle_bands.py)")
+if os.path.exists(os.path.join(R, "xen_multi_rank.json")):
+    _m = J("xen_multi_rank.json"); _rows = []
+    for _e, _v in _m["encoders"].items(): _rows.append([_e, _v["pcc"], _v["oracle_pcc"], _v["ratio"], _v["gap_ratio"], _v["sigma"]] + [_v["bands"][c] for c in sorted(_v["bands"], key=int)])
+    _cps = sorted(next(iter(_m["encoders"].values()))["bands"], key=int)
+    sheet("Xenium_multi_encoder", ["encoder", "pcc_ridge", "pcc_oracle_K20", "oracle_over_ridge", "fine_over_scalar_gap", "sigma1_um"] + [f"beta_t{c}" for c in _cps], _rows, "Appendix (multi-encoder OCTAVE)", "results/xen_multi_rank.json", "scripts/xen_multi_rank.py; specimen medians")
+
+
+# ── 第四份审稿意见的补充分析 ──
+_rows = []
+for _n, _d in _load_dir("xen_attrib").items():
+    _m, _c, _t, _g, _o = _d["model_decomp"], _d["crossfit"], _d["trainonly"], _d["contiguity"], _d["operators"]
+    _rows.append([_n, _d["n"], _d["n_ok"], _m["pcc_model"], _m["pcc_model_between_only"], _m["pcc_between_vs_between"], _m["pcc_within_vs_within"], _m["pcc_oracle"], _m["beta1_model"], _m["beta1_model_between_only"], _m["beta1_within_vs_within"], _m["beta1_oracle"], _m["var_share_within_model"], _m["var_share_within_truth"],
+                  _c["pcc_ridge"], _c["pcc_oracle_cf"], _c["pcc_oracle_same"], _c["beta1_ridge"], _c["beta1_oracle_cf"], _c["beta1_oracle_same"], _c["ratio_cf"], _c["ratio_same"], _t["pcc"], _t["beta1"], _t["ratio"],
+                  _g["image_partition"]["neighbour_agreement"], _g["image_partition"]["components_per_cluster_median"], _g["image_partition"]["largest_component_share_median"], _g["coordinate_partition"]["neighbour_agreement"], _g["random_partition"]["neighbour_agreement"],
+                  _o["lazy_rw_default"]["ratio"], _o["symmetric_normalised"]["ratio"], _o["gaussian_16um"]["ratio"]])
+if _rows:
+    sheet("Attribution_Xenium", ["region", "n_bins", "n_ok", "pcc_model", "pcc_model_between_only", "pcc_between_vs_between", "pcc_within_vs_within", "pcc_oracle", "beta1_model", "beta1_model_between", "beta1_within_vs_within", "beta1_oracle", "var_share_within_model", "var_share_within_truth",
+                                 "cf_pcc_ridge_halfB", "cf_pcc_oracle_crossfit", "cf_pcc_oracle_samehalf", "cf_beta1_ridge", "cf_beta1_oracle_crossfit", "cf_beta1_oracle_samehalf", "ratio_crossfit", "ratio_samehalf", "trainonly_pcc", "trainonly_beta1", "trainonly_ratio",
+                                 "img_neighbour_agreement", "img_components_per_cluster_median", "img_largest_component_share", "coord_neighbour_agreement", "random_neighbour_agreement", "ratio_lazy_default", "ratio_symmetric", "ratio_gaussian16"],
+          _rows, "Appendix I.5 (attribution), Table attrib", "results/xen_attrib/*.json", "xen_attrib.py: model-side decomposition, cross-fitted oracle, train-only bands, contiguity, alternative operators")
+_rows = []
+for _f in sorted(glob.glob(os.path.join(R, "multi_ds", "*.json"))):
+    _d = json.load(open(_f)); _r = _d["readouts"]
+    _rows.append([_d["tower"], _d["name"], _d["n_ok"], _d["scores"]["pcc"], _d["scores"]["beta1"]] + [_r.get(k) for k in ["svg_top_jaccard", "svg_rank_rho", "hotspot_jaccard", "boundary_shift_um", "coloc_preserve", "hotspot_recall_selectivity"]])
+if _rows:
+    sheet("Downstream_11_encoders", ["encoder", "region", "n_ok", "pcc", "beta1", "svg_top_jaccard", "svg_rank_rho", "hotspot_jaccard", "boundary_shift_um", "coloc_preserve", "hotspot_recall_selectivity"], _rows, "Appendix (downstream utility)", "results/multi_ds/*.json", "multi_downstream.py; readouts from oracle_downstream.readouts")
+
+
+_rows = [[_d["name"], _d["n"], _d["n_ok"], _d["pcc"], _d["between_term"], _d["within_term"], _d["between_share"], _d["within_share"], _d["check_max_abs_err"], _d["isolated_nodes"], _d["min_degree"]] for _n, _d in _load_dir("xen_addsplit").items()]
+if _rows:
+    sheet("Additive_PCC_split", ["region", "n_bins", "n_ok", "pcc", "between_term", "within_term", "between_share", "within_share", "max_abs_err", "isolated_nodes_29um", "min_degree"], _rows, "Appendix I.5 (additive split), Appendix B (isolated nodes)", "results/xen_addsplit/*.json", "xen_addsplit.py: common-denominator split of per-gene PCC; isolated bins in the 8-NN/29 um graph")
+
+_rows = []
+for _f in sorted(glob.glob("results/istar_xen/*.json")):
+    _d = json.load(open(_f)); _h = json.load(open(_f.replace("istar_xen/", "istar_xen_hipt/"))) if os.path.exists(_f.replace("istar_xen/", "istar_xen_hipt/")) else None
+    _rows.append([_d["name"], _d.get("n_test"), _d["istar"]["pcc"], _d["istar"]["beta1"], _d["istar"].get("fine_var_share"),
+                  _h["ridge_hipt_official"]["pcc"] if _h else None, _h["ridge_hipt_official"]["beta1"] if _h else None, _h["ridge_hipt_1e4"]["pcc"] if _h else None, _h["ridge_hipt_1e4"]["beta1"] if _h else None,
+                  _d["ridge"]["pcc"], _d["ridge"]["beta1"], _d["ridge"].get("fine_var_share"), _d["context_ridge"]["pcc"], _d["context_ridge"]["beta1"], _d["trainonly"]["pcc"], _d["trainonly"]["beta1"], _d["oracle"]["pcc"], _d["oracle"]["beta1"], _d.get("truth_fine_share")])
+if _rows:
+    sheet("iStar_Xenium", ["region", "n_test_bins", "istar_pcc", "istar_beta1", "istar_fine_share", "ridge_hipt_pcc", "ridge_hipt_beta1", "ridge_hipt_1e4_pcc", "ridge_hipt_1e4_beta1", "ridge_pcc", "ridge_beta1", "ridge_fine_share", "context_ridge_pcc", "context_ridge_beta1", "trainonly_pcc", "trainonly_beta1", "oracle_pcc", "oracle_beta1", "truth_fine_share"], _rows, "Appendix table tab:istar", "results/istar_xen/*.json, results/istar_xen_hipt/*.json", "istar_eval_xen.py, istar_hipt_ridge_xen.py; half split, 200 genes, same bins and operator")
+
+if os.path.exists("results/beta1_rank_boot.json"):
+    _b = json.load(open("results/beta1_rank_boot.json"))
+    sheet("Beta1_rank_bootstrap", ["n_encoders", "n_pairs", "n_reversed_pairs", "reversals_stable_95pct", "reversals_stable_80pct", "median_pair_stability", "spearman_boot_vs_full_median", "spearman_lo", "spearman_hi", "beta1_ci_width_median", "beta1_ci_width_max", "keep_minus_dinov3h_point", "keep_minus_dinov3h_lo", "keep_minus_dinov3h_hi", "top1_stable_frac", "B"],
+          [[_b["n_enc"], _b["n_pairs"], _b["n_rev"], _b["rev_stable95"], _b["rev_stable80"], _b["rev_stable_median"], _b["spearman_boot_vs_full"]["med"], _b["spearman_boot_vs_full"]["lo"], _b["spearman_boot_vs_full"]["hi"], _b["b1_ci_width"]["med"], _b["b1_ci_width"]["max"], _b["keep_minus_dinov3h"]["point"], _b["keep_minus_dinov3h"]["lo"], _b["keep_minus_dinov3h"]["hi"], _b["top1_stable"], _b["B"]]],
+          "Appendix J.6 (bootstrap sentence)", "results/beta1_rank_boot.json", "scripts/beta1_rank_boot.py; specimen-level bootstrap of the 57-encoder finest-band ranking")
+
 ws = wb.create_sheet("README", 0)
 ws.append(["Source data for all figures and tables"])
 ws["A1"].font = Font(bold=True, size=13)

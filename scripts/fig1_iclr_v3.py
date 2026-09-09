@@ -120,6 +120,15 @@ def fold(TAG):
     level = (mn, mg) if ok else None
     pool = ok if ok else cand
     best = max(pool, key=lambda c: c["band_r"] - c["band_d"])
+    valid = [c for c in cand if c["ndom"] >= 3]
+    rng_ = np.random.default_rng(int(os.environ.get("FIG1_SEED", "0")) + (0 if TAG == "P2" else 1))
+    largest = best
+    mode = os.environ.get("FIG1_MODE", "random")
+    if mode == "median":   # 典型窗：最细带差最接近全部候选中位数的合格窗
+        gaps_all = np.array([c["band_r"] - c["band_d"] for c in cand]); med_gap = float(np.median(gaps_all))
+        best = min(valid, key=lambda c: abs((c["band_r"] - c["band_d"]) - med_gap))
+    else:
+        best = valid[int(rng_.integers(len(valid)))]   # v3：随机窗为示例；largest 只用于分布面板的标注
     if TAG in ov:
         x_, y_ = map(float, ov[TAG].split(","))
         best = min(cand, key=lambda c: (c["x0"] - x_) ** 2 + (c["y0"] - y_) ** 2); level = ("manual", 0)
@@ -139,7 +148,7 @@ def fold(TAG):
 
     def grid(v):
         H = np.full((iy.max() + 1, ix.max() + 1), np.nan, np.float32); H[iy, ix] = v; return H
-    return dict(TAG=TAG, FJ=FJ, pcc=pcc, sg=sg, bpcc=bpcc, bpow=bpow, pc1=pc1_share, best=best, ncand=len(cand), nok=len(ok), level=level,
+    return dict(TAG=TAG, FJ=FJ, pcc=pcc, sg=sg, bpcc=bpcc, bpow=bpow, pc1=pc1_share, best=best, largest=largest, cand=cand, ncand=len(cand), nok=len(ok), level=level,
                 maps=[grid(FT[s_]), grid(FD[s_]), grid(FP[s_])], bands=[grid(GT[s_]), grid(GD[s_]), grid(GP[s_])],
                 crop=crop, sb=200.0 / (DOWN / PX_PER_UM[SLIDE]))
 
@@ -147,12 +156,10 @@ def fold(TAG):
 D = [fold("P2"), fold("P5")]
 
 # ───────── 画图：左 4×4 网格，右 b/c ─────────
-fig = plt.figure(figsize=(183 * MM, 118 * MM))
-# 紧凑版式：patch 行距 0.30→0.08、列距 0.06→0.03，上下边距收窄；左块宽度按 patch 边长收窄，使方形 patch 之间几乎无空白（patch 约放大 1.2 倍）
-gs = fig.add_gridspec(1, 2, width_ratios=[1.0, 0.50], wspace=0.16, left=0.055, right=0.985, top=0.885, bottom=0.04)
-gl = gs[0].subgridspec(4, 4, hspace=0.16, wspace=0.03)
-# 右栏单独设底边距，避免 c 面板两行刻度标签被裁；水平范围与外层网格的右栏一致（0.698–0.985）
-gr = fig.add_gridspec(2, 1, left=0.698, right=0.985, top=0.885, bottom=0.075, hspace=0.60)
+fig = plt.figure(figsize=(183 * MM, 124 * MM))
+gs = fig.add_gridspec(1, 2, width_ratios=[1.12, 0.36], wspace=0.10, left=0.05, right=0.985, top=0.905, bottom=0.075)
+gl = gs[0].subgridspec(4, 4, hspace=0.17, wspace=0.03)
+gr = gs[1].subgridspec(3, 1, hspace=0.80)
 
 
 def bare(ax):
@@ -161,7 +168,7 @@ def bare(ax):
 
 
 cols = ["H&E", "measured", "domains only", "trained model"]
-subs = ["", "PC1 projection", "truth averaged in\n20 image domains", "ridge on\nfrozen features"]
+subs = ["", "PC1 projection", "truth averaged in 20 image domains", "ridge on frozen features"]
 for ci, d in enumerate(D):
     r0 = 2 * ci
     vmin, vmax = np.nanpercentile(np.concatenate([m_[~np.isnan(m_)] for m_ in d["maps"]]), [2, 98])
@@ -176,10 +183,10 @@ for ci, d in enumerate(D):
     for j, (M, sc, col) in enumerate([(d["maps"][0], None, P["grey_d"]), (d["maps"][1], d["best"]["map_d"], P["red"]), (d["maps"][2], d["best"]["map_r"], P["blue"])]):
         ax = fig.add_subplot(gl[r0, j + 1]); ax.imshow(M, cmap="magma", vmin=vmin, vmax=vmax, interpolation="nearest", aspect="equal"); bare(ax)
         if ci == 0:
-            ax.set_title(cols[j + 1], fontsize=7.6, pad=4)
-            pass  # 列副标题（PC1 projection / truth averaged… / ridge on…）移入图注，图内不再画灰字
+            ax.set_title(cols[j + 1], fontsize=7.6, pad=9)
+            ax.text(0.5, 1.02, subs[j + 1], transform=ax.transAxes, ha="center", va="bottom", fontsize=5.0, color=P["grey_m"])
         if sc is not None:
-            ax.text(0.5, -0.03, "map PCC %.3f" % sc, transform=ax.transAxes, ha="center", va="top", fontsize=6.4, fontweight="bold", color=col)
+            ax.text(0.5, -0.02, "map PCC %.3f" % sc, transform=ax.transAxes, ha="center", va="top", fontsize=6.2, fontweight="bold", color=col)
     # 行 2：最细带
     ax = fig.add_subplot(gl[r0 + 1, 0]); ax.axis("off")
     ax.text(0.5, 0.62, "finest band\n$B_1 = F - WF$", transform=ax.transAxes, ha="center", va="center", fontsize=6.4, color=P["grey_d"], linespacing=1.5)
@@ -187,7 +194,7 @@ for ci, d in enumerate(D):
     ax.text(-0.16, 0.5, f"section {ci+1}\nfinest band", transform=ax.transAxes, rotation=90, ha="center", va="center", fontsize=6.6, color=P["grey_d"], fontweight="bold")
     for j, (M, bp, col) in enumerate([(d["bands"][0], None, P["grey_d"]), (d["bands"][1], d["best"]["band_d"], P["red"]), (d["bands"][2], d["best"]["band_r"], P["blue"])]):
         ax = fig.add_subplot(gl[r0 + 1, j + 1]); ax.imshow(M, cmap="RdBu_r", vmin=-gv, vmax=gv, interpolation="nearest", aspect="equal"); bare(ax)
-        ax.text(0.5, -0.03, "reference" if bp is None else "band PCC %.3f" % bp, transform=ax.transAxes, ha="center", va="top", fontsize=6.4, fontweight="bold", color=col)
+        ax.text(0.5, -0.02, "reference" if bp is None else "band PCC %.3f" % bp, transform=ax.transAxes, ha="center", va="top", fontsize=6.2, fontweight="bold", color=col)
 fig.text(0.012, 0.935, "a", fontsize=9, fontweight="bold", va="top", ha="left")
 
 # b：两折的标定曲线
@@ -203,7 +210,7 @@ ax.set_xscale("log"); ax.set_xlabel("effective resolution $\\sigma$ (µm)", labe
 ax.set_title("$\\sigma$ is a monotone function\nof PCC within a fold", fontsize=6.8, pad=4)
 ax.legend(fontsize=5.6, loc="upper right", handlelength=1.6)
 ax.text(0.03, 0.06, "blue: trained model\nred: domains only", transform=ax.transAxes, ha="left", va="bottom", fontsize=5.4, color=P["grey_d"])
-fig.text(0.700, 0.935, "b", fontsize=9, fontweight="bold", va="top", ha="left")
+fig.text(0.745, 0.935, "b", fontsize=9, fontweight="bold", va="top", ha="left")
 
 # c：最细带方差占比，两折分组
 ax = fig.add_subplot(gr[1])
@@ -220,12 +227,31 @@ ax.set_ylabel("variance in the finest band (%)", labelpad=2)
 ymax = max(100 * d["bpow"]["truth"] for d in D); ax.set_ylim(0, ymax * 1.30)
 rat = [d["bpow"]["truth"] / max(d["bpow"]["ridge"], d["bpow"]["dom20"]) for d in D] + [d["bpow"]["truth"] / min(d["bpow"]["ridge"], d["bpow"]["dom20"]) for d in D]
 ax.set_title("both predictions are %.0f–%.0f$\\times$ too smooth\n(solid: section 1, faded: section 2)" % (min(rat), max(rat)), fontsize=6.8, pad=4)
-fig.text(0.700, 0.47, "c", fontsize=9, fontweight="bold", va="top", ha="left")
+fig.text(0.745, 0.63, "c", fontsize=9, fontweight="bold", va="top", ha="left")
+
+# d：全部候选窗的最细带差分布（model − domains），标出示例窗
+ax = fig.add_subplot(gr[2])
+for d, col, lab in zip(D, (P["grey_d"], P["grey_m"]), ("section 1", "section 2")):
+    gaps = np.array([c["band_r"] - c["band_d"] for c in d["cand"]]); sg_ = np.array([c["map_r"] - c["map_d"] for c in d["cand"]])
+    ax.hist(gaps, bins=30, histtype="step", color=col, lw=1.0, label=f"{lab}: {len(gaps)} windows")
+    ax.axvline(d["best"]["band_r"] - d["best"]["band_d"], color=col, lw=1.4, ls="-")
+    if os.environ.get("FIG1_MODE", "random") != "median": ax.axvline(np.median(gaps), color=col, lw=0.8, ls=":")
+ax.axvline(0, color="black", lw=0.6)
+ax.set_xlabel("finest-band PCC gap, model $-$ domains", labelpad=1); ax.set_ylabel("windows", labelpad=2)
+ax.set_title("over all $900\\,\\mu$m windows\n" + ("(line: shown window, at the median)" if os.environ.get("FIG1_MODE", "random") == "median" else "(solid: shown window, dotted: median)"), fontsize=6.8, pad=4)
+ax.set_ylim(0, ax.get_ylim()[1] * 1.32)
+ax.legend(fontsize=5.0, loc="upper center", handlelength=1.2, borderaxespad=0.2, ncol=1)
+fig.text(0.745, 0.32, "d", fontsize=9, fontweight="bold", va="top", ha="left")
 
 fig.suptitle("What the score captures is the large-scale pattern, not the fine structure", fontsize=9.2, y=0.985, fontweight="bold")
 os.makedirs(OUT, exist_ok=True)
-fig.savefig(os.path.join(OUT, "Fig1_iclr_v2.pdf"))
-print("-> figures/Fig1_iclr_v2.pdf", flush=True)
-json.dump({d["TAG"]: dict(best=d["best"], pcc=d["pcc"], sg=d["sg"], bpcc=d["bpcc"], bpow=d["bpow"], pc1=d["pc1"], ncand=d["ncand"], nok=d["nok"], level=d["level"]) for d in D},
-          open(os.path.join(ROOT, "results/fig1_v2_numbers.json"), "w"), indent=1)
-print("-> results/fig1_v2_numbers.json", flush=True)
+TAG_ = os.environ.get("FIG1_TAG", "")
+fig.savefig(os.path.join(OUT, f"Fig1_iclr_v3{TAG_}.pdf"))
+print(f"-> figures/Fig1_iclr_v3{TAG_}.pdf", flush=True)
+def _dist(d):
+    g = np.array([c["band_r"] - c["band_d"] for c in d["cand"]]); m_ = np.array([c["map_r"] - c["map_d"] for c in d["cand"]])
+    return dict(n=int(len(g)), gap_median=float(np.median(g)), gap_q25=float(np.percentile(g, 25)), gap_q75=float(np.percentile(g, 75)), gap_min=float(g.min()), gap_max=float(g.max()), frac_positive=float((g > 0).mean()),
+                map_gap_median=float(np.median(m_)), shown_gap=float(d["best"]["band_r"] - d["best"]["band_d"]), shown_pct=float((g < d["best"]["band_r"] - d["best"]["band_d"]).mean()), largest_gap=float(d["largest"]["band_r"] - d["largest"]["band_d"]))
+json.dump({d["TAG"]: dict(shown=d["best"], largest=d["largest"], dist=_dist(d), pcc=d["pcc"], sg=d["sg"], bpcc=d["bpcc"], bpow=d["bpow"], pc1=d["pc1"], ncand=d["ncand"], seed=int(os.environ.get("FIG1_SEED", "0"))) for d in D},
+          open(os.path.join(ROOT, f"results/fig1_v3{TAG_}_numbers.json"), "w"), indent=1)
+print(f"-> results/fig1_v3{TAG_}_numbers.json", flush=True)

@@ -62,6 +62,31 @@ python pipeline/band_homog.py                    # band homogeneity across sampl
 python pipeline/make_figs_new.py 3               # figures (run with 32 threads; a reproducibility guard aborts on drift)
 ```
 
+**Controls, attribution and comparisons.** Each of these keeps the protocol of the corresponding
+main run and changes one ingredient; the aggregators write the tables and the appendix text.
+
+```bash
+# partition controls: coordinate, random matched-size, means learned from training data
+python pipeline/hest_controls.py --encoder <enc>            # benchmark
+python pipeline/xen_controls.py --name <region>             # Xenium
+# inductive partition: PCA and K-means fitted on training data only, test spots assigned to centres
+python pipeline/hest_inductive.py --encoder <enc>
+python pipeline/xen_inductive.py --name <region>            # also fits ridge with spatial context
+# split the model's own prediction into between- and within-cluster parts (no test label)
+python pipeline/xen_attrib.py --name <region>
+python pipeline/xen_addsplit.py --name <region>             # exact additive split of the correlation
+# the benchmark resolved by scale, and the noise ceiling per band
+python pipeline/hest_oracle_bands.py --encoder <enc>
+python pipeline/xen_band_ceiling.py --name <region>         # binomial thinning, Spearman-Brown
+# an end-to-end super-resolution method under the same protocol, and its backbone-matched control
+python pipeline/istar_prep_xen.py --name <region>           # then jobs/istar_xen_gpu.sh, istar_eval_xen.py
+python pipeline/istar_hipt_ridge_xen.py --name <region>     # ridge on iStar's own HIPT features
+# all encoders on Xenium: embeddings, then the band decomposition per encoder and region
+python pipeline/xen_embed_all.py --encoder <enc> --name <region>
+python pipeline/xen_pf_cut.py ... && python pipeline/xen_pf_embed_shard.py ...   # Path Foundation, two stages
+python scripts/xen_multi_rank.py && python scripts/beta1_rank_boot.py            # ranking and its bootstrap
+```
+
 ## Repository structure
 
 ```
@@ -70,8 +95,8 @@ src/          pipeline modules: encoder loading and embedding, ridge and effecti
 pipeline/     top-level drivers and aggregation: domain oracle, leave-one-cohort-out ridge, method
               comparison, parameter counts, probes, figure scripts, SLURM chain drivers (drv_*.sh)
 jobs/         SLURM job scripts (paths point at our HiPerGator project directory; edit for your cluster)
-scripts/      table, source-data and headline-number generators; scripts/src/ is the frozen copy of the
-              modules as they were when the manuscript's numbers were computed
+scripts/      table, text and source-data generators: every number in the manuscript is written by one
+              of these from a result file, so no figure or table is typed by hand
 environment/  conda environment exports
 ```
 

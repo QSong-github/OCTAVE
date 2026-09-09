@@ -1,0 +1,10 @@
+# -*- coding: utf-8 -*-
+"""附录：11 个编码器的下游读数与标量 / 最细带的关系（results/multi_ds_summary.json → paper/multids_text.tex）。数字全部由此生成。"""
+import json, os
+R = os.environ.get("S4ST_RESULTS", "results"); S = json.load(open(f"{R}/multi_ds_summary.json")); C = S["correlations"]; E = S["encoders"]
+n = len(E); pcc = [v["pcc"] for v in E.values()]; b1 = [v["beta1"] for v in E.values()]
+hot = C["hotspot_jaccard"]; col = C["coloc_preserve"]; svg = C["svg_top_jaccard"]; rk = C["svg_rank_rho"]; sel = C["hotspot_recall_selectivity"]
+hj = [v["hotspot_jaccard"] for v in E.values()]; cp = [v["coloc_preserve"] for v in E.values()]
+txt = (r"\paragraph{Across real encoders the downstream readouts follow the scalar as closely as the finest band.}" "\n" r"\label{app:multids}" "\n"
+       f"Appendix~\\ref{{app:extra}} showed that an artificial coarsening of one model's predictions degrades every downstream readout; the sharper question is whether, among real models, the finest band predicts downstream utility better than the scalar. For {n} of the encoders in Table~\\ref{{tab:multi}}, scored on the $50$-gene downstream panel with the readouts of Appendix~\\ref{{app:extra}}, it does not: hotspot overlap follows the scalar with $r_s = {hot['rho_pcc']:.2f}$ and the finest band with ${hot['rho_beta1']:.2f}$, co-localisation with ${col['rho_pcc']:.2f}$ against ${col['rho_beta1']:.2f}$, and the two readouts aimed at fine structure, spatially variable gene identification and ranking, correlate weakly and not significantly with either score. These readouts vary little across real encoders (hotspot overlap ${min(hj):.3f}$--${max(hj):.3f}$) and are themselves coarse quantities, computed from smoothed fields and gene pairs, so they reward the between-domain structure the scalar rewards. {{\\scshape Octave}} measures a fidelity these tasks do not consume; a downstream readout that targets structure inside domains remains to be built. Per-encoder values are in the source-data workbook." "\n")
+open("paper/multids_text.tex", "w").write(txt); print("multids_text.tex 已生成")

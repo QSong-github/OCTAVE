@@ -148,9 +148,11 @@ D = [fold("P2"), fold("P5")]
 
 # ───────── 画图：左 4×4 网格，右 b/c ─────────
 fig = plt.figure(figsize=(183 * MM, 118 * MM))
-gs = fig.add_gridspec(1, 2, width_ratios=[1.0, 0.42], wspace=0.12, left=0.055, right=0.985, top=0.885, bottom=0.06)
-gl = gs[0].subgridspec(4, 4, hspace=0.30, wspace=0.06)
-gr = gs[1].subgridspec(2, 1, hspace=0.60)
+# 紧凑版式：patch 行距 0.30→0.08、列距 0.06→0.03，上下边距收窄；左块宽度按 patch 边长收窄，使方形 patch 之间几乎无空白（patch 约放大 1.2 倍）
+gs = fig.add_gridspec(1, 2, width_ratios=[1.0, 0.50], wspace=0.16, left=0.055, right=0.985, top=0.885, bottom=0.04)
+gl = gs[0].subgridspec(4, 4, hspace=0.16, wspace=0.03)
+# 右栏单独设底边距，避免 c 面板两行刻度标签被裁；水平范围与外层网格的右栏一致（0.698–0.985）
+gr = fig.add_gridspec(2, 1, left=0.698, right=0.985, top=0.885, bottom=0.075, hspace=0.60)
 
 
 def bare(ax):
@@ -159,7 +161,7 @@ def bare(ax):
 
 
 cols = ["H&E", "measured", "domains only", "trained model"]
-subs = ["", "PC1 projection", "truth averaged in 20 image domains", "ridge on frozen features"]
+subs = ["", "PC1 projection", "truth averaged in\n20 image domains", "ridge on\nfrozen features"]
 for ci, d in enumerate(D):
     r0 = 2 * ci
     vmin, vmax = np.nanpercentile(np.concatenate([m_[~np.isnan(m_)] for m_ in d["maps"]]), [2, 98])
@@ -174,8 +176,8 @@ for ci, d in enumerate(D):
     for j, (M, sc, col) in enumerate([(d["maps"][0], None, P["grey_d"]), (d["maps"][1], d["best"]["map_d"], P["red"]), (d["maps"][2], d["best"]["map_r"], P["blue"])]):
         ax = fig.add_subplot(gl[r0, j + 1]); ax.imshow(M, cmap="magma", vmin=vmin, vmax=vmax, interpolation="nearest", aspect="equal"); bare(ax)
         if ci == 0:
-            ax.set_title(cols[j + 1], fontsize=7.6, pad=11)
-            ax.text(0.5, 1.02, subs[j + 1], transform=ax.transAxes, ha="center", va="bottom", fontsize=5.0, color=P["grey_m"])
+            ax.set_title(cols[j + 1], fontsize=7.6, pad=4)
+            pass  # 列副标题（PC1 projection / truth averaged… / ridge on…）移入图注，图内不再画灰字
         if sc is not None:
             ax.text(0.5, -0.03, "map PCC %.3f" % sc, transform=ax.transAxes, ha="center", va="top", fontsize=6.4, fontweight="bold", color=col)
     # 行 2：最细带

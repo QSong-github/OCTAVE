@@ -74,16 +74,16 @@ t = ["\\begin{tabular}{lrrrrrr}", "\\toprule",
      "Specimen & Regions & $\\mathrm{PCC}_{\\mathrm{mod}}$ & $\\mathrm{PCC}_{\\mathrm{dom}}$ "
      "& $\\Delta_{\\mathrm{scalar}}$ & $\\Delta_{\\mathrm{fine}}$ & Ratio \\\\", "\\midrule"]
 for n, k, pm, pb, o, f_, rt in rows:
-    t.append(f"{n} & {k} & {pm:.3f} & {pb:.3f} & {o:.1f} & {f_:.1f} & {rt:.2f} \\\\")
-t += ["\\midrule", f"Median & & & & {np.median([z[4] for z in rows]):.1f} & "
-      f"{np.median([z[5] for z in rows]):.1f} & \\textbf{{{np.median([z[6] for z in rows]):.2f}}} \\\\"]
+    t.append(f"{n} & {k} & {pm:.3f} & {pb:.3f} & {o:.1f}\\% & {f_:.1f}\\% & {rt:.2f} \\\\")
+t += ["\\midrule", f"Median & & & & {np.median([z[4] for z in rows]):.1f}\\% & "
+      f"{np.median([z[5] for z in rows]):.1f}\\% & \\textbf{{{np.median([z[6] for z in rows]):.2f}}} \\\\"]
 sp = os.path.join(R, "seed_spread.json")
 if os.path.exists(sp):
     S = json.load(open(sp))["summary"]
     # seed 0 是冻结配置，其逐样本值即上表各行；这一行给 16 个种子重跑整条链的散布。
     assert abs(S["headline_ratio_seed0"] - np.median([z[6] for z in rows])) < 5e-3
-    t.append(f"{S['n_seeds']} seeds & & & & ${S['scalar_median']:.1f} \\pm {S['scalar_sd']:.1f}$ & "
-             f"${S['fine_median']:.1f} \\pm {S['fine_sd']:.1f}$ & "
+    t.append(f"{S['n_seeds']} seeds & & & & ${S['scalar_median']:.1f} \\pm {S['scalar_sd']:.1f}\\%$ & "
+             f"${S['fine_median']:.1f} \\pm {S['fine_sd']:.1f}\\%$ & "
              f"${S['headline_ratio_median']:.2f}\\,[{S['headline_ratio_min']:.2f}, {S['headline_ratio_max']:.2f}]$ \\\\")
     print(f"        种子行: 比值 {S['headline_ratio_median']:.2f} [{S['headline_ratio_min']:.2f}, {S['headline_ratio_max']:.2f}] "
           f"sd {S['headline_ratio_sd']:.3f}; {S['seeds_all_specimens_agree']}/{S['n_seeds']} 个种子给 8/8; "
@@ -178,7 +178,7 @@ if os.path.exists(ap):
            "ngene": ("Genes", lambda k: k),
            "K": ("Clusters $K$", lambda k: k)}
     t = ["\\begin{tabular}{llrrrrrr}", "\\toprule",
-         "Axis & Setting & Ratio (\\%) & $\\Delta_{\\mathrm{scalar}}$ & $\\Delta_{\\mathrm{fine}}$ "
+         "Axis & Setting & Oracle / model & $\\Delta_{\\mathrm{scalar}}$ & $\\Delta_{\\mathrm{fine}}$ "
          "& Ratio & Specimens & $P$ \\\\", "\\midrule"]
     for ax in ("alpha", "ngene", "K"):
         if ax not in A: continue
@@ -192,7 +192,7 @@ if os.path.exists(ap):
                 # 数学模式里 \textbf 不生效，alpha 档用 \mathbf，其余是纯文本
                 lv = (lv.replace("$10^", "$\\mathbf{10^").replace("}$", "}}$")
                       if ax == "alpha" else f"\\textbf{{{lv}}}")
-            cells = [lv, f"{o['share']:.1f}", f"{o['scalar']:.1f}", f"{o['fine']:.1f}",
+            cells = [lv, f"{o['share']:.1f}\\%", f"{o['scalar']:.1f}\\%", f"{o['fine']:.1f}\\%",
                      f"{o['ratio']:.2f}", f"{o['specimens_agree']}/{o['n_specimens']}", f"{o['P']:.4f}"]
             if d: cells = [cells[0]] + [f"\\textbf{{{c}}}" for c in cells[1:]]
             t.append((name if i == 0 else "") + " & " + " & ".join(cells) + " \\\\")
@@ -216,12 +216,12 @@ if os.path.exists(zp):
          "Encoder & Oracle & Oracle, std. & Difference & Ratio & Ratio, std. & Cohorts \\\\", "\\midrule"]
     for r in ZS:
         v = r["k20"]
-        t.append(f"{LBL(r['enc'])} & {v['orc']:.3f} & {v['orc_z']:.3f} & {v['orc_z']-v['orc']:+.3f} & {v['share']:.0f} & {v['share_z']:.0f} & {v['std'][2]}/{v['zs'][2]} \\\\")
+        t.append(f"{LBL(r['enc'])} & {v['orc']:.3f} & {v['orc_z']:.3f} & {v['orc_z']-v['orc']:+.3f} & {v['share']:.0f}\\% & {v['share_z']:.0f}\\% & {v['std'][2]}/{v['zs'][2]} \\\\")
     d = np.array([abs(r["k20"]["orc_z"] - r["k20"]["orc"]) for r in ZS if r["enc"] != "openmidnight"])
     ds = np.array([abs(r["k20"]["share_z"] - r["k20"]["share"]) for r in ZS if r["enc"] != "openmidnight"])
     shz = np.array([r["k20"]["share_z"] for r in ZS]); sh0 = np.array([r["k20"]["share"] for r in ZS])
     o0 = np.array([r["k20"]["orc"] for r in ZS]); oz = np.array([r["k20"]["orc_z"] for r in ZS])
-    t += ["\\midrule", f"\\textbf{{Median of {len(ZS)}}} & {np.median(o0):.3f} & {np.median(oz):.3f} & & {np.median(sh0):.0f} & {np.median(shz):.0f} & \\\\",
+    t += ["\\midrule", f"\\textbf{{Median of {len(ZS)}}} & {np.median(o0):.3f} & {np.median(oz):.3f} & & {np.median(sh0):.0f}\\% & {np.median(shz):.0f}\\% & \\\\",
           "\\bottomrule", "\\end{tabular}"]
     W("tab_zscore.tex", t)
     print(f"表 z-score 稳健性: {len(ZS)} 个；除 OpenMidnight 外预言机分变化最大 {d.max():.3f}，占比变化最大 {ds.max():.1f} 点；z-score 后占比中位 {np.median(shz):.0f}% ({shz.min():.0f}–{shz.max():.0f})")
@@ -353,7 +353,7 @@ if os.path.exists(bp):
          "Encoder & Params & Model & Oracle & Ratio & Difference & $|t|$ & Cohorts \\\\", "\\midrule"]
     for r in BS:
         a = S(r)
-        t.append(f"{LBL(r['enc'])} & {pm(r['enc'])} & {a['mod']:.4f} & {a['blk']:.4f} & {a['share']:.0f} & "
+        t.append(f"{LBL(r['enc'])} & {pm(r['enc'])} & {a['mod']:.4f} & {a['blk']:.4f} & {a['share']:.0f}\\% & "
                  f"${a['cohort_mean']:+.3f}\\pm{a['cohort_sem']:.3f}$ & {abs(a['t']):.1f} & {a['won']}/10 \\\\")
     md = lambda f: float(np.median([f(r) for r in BS]))
     pos = sum(1 for r in BS if S(r)["cohort_mean"] > 0)
@@ -363,7 +363,7 @@ if os.path.exists(bp):
     prange = "%.0f--%.0f" % (min(pv) / 1e6, max(pv) / 1e6) if pv else "--"
     t += ["\\midrule",
           f"\\textbf{{Median of {len(BS)}}} & {prange} & {md(lambda r: S(r)['mod']):.4f} & {md(lambda r: S(r)['blk']):.4f} & "
-          f"{md(lambda r: S(r)['share']):.0f} & $\\mathbf{{{md(lambda r: S(r)['cohort_mean']):+.3f}}}$ & "
+          f"{md(lambda r: S(r)['share']):.0f}\\% & $\\mathbf{{{md(lambda r: S(r)['cohort_mean']):+.3f}}}$ & "
           f"{md(lambda r: abs(S(r)['t'])):.1f} & \\textbf{{{pos}/{len(BS)}}} \\\\",
           "\\bottomrule", "\\end{tabular}"]
     W("tab_hestblocks.tex", t)
