@@ -1,8 +1,7 @@
 # Octave
 
 Code for **Octave: Scale-Resolved Evaluation of Spatial Gene Expression Prediction from Histology**
-(manuscript under review). This repository contains the evaluation pipeline only; the manuscript,
-figures and result files are not distributed here.
+(manuscript under review).
 
 Octave evaluates histology-to-spatial-transcriptomics prediction at the scales the measurement
 actually resolves. It provides (i) a *domain oracle*, the best predictor that only recognises
@@ -29,6 +28,7 @@ Pathryoshka) require an approved Hugging Face token; place it where `huggingface
 | HEST-Benchmark | 72 samples, 10 cohorts, official splits and 50-gene panels | Download from the HEST release and point `B` in `src/hest_embed_v2.py` and `src/hest_effres_ps.py` at `bench_data/` |
 | Xenium | 16 regions from 8 specimens, binned to 16 µm | `src/fetch_xenium.sh`, then `src/xen_prep.py` |
 | Visium HD | Two colon sections at 16 µm | `src/fetch_hd.sh`, `src/fetch_p5.sh`, then `src/hd_prep.py` |
+| Frozen encoders | 57 pathology and general-purpose image encoders, 6M to 1.1B parameters | Named and configured one by one in `src/hest_embed_v2.py`, which loads each from its published source through `timm`, `transformers`, `open_clip` or the authors' own loader. UNI, Virchow, GigaPath, H-optimus, CONCH and a few others are gated: request access on Hugging Face and leave the token where `huggingface_hub` finds it. Path Foundation is a TensorFlow SavedModel and runs in the second environment |
 | Published methods | HisToGene, Hist2ST, BLEEP, HECLIP, HGGEP, THItoGene | Clone the authors' repositories into `methods/`; the adaptors `src/<method>_hest.py` run them under the benchmark protocol and document every change |
 
 ## Usage
