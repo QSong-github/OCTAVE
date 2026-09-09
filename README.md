@@ -115,4 +115,7 @@ The manuscript is under review. A citation entry will be added when it is public
 
 ## License
 
-To be added by the authors before public release.
+The code in this repository is released under the MIT License (see `LICENSE`). The data it reads
+are not ours to relicense: HEST-Benchmark is CC BY-NC-SA 4.0 and gated, the Xenium and Visium HD
+datasets follow 10x Genomics' terms, several encoder weights are gated by their publishers, and
+each published method keeps the licence of its own repository.
