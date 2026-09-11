@@ -23,13 +23,23 @@ Pathryoshka) require an approved Hugging Face token; place it where `huggingface
 
 ## Data
 
-| Source | Use | How to obtain |
+Three sources. None is redistributed here.
+
+| Dataset | What we use | How to obtain |
 |---|---|---|
-| HEST-Benchmark | 72 samples, 10 cohorts, official splits and 50-gene panels | Download from the HEST release and point `B` in `src/hest_embed_v2.py` and `src/hest_effres_ps.py` at `bench_data/` |
-| Xenium | 16 regions from 8 specimens, binned to 16 µm | `src/fetch_xenium.sh`, then `src/xen_prep.py` |
-| Visium HD | Two colon sections at 16 µm | `src/fetch_hd.sh`, `src/fetch_p5.sh`, then `src/hd_prep.py` |
-| Frozen encoders | 57 pathology and general-purpose image encoders, 6M to 1.1B parameters | Named and configured one by one in `src/hest_embed_v2.py`, which loads each from its published source through `timm`, `transformers`, `open_clip` or the authors' own loader. UNI, Virchow, GigaPath, H-optimus, CONCH and a few others are gated: request access on Hugging Face and leave the token where `huggingface_hub` finds it. Path Foundation is a TensorFlow SavedModel and runs in the second environment |
-| Published methods | HisToGene, Hist2ST, BLEEP, HECLIP, HGGEP, THItoGene | Clone the authors' repositories into `methods/`; the adaptors `src/<method>_hest.py` run them under the benchmark protocol and document every change |
+| HEST-Benchmark | 72 samples, 10 cohorts, official splits and 50-gene panels | Gated on Hugging Face under CC BY-NC-SA 4.0: accept the terms, then point `B` in `src/hest_embed_v2.py` and `src/hest_effres_ps.py` at `bench_data/` |
+| Xenium | 16 regions from 8 specimens, binned to 16 µm | 10x Genomics public datasets, under their terms: `src/fetch_xenium.sh`, then `src/xen_prep.py` |
+| Visium HD | Two colon sections at 16 µm | 10x Genomics public datasets, under their terms: `src/fetch_hd.sh`, `src/fetch_p5.sh`, then `src/hd_prep.py` |
+
+## Models
+
+The evaluation scores 57 frozen image encoders paired with a ridge head. Six published
+end-to-end methods are run separately, as a check that the ridge baseline is not weak.
+
+| Models | What we use | How to obtain |
+|---|---|---|
+| Frozen encoders | 57 pathology and general-purpose encoders, 6M to 1.1B parameters, each with its own published preprocessing | Named and configured one by one in `src/hest_embed_v2.py`, which loads each from its published source through `timm`, `transformers`, `open_clip` or the authors' own loader. UNI, Virchow, GigaPath, H-optimus, CONCH and others are gated: request access on Hugging Face and leave the token where `huggingface_hub` finds it. Path Foundation is a TensorFlow SavedModel and runs in the second environment |
+| Published methods | HisToGene, Hist2ST, BLEEP, HECLIP, HGGEP, THItoGene, and iStar on the Xenium protocol | Clone the authors' repositories into `methods/`; the adaptors `src/<method>_hest.py` run them under the benchmark protocol and document every change |
 
 ## Usage
 
