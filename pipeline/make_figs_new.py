@@ -53,6 +53,7 @@ PROTO_EN = {
 
 def specimen(n):
     m = re.match(r"(Human_Breast_Biomarkers_S\d)_(Top|Mid|Bot)$", n)
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # v1 与 Prime 5K 同一供体同一组织块，按一个标本计
     return m.group(1) if m else n
 
 
@@ -636,7 +637,7 @@ def fig_knobs():
     for yy, vv in zip([2, 1, 0], [dp, dc, SPAN]):
         ax.text(vv + 0.005, yy, f"{vv:.3f}", va="center", fontsize=5.6, color=P["grey_d"])
     ax.set_xlim(0, max(dp, SPAN) * 1.30)
-    ax.set_title(f"One protocol choice beats\nthe model zoo ({dp/SPAN:.2f}×)",
+    ax.set_title(f"One protocol choice beats\nthe encoder spread ({dp/SPAN:.2f}×)",
                  fontsize=6.4)
     ax.text(0.5, -0.30, "reference refit on the same 2 sections,\n"
             "same 50-HVG target and estimator",
@@ -692,7 +693,7 @@ def fig_knobs():
             linespacing=1.35, color=P["grey_m"])
     lab(ax, "f", x=-0.42, y=1.16)
 
-    save(fig, "Fig6_protocol_knobs")
+    save(fig, "Fig5_protocol_knobs")
 
 
 # ══════════════ Fig 3：评测协议决定结论（旧 Fig3 + 旧 Fig5 + 换算率）══════════════
@@ -823,7 +824,7 @@ def fig_protocol():
         ax.text(0.5, yi, nmm.replace("\n", " · "), va="center", ha="left",
                 fontsize=4.8, color=P["grey_d"])
     ax.set_title(f"Rate spans {vals.min():.1f} to {vals.max():.1f}%\n"
-                 "within one benchmark", fontsize=6.4)
+                 "within one dataset", fontsize=6.4)
     lab(ax, "e", x=-0.16, y=1.18)
 
     save(fig, "Fig3_evaluation_protocol")

@@ -3,7 +3,7 @@
 输入 results/hest_blocks_summary.json（blk_k20_sel）与 results/encoder_params.json。全表 57 行仍为 tab_hestblocks.tex（附录）。"""
 import json, os, numpy as np
 R = os.environ.get("S4ST_RESULTS", "results"); S = {e["enc"]: e for e in json.load(open(f"{R}/hest_blocks_summary.json"))}; P = json.load(open(f"{R}/encoder_params.json"))
-distilled = {"litevirchow2", "h0_mini", "litefm", "litefm_l", "litefm_s", "distillpath_is16", "distillpath_ks16"}
+distilled = {"litevirchow2", "h0_mini", "litefm", "litefm_l", "litefm_s", "distillpath_is16", "distillpath_ks16", "pathryoshka_b"}
 encs = sorted(S); par = {e: P[e]["params"] / 1e6 for e in encs}
 groups = [("All encoders", encs), ("$<100$M parameters", [e for e in encs if par[e] < 100]), ("$100$--$600$M", [e for e in encs if 100 <= par[e] <= 600]), ("$>600$M", [e for e in encs if par[e] > 600]),
           ("Distilled students ($6$--$87$M)", [e for e in encs if e in distilled]), ("Trained from scratch, $<100$M", [e for e in encs if par[e] < 100 and e not in distilled])]

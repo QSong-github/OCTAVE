@@ -8,6 +8,7 @@ R = "/path/to/systema4ST/results"
 
 def spec(n):
     m = re.match(r"(Human_Breast_Biomarkers_S\d)_(Top|Mid|Bot)$", n)
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # v1 与 Prime 5K 同一供体同一组织块，按一个标本计
     return m.group(1) if m else n
 
 
@@ -18,8 +19,8 @@ def signp(k, n):
 
 D = [json.load(open(f)) for f in sorted(glob.glob(R + "/blocks_xen_ablate/*.json"))]
 print("区域 %d 个" % len(D))
-if len(D) != 16:
-    print("⚠ 不足 16 个区域，先不汇总")
+if len(D) < 16:
+    print("⚠ 区域不足 16 个，先不汇总")
     raise SystemExit(1)
 
 OUT = {}

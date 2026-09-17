@@ -6,7 +6,7 @@ a  块 oracle 相对训练模型的缺口随带宽 σ 的变化，每个独立�
 b  逐样本配对：标量缺口 vs 最细带缺口，精确双侧符号检验。
 c  各带的方差占比：真值 vs 两个预测 —— 两者在细端都远低于真值。
 
-口径：16 区域来自 8 个独立样本，先在样本内取中位再做检验（区域计数是伪重复）。
+口径：区域先在样本内取中位再做检验（区域计数是伪重复）。
 """
 import json, glob, os, re
 import numpy as np
@@ -34,7 +34,9 @@ plt.rcParams.update({"font.size": 7, "axes.linewidth": 0.8, "legend.frameon": Fa
 
 def specimen(n):
     m = re.match(r"(Human_Breast_Biomarkers_S\d)_(Top|Mid|Bot)$", n)
-    return m.group(1) if m else n
+    if m: return m.group(1)
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # v1 与 Prime 5K 同一供体同一组织块，按一个标本计
+    return n
 
 
 def signp(k, n):
@@ -68,7 +70,7 @@ if len(REG) < 4:
 SP = {}
 for n, r in REG.items():
     SP.setdefault(specimen(n), []).append(r)
-SIG = REG[list(REG)[0]]["sigma"]
+SIG = np.median(np.vstack([r["sigma"] for r in REG.values()]), axis=0)   # 跨区域中位带宽，与正文/表 12 的 10.3, 14.2, 19.8, 27.4 一致（原来用第一个区域的带宽，轴标注会与正文差 2 µm）
 med = lambda key, v: np.nanmedian(np.vstack([x[key] for x in v]), axis=0)
 SPEC = {s: {"gap": med("gap", v), "scalar": float(np.median([x["scalar"] for x in v])),
             "vt": med("vt", v), "vb": med("vb", v), "vr": med("vr", v)}
@@ -105,12 +107,6 @@ ax.set_xscale("log")
 ax.set_xlabel("band width $\\sigma$ (µm)", labelpad=1)
 ax.set_ylabel("shortfall of the domain oracle\nrelative to the trained model (%)", labelpad=2)
 ax.set_ylim(0, max(100, float(np.nanmax(gm)) * 1.15))
-# 最粗两个带不进入合并检验（附录 B 的带同质性准则）：用浅灰区间标出，避免“图里 12 带、检验 10 带”的疑问
-if len(SIG) >= 12:
-    x0 = float(np.sqrt(SIG[9] * SIG[10])); xr = float(ax.get_xlim()[1])
-    ax.axvspan(x0, xr, color="0.93", zorder=0.5, lw=0)
-    ax.text(float(np.sqrt(x0 * xr)), 52, "not in the\npooled test\n(Appendix B)", ha="center", va="center", fontsize=5.4, color=P["grey_d"], linespacing=1.35)  # 放在区间中部，避开曲线与右上角注释
-    ax.set_xlim(right=xr)
 ax.set_title("the shortfall depends on the scale\nat which it is measured",
              fontsize=7.4, pad=6)
 k = sum(1 for s in names if SPEC[s]["gap"][0] > SPEC[s]["scalar"])

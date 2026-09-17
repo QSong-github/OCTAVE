@@ -29,7 +29,7 @@ nowhere else, and each source keeps its own licence and access conditions.
 | Dataset | What we use | Where it comes from |
 |---|---|---|
 | HEST-Benchmark | 72 samples, 10 cohorts, official splits and 50-gene panels | `huggingface.co/datasets/MahmoodLab/hest`, CC BY-NC-SA 4.0 and gated: make an account, accept the terms, download, then point `B` in `src/hest_embed_v2.py` and `src/hest_effres_ps.py` at your `bench_data/` |
-| Xenium | 16 regions from 8 specimens, binned to 16 µm | 10x Genomics public datasets (`www.10xgenomics.com/datasets`), files served from `cf.10xgenomics.com/samples/xenium/`. `src/fetch_xenium.sh` lists the 16 sample names and pulls the H\&E image, its alignment matrix and the cell-feature matrix; `src/xen_prep.py` bins them to 16 µm |
+| Xenium | 22 regions from 13 specimens, binned to 16 µm | 10x Genomics public datasets (`www.10xgenomics.com/datasets`), files served from `cf.10xgenomics.com/samples/xenium/`. `src/fetch_xenium.sh` lists the 16 sample names and pulls the H\&E image, its alignment matrix and the cell-feature matrix; `src/xen_prep.py` bins them to 16 µm |
 | Visium HD | Two colon sections at 16 µm | Same source, files served from `cf.10xgenomics.com/samples/spatial-exp/3.0.0/`. `src/fetch_hd.sh` and `src/fetch_p5.sh` name the sections and pull the 16 µm bins and the full-resolution H\&E; `src/hd_prep.py` prepares them |
 
 ## Models

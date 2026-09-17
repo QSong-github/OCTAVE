@@ -31,11 +31,14 @@ para = (f"\\paragraph{{Across {w(n)} encoders the finest band spans a factor of 
 disc = f"Among real encoders, {w(n)} within ${rng:.2f}$ on the scalar differ by a factor of ${fac:.1f}$ in the finest band, reordering ${rev1}$ of ${pairs}$ pairs."
 s = open("paper/main.tex").read()
 pat_short = re.compile(r"[Aa]cross [a-z-]+ encoders the scalar spans \$[^$]*\$ while the finest band spans a factor of \$[^$]*\$ and reorders \$[^$]*\$ of \$[^$]*\$ pairs\.")
+# 摘要里这句在 2026-09 的改写中拆成了两句，单独匹配
+short_abs = (f"Across {w(n)} encoders the scalar spans ${rng:.2f}$. The finest band spans a factor of ${fac:.1f}$ and reorders ${rev1}$ of ${pairs}$ pairs.")
+pat_abs = re.compile(r"Across [a-z-]+ encoders the scalar spans \$[^$]*\$\. The finest band spans a factor of \$[^$]*\$ and reorders \$[^$]*\$ of \$[^$]*\$ pairs\.")
 pat_para = re.compile(r"\\paragraph\{Across [a-z-]+ encoders the finest band spans[^}]*\} Table~\\ref\{tab:multi\}.*?\(Appendix~\\ref\{app:multi\}\)\.", re.S)
 pat_disc = re.compile(r"Among real encoders, [a-z-]+ within \$[^$]*\$ on the scalar differ by a factor of \$[^$]*\$ in the finest band, reordering \$[^$]*\$ of \$[^$]*\$ pairs\.")
-c1, c2, c3 = len(pat_short.findall(s)), len(pat_para.findall(s)), len(pat_disc.findall(s))
-assert (c1, c2) == (2, 1) and c3 <= 1, (c1, c2, c3)  # 讨论句已从正文删去（与 §3.3 重复），存在时才替换
-s = pat_short.sub(lambda m: (short[0].upper() if m.group(0)[0] == "A" else short[0]) + short[1:], s); s = pat_para.sub(lambda m: para, s); s = pat_disc.sub(lambda m: disc, s)
+c1, c2, c3, c0 = len(pat_short.findall(s)), len(pat_para.findall(s)), len(pat_disc.findall(s)), len(pat_abs.findall(s))
+assert (c1, c2, c0) == (1, 1, 1) and c3 <= 1, (c1, c2, c3, c0)  # 讨论句已从正文删去（与 §3.3 重复），存在时才替换
+s = pat_short.sub(lambda m: (short[0].upper() if m.group(0)[0] == "A" else short[0]) + short[1:], s); s = pat_abs.sub(lambda m: short_abs, s); s = pat_para.sub(lambda m: para, s); s = pat_disc.sub(lambda m: disc, s)
 out = "paper/main.tex" if "--dry" not in sys.argv else os.path.join(os.environ.get("SCRATCH", "/tmp"), "main_dry.tex")
 open(out, "w").write(s)
 print(f"n={n} PCC {pcc.min():.3f}–{pcc.max():.3f} (range {rng:.2f}) β1 {b1.min():.3f}–{b1.max():.3f} (×{fac:.1f}) reversals band1 {rev1}/{pairs}, t=32 {rev32}; close pair {a}/{b} Δpcc {dp:.3f} Δβ1 {db:.3f}; gap ratio {gr.min():.1f}–{gr.max():.1f}; params {pmin:.0f}M–{pmax:.0f}M -> {out}")

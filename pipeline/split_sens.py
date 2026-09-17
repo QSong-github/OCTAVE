@@ -17,6 +17,7 @@ def J(p):
 
 def spec(n):
     m = re.match(r"(Human_Breast_Biomarkers_S\d)_(Top|Mid|Bot)$", n)
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # v1 与 Prime 5K 同一供体同一组织块，按一个标本计
     return m.group(1) if m else n
 
 

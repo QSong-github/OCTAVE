@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
-"""57 编码器最细带 β1 排名的稳定性：按标本（8 个）自助重采样，重算每个编码器的 β1（标本级中位再取中位），
+"""57 编码器最细带 β1 排名的稳定性：按标本（13 个）自助重采样，重算每个编码器的 β1（标本级中位再取中位），
 统计 (1) 每个编码器 β1 的自助区间；(2) 标量排名与最细带排名之间的 231 对反转里有多少在 ≥95% 的重采样中方向不变；
 (3) 自助重采样之间最细带排名的 Spearman；(4) DINOv3-H+ 对 KEEP 的 β1 差的自助区间。输入 results/blocks_xen_bands_{enc}/*.json（ridge 的 band_pcc、pcc）。"""
 import json, glob, os, numpy as np
 def spearmanr(a, b):
     ra = np.argsort(np.argsort(a)); rb = np.argsort(np.argsort(b)); return (np.corrcoef(ra, rb)[0, 1], None)
 R = "results"; M = json.load(open(f"{R}/xen_multi_rank.json")); encs = sorted(M["encoders"])
-SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4", "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary"]
-sp = lambda n: next(s for s in SPEC if n.startswith(s))
+SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
+        "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
+        "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本
+def sp(n):
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # Xenium v1 与 Prime 5K 为同一供体同一组织块（10x 技术说明），按一个标本计
+    return next(s for s in SPEC if n.startswith(s))
 def load(e):
     d = f"{R}/blocks_xen_bands_{'base' if e == 'hibou_l' else e}"; per = {}
     for f in glob.glob(d + "/*.json"):
         j = json.load(open(f)); per.setdefault(sp(j["name"]), []).append((j["pred"]["ridge"]["pcc"], j["pred"]["ridge"]["band_pcc"]))
     return {s: (float(np.median([a for a, b in v])), float(np.median([b for a, b in v]))) for s, v in per.items()}
-D = {e: load(e) for e in encs}; assert all(len(D[e]) == 8 for e in encs), {e: len(D[e]) for e in encs if len(D[e]) != 8}
+D = {e: load(e) for e in encs}; assert all(len(D[e]) == len(SPEC) for e in encs), {e: len(D[e]) for e in encs if len(D[e]) != len(SPEC)}   # 标本数由 SPEC 决定（原写死 8）
 def agg(spec_list):
     pcc = np.array([np.median([D[e][s][0] for s in spec_list]) for e in encs]); b1 = np.array([np.median([D[e][s][1] for s in spec_list]) for e in encs]); return pcc, b1
 pcc0, b10 = agg(SPEC)
@@ -23,7 +27,7 @@ rev0 = [(i, j) for i, j in pairs if (pcc0[i] - pcc0[j]) * (b10[i] - b10[j]) < 0]
 rng = np.random.default_rng(0); B = 2000; sign = np.zeros((B, len(rev0))); rk = np.zeros((B, len(encs))); b1s = np.zeros((B, len(encs))); dk = np.zeros(B)
 iA, iK = encs.index("dinov3_vith16"), encs.index("keep")
 for b in range(B):
-    ss = [SPEC[k] for k in rng.integers(0, 8, 8)]; p, q = agg(ss); b1s[b] = q; rk[b] = np.argsort(np.argsort(-q))
+    ss = [SPEC[k] for k in rng.integers(0, len(SPEC), len(SPEC))]; p, q = agg(ss); b1s[b] = q; rk[b] = np.argsort(np.argsort(-q))   # 标本数由 SPEC 决定（原写死 8）
     sign[b] = [np.sign(q[i] - q[j]) for i, j in rev0]; dk[b] = q[iK] - q[iA]
 sign0 = np.array([np.sign(b10[i] - b10[j]) for i, j in rev0])
 stable = (sign == sign0).mean(0); rho = [spearmanr(rk[b], np.argsort(np.argsort(-b10)))[0] for b in range(B)]

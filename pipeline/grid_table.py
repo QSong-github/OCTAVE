@@ -12,6 +12,7 @@ def sign_p(k, n):
     return min(1.0, 2 * sum(comb(n, i) for i in range(k + 1)) / 2 ** n)
 
 def spec(n):
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # v1 与 Prime 5K 同一供体同一组织块，按一个标本计
     return n.rsplit("_", 1)[0] if n.startswith("Human_Breast_Biomarkers") else n
 
 # ---- 1. 评测栅格 跟随 vs 固定 ----

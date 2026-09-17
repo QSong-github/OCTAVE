@@ -2,10 +2,10 @@
 """Fig — 基准上的「优势」值多少：与同源检索下界的配对比较，及其超参依赖。
 
 四格一条链：
-  a 每个编码器 vs **它自己特征**的 kNN 检索下界(k=50)：7/15 低于下界
-  b 把下界的一个超参 k 从 10 调到 800：所有编码器整体平移，中位 15.2 pp
-  c 但名次几乎不动(ρ 中位 0.945，最多动 3 位) —— 移的是水平不是次序
-  d 于是「有几个打得赢检索」完全由 k 决定(2/15 → 10/14)，不是编码器的性质
+  a 每个编码器 vs **它自己特征**的 kNN 检索下界(k=50)：16/30 低于下界
+  b 把下界的一个超参 k 从 10 调到 800：所有编码器整体平移，中位 15.9 pp
+  c 但名次几乎不动(ρ 中位 0.945，最多动 10/30 位) —— 移的是水平不是次序
+  d 于是「有几个打得赢检索」完全由 k 决定(2/30 → 24/30)，不是编码器的性质
 
 纪律：k=200/800 有队列退化(邻域占留一训练集 >5%)，一律用 rel_ok(仅非退化队列)，
       退化档在图上以灰带标出。相对量不做逐样本除法（近零分母）。
@@ -157,8 +157,9 @@ ok_spans = [spans[k] for k in KS if DEGEN[k] <= 3]
 lo, hi = 100 * SHIFT / max(ok_spans), 100 * SHIFT / min(ok_spans)
 fig.suptitle("A margin over a trivial baseline is worth less than one "
              "hyper-parameter of that baseline", fontsize=9.2, y=0.985, fontweight="bold")
-fig.text(0.5, 0.938, f"the {SHIFT:.1f} pp shift in b is {lo:.0f}–{hi:.0f}% of the entire "
-         f"{min(ok_spans):.1f}–{max(ok_spans):.1f} pp spread across all {len(ALL)} encoders",
+fig.text(0.5, 0.938, f"the {SHIFT:.1f} pp shift in b is {lo:.0f}–{hi:.0f}% of the "
+         f"{min(ok_spans):.1f}–{max(ok_spans):.1f} pp spread across the {len(COMMON)} encoders "
+         f"complete at all four $k$ (non-degenerate $k$ only)",
          ha="center", va="top", fontsize=7.4, color=P["grey_d"])
 os.makedirs(OUT, exist_ok=True)
 fig.savefig(os.path.join(OUT, "Fig_matched_floor.pdf"))

@@ -2,8 +2,14 @@
 """归纳式分区预测器与上下文岭回归的汇总。Xenium：results/xen_inductive/*.json（标本级中位）；HEST：results/hest_inductive_{enc}.json + hest_rsel_ps（队列级中位再跨编码器）。"""
 import json, glob, os, numpy as np
 R = os.environ.get("S4ST_RESULTS", "results")
-SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4", "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary"]
-sp = lambda n: next(s for s in SPEC if n.startswith(s))
+SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
+        "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
+        "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本
+def sp(n):
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # v1 与 Prime 5K 同一供体同一组织块，按一个标本计
+    for s in SPEC:
+        if n.startswith(s): return s
+    raise SystemExit(f"未知区域 {n}：请把它的标本加进 SPEC")
 out = {}
 X = {json.load(open(f))["name"]: json.load(open(f)) for f in glob.glob(f"{R}/xen_inductive/*.json")}
 if X:

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Figure 1 v3 的图注、2.2 走读段与附录（原选窗图）图注，全部由 results/fig1_v3{TAG}_numbers.json 生成。
+"""注意：论文用的是 v2 选窗版（figs/Fig1_iclr.pdf，数字取自 results/fig1_v2_numbers.json，正文 2.2 节手写）。
+本脚本产出的 fig1_caption/fig1_walkthrough/fig1_appendix.tex 对应 v3 随机选窗版，未被 main.tex \\input，数字与正文不同，勿混用。
+
+Figure 1 v3 的图注、2.2 走读段与附录（原选窗图）图注，全部由 results/fig1_v3{TAG}_numbers.json 生成。
 用法：python3 scripts/mk_fig1_text.py [TAG]   TAG='' 为随机窗版，'med' 为中位数窗版。"""
 import json, os, sys
 R = os.environ.get("S4ST_RESULTS", "results"); TAG = sys.argv[1] if len(sys.argv) > 1 else ""

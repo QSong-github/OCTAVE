@@ -9,14 +9,19 @@ W = lambda n, L: open(os.path.join(OUT, n), "w").write("\n".join(L) + "\n")
 
 def spec(n):
     m = re.match(r"(Human_Breast_Biomarkers_S\d)_(Top|Mid|Bot)$", n)
-    return m.group(1) if m else n
+    if m: return m.group(1)
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # Xenium v1 与 Prime 5K 为同一供体同一组织块（10x 技术说明），按一个标本计
+    return n
 
 SHORT = {"Human_Breast_Biomarkers_S1": "Breast S1", "Human_Breast_Biomarkers_S2": "Breast S2",
          "Human_Breast_Biomarkers_S3": "Breast S3", "Human_Breast_Biomarkers_S4": "Breast S4",
          "Xenium_Prime_Cervical_Cancer_FFPE": "Cervical",
          "Xenium_Prime_Ovarian_Cancer_FFPE_XRrun": "Ovarian (Prime)",
          "Xenium_V1_Human_Kidney_FFPE_Protein_updated": "Kidney",
-         "Xenium_V1_Human_Ovary_Cancer_FF": "Ovary (V1)"}
+         "Xenium_V1_Human_Ovary_Cancer_FF": "Ovary (V1)",
+         "Lung": "Lung", "Xenium_Prime_Breast_Cancer_FFPE": "Breast (Prime)",
+         "Xenium_Prime_Human_Prostate_FFPE": "Prostate", "Xenium_Prime_Human_Skin_FFPE": "Skin",
+         "Xenium_Prime_Human_Lymph_Node_Reactive_FFPE": "Lymph node"}
 NAME = {"dinov3_vitl16": "DINOv3-L", "dinov2_large": "DINOv2-L", "kaiko_vitb16": "Kaiko-B16",
         "kaiko_vitl14": "Kaiko-L14", "kaiko_vits16": "Kaiko-S16", "lunit_vits8": "Lunit-S8",
         "conch_v15": "CONCH v1.5", "hoptimus0": "H-optimus-0", "midnight12k": "Midnight-12k",
@@ -213,7 +218,7 @@ if os.path.exists(zp):
     ZS = json.load(open(zp))
     ZS = sorted(ZS, key=lambda r: r["k20"]["orc_z"] - r["k20"]["orc"])
     t = ["\\begin{tabular}{lrrrrrr}", "\\toprule",
-         "Encoder & Oracle & Oracle, std. & Difference & Ratio & Ratio, std. & Cohorts \\\\", "\\midrule"]
+         "Encoder & Oracle & Oracle, std. & Difference & Ratio & Ratio, std. & Cohorts, raw/std. \\\\", "\\midrule"]
     for r in ZS:
         v = r["k20"]
         t.append(f"{LBL(r['enc'])} & {v['orc']:.3f} & {v['orc_z']:.3f} & {v['orc_z']-v['orc']:+.3f} & {v['share']:.0f}\\% & {v['share_z']:.0f}\\% & {v['std'][2]}/{v['zs'][2]} \\\\")
@@ -350,7 +355,7 @@ if os.path.exists(bp):
         v = (PARM.get(e) or {}).get("params")
         return "--" if not v else "%.0f" % (v / 1e6)
     t = ["\\begin{tabular}{lrrrrrrr}", "\\toprule",
-         "Encoder & Params & Model & Oracle & Ratio & Difference & $|t|$ & Cohorts \\\\", "\\midrule"]
+         "Encoder & M & Model & Oracle & Ratio & Difference & Mean/SE & Cohorts \\\\", "\\midrule"]
     for r in BS:
         a = S(r)
         t.append(f"{LBL(r['enc'])} & {pm(r['enc'])} & {a['mod']:.4f} & {a['blk']:.4f} & {a['share']:.0f}\\% & "
@@ -364,7 +369,7 @@ if os.path.exists(bp):
     t += ["\\midrule",
           f"\\textbf{{Median of {len(BS)}}} & {prange} & {md(lambda r: S(r)['mod']):.4f} & {md(lambda r: S(r)['blk']):.4f} & "
           f"{md(lambda r: S(r)['share']):.0f}\\% & $\\mathbf{{{md(lambda r: S(r)['cohort_mean']):+.3f}}}$ & "
-          f"{md(lambda r: abs(S(r)['t'])):.1f} & \\textbf{{{pos}/{len(BS)}}} \\\\",
+          f"{md(lambda r: abs(S(r)['t'])):.1f} & \\textbf{{{md(lambda r: S(r)['won']):.0f}/10}} \\\\",
           "\\bottomrule", "\\end{tabular}"]
     W("tab_hestblocks.tex", t)
     sh = [S(r)["share"] for r in BS]

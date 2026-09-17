@@ -19,9 +19,14 @@ def _name_map():
     return out
 _NAME = _name_map()
 _TAGS = {"base", "k4", "k12", "lazy75"}
-ENC = ["hibou_l"] + sorted(d.split("blocks_xen_bands_")[1] for d in glob.glob(f"{R}/blocks_xen_bands_*") if d.split("blocks_xen_bands_")[1] not in _TAGS and len(glob.glob(d + "/*.json")) == 16)
-SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4", "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary"]
-sp = lambda n: next(s for s in SPEC if n.startswith(s))
+_NREF = len(glob.glob(f"{R}/blocks_xen_bands_base/*.json")) or len(glob.glob(f"{R}/blocks_xen_bands/*.json"))   # 参考塔的区域数，不写死
+ENC = ["hibou_l"] + sorted(d.split("blocks_xen_bands_")[1] for d in glob.glob(f"{R}/blocks_xen_bands_*") if d.split("blocks_xen_bands_")[1] not in _TAGS and len(glob.glob(d + "/*.json")) == _NREF)   # 与参考塔同区域数
+SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
+        "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
+        "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本
+def sp(n):
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # Xenium v1 与 Prime 5K 为同一供体同一组织块（10x 技术说明），按一个标本计
+    return next(s for s in SPEC if n.startswith(s))
 def specmed(d):
     per = {}
     for n, v in d.items(): per.setdefault(sp(n), []).append(v)
@@ -32,7 +37,7 @@ res = {}
 for e in dict.fromkeys(ENC):
     d = "blocks_xen_bands_base" if e == "hibou_l" else f"blocks_xen_bands_{e}"
     F = glob.glob(f"{R}/{d}/*.json")
-    if len(F) < 16: print(f"  {e}: 仅 {len(F)}/16 区域，跳过"); continue
+    if len(F) < _NREF: print(f"  {e}: 仅 {len(F)}/{_NREF} 区域，跳过"); continue
     D = {json.load(open(f))["name"]: json.load(open(f)) for f in F}
     cps = sorted(next(iter(D.values()))["pred"]["ridge"]["bands"], key=int)
     res[e] = dict(pcc=specmed({n: x["pred"]["ridge"]["pcc"] for n, x in D.items()})[0], oracle_pcc=specmed({n: x["pred"]["dom20"]["pcc"] for n, x in D.items()})[0],

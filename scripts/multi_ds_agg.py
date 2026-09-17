@@ -5,8 +5,14 @@
 输出 results/multi_ds_summary.json 与 paper/tab_multids.tex。"""
 import json, glob, os, numpy as np
 R = os.environ.get("S4ST_RESULTS", "results")
-SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4", "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary"]
-sp = lambda n: next(s for s in SPEC if n.startswith(s))
+SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
+        "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
+        "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本
+def sp(n):
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # v1 与 Prime 5K 同一供体同一组织块，按一个标本计
+    for s in SPEC:
+        if n.startswith(s): return s
+    raise SystemExit(f"未知区域 {n}：请把它的标本加进 SPEC")
 NAME = {"hibou_l": "Hibou-L", "uni_v2": "UNI v2", "virchow2": "Virchow2", "hoptimus1": "H-optimus-1", "gigapath": "Prov-GigaPath", "phikon_v2": "Phikon-v2", "conch_v15": "CONCH v1.5", "kaiko_vits16": "Kaiko-S16", "ctranspath": "CTransPath", "h0_mini": "H0-mini", "midnight12k": "Midnight-12k"}
 READ = [("svg_top_jaccard", "SVG top-$k$ Jaccard", +1), ("svg_rank_rho", "SVG rank $\\rho$", +1), ("hotspot_jaccard", "Hotspot Jaccard", +1), ("boundary_shift_um", "Boundary shift ($\\mu$m)", -1), ("coloc_preserve", "Co-localisation preserved", +1), ("hotspot_recall_selectivity", "Hotspot recall selectivity", +1)]
 def rank(a):
@@ -17,8 +23,8 @@ def spearman(x, y, nperm=20000, seed=0):
 D = {}
 for f in glob.glob(f"{R}/multi_ds/*.json"):
     d = json.load(open(f)); D.setdefault(d["tower"], {})[d["name"]] = d
-towers = sorted(D); complete = [t for t in towers if len(D[t]) == 16]
-print(f"编码器 {len(towers)}，其中 16/16 区域齐的 {len(complete)}: {complete}")
+towers = sorted(D); NREG = max((len(v) for v in D.values()), default=0); complete = [t for t in towers if len(D[t]) == NREG]
+print(f"编码器 {len(towers)}，其中 {NREG}/{NREG} 区域齐的 {len(complete)}: {complete}")
 def specmed(t, fn):
     per = {}
     for n, d in D[t].items():

@@ -224,7 +224,7 @@ fig.text(0.700, 0.47, "c", fontsize=9, fontweight="bold", va="top", ha="left")
 
 fig.suptitle("What the score captures is the large-scale pattern, not the fine structure", fontsize=9.2, y=0.985, fontweight="bold")
 os.makedirs(OUT, exist_ok=True)
-fig.savefig(os.path.join(OUT, "Fig1_iclr_v2.pdf"))
+fig.savefig(os.path.join(OUT, "Fig1_iclr.pdf"))
 print("-> figures/Fig1_iclr_v2.pdf", flush=True)
 json.dump({d["TAG"]: dict(best=d["best"], pcc=d["pcc"], sg=d["sg"], bpcc=d["bpcc"], bpow=d["bpow"], pc1=d["pc1"], ncand=d["ncand"], nok=d["nok"], level=d["level"]) for d in D},
           open(os.path.join(ROOT, "results/fig1_v2_numbers.json"), "w"), indent=1)

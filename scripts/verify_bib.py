@@ -15,7 +15,7 @@ def field(body, name):
     v = m.group(1).strip(); v = v[1:-1] if v[:1] in "{\"" else v; return re.sub(r"\s+", " ", v).strip()
 def norm(t): return re.sub(r"[^a-z0-9 ]", "", re.sub(r"\\.|[{}]", "", t).lower()).strip()
 def sim(a, b): return difflib.SequenceMatcher(None, norm(a), norm(b)).ratio()
-UA = {"User-Agent": "octave-bib-check/1.0 (mailto:your-address@example.org)"}
+UA = {"User-Agent": "octave-bib-check/1.0 (mailto:anonymous@example.com)"}
 def get(url, timeout=40, tries=4):
     for k in range(tries):
         try: return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout).read()

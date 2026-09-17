@@ -26,29 +26,27 @@ M = {"HisToGene": load_flat(R + "/histogene_matched.json"),
      "BLEEP":     load_flat(R + "/bleep_hest.json"),
      "HECLIP":    load_flat(R + "/heclip_hest.json"),
      "HGGEP":     load_flat(R + "/hggep_hest.json")}
-import os as _os
-if _os.path.exists(R + "/thitogene_hest.json"):          # 2026-09-03 扩集；折文件合并后才存在
-    M["THItoGene"] = load_flat(R + "/thitogene_hest.json")
 
-# 2026-09-03：参照编码器 = 所有有留一队列选 α（LOCO）ridge 结果的编码器，与表 1 的分母同口径（不再限于有地板目录的 30 个）
-ENC = [os.path.basename(p)[len("hest_rsel_ps_"):-len(".json")] for p in glob.glob(R + "/hest_rsel_ps_*.json")]
+ENC = [os.path.basename(p)[len("hest_floor_"):] for p in glob.glob(R + "/hest_floor_*")
+       if os.path.isdir(p)]
 ENC = sorted(e for e in ENC if not re.match(r"^k\d+_", e))
 ENC = [e for e in ENC if e != "omiclip_raw"]   # omiclip 的未归一化变体，同一模型，不占两行
 E = {}
 for e in ENC:
-    ps = R + "/hest_rsel_ps_%s.json" % e
-    mod = json.load(open(ps))["per_sample_pcc"]
+    ps = R + "/hest_effres_ps_%s.json" % e
     fs = sorted(glob.glob(R + "/hest_floor_%s/*.json" % e))
+    if not os.path.exists(ps) or len(fs) != 10:
+        continue
+    mod = json.load(open(ps))["per_sample_pcc"]
     fl, coh = {}, {}
-    if len(fs) == 10:                      # 匹配检索地板只有原 30 个有；正文已不用，仅留档
-        for f in fs:
-            d = json.load(open(f))
-            for s, v in d["samples"].items():
-                fl[s] = v["pcc"]; coh[s] = d["cohort"]
+    for f in fs:
+        d = json.load(open(f))
+        for s, v in d["samples"].items():
+            fl[s] = v["pcc"]; coh[s] = d["cohort"]
     E[e] = dict(model=mod, floor=fl, cohort=coh)
-COH = next(v["cohort"] for v in E.values() if v["cohort"])
+COH = list(E.values())[0]["cohort"]
 enc_mean = {e: float(np.mean(list(v["model"].values()))) for e, v in E.items()}
-flo_mean = {e: float(np.mean(list(v["floor"].values()))) for e, v in E.items() if v["floor"]}
+flo_mean = {e: float(np.mean(list(v["floor"].values()))) for e, v in E.items()}
 best = max(enc_mean, key=enc_mean.get)
 worst_floor = min(flo_mean, key=flo_mean.get)
 print("参照：%d 个编码器 ridge 逐样本均值 %.4f–%.4f；匹配检索地板 %.4f–%.4f"

@@ -5,8 +5,11 @@
 import json, glob, os, numpy as np
 os.environ.setdefault("S4ST_RESULTS", "results"); R = os.environ["S4ST_RESULTS"]
 SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
-        "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary"]
-sp = lambda n: next(s for s in SPEC if n.startswith(s))
+        "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
+        "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本
+def sp(n):
+    if "Human_Lung_Cancer_FFPE" in n: return "Lung"   # Xenium v1 与 Prime 5K 为同一供体同一组织块，按一个标本计
+    return next(s for s in SPEC if n.startswith(s))
 def load(d): return {json.load(open(f))["name"]: json.load(open(f)) for f in glob.glob(f"{R}/{d}/*.json")}
 def specmed(vals):
     per = {}
@@ -26,12 +29,12 @@ for tag, lab in [("base", r"$k=8$, $29\,\mu$m, lazy $1/2$ (default)"), ("k4", r"
     r = row(load(f"blocks_xen_bands_{tag}")); num[f"op_{tag}"] = r
     rows.append(("Graph and walk" if tag == "base" else "", lab, r))
 D = load("blocks_xen_bands_base")
-for key, lab in [("band_pcc_q25", r"drop lowest quartile of finest-band share"), ("band_pcc_wvar", r"weight genes by finest-band variance"), ("band_pcc_thr5", r"keep genes with share $\geq 5\%$ (all qualify)")]:
+for key, lab in [("band_pcc_q25", r"drop lowest quartile of finest-band share"), ("band_pcc_wvar", r"weight genes by finest-band variance"), ("band_pcc_thr5", r"keep genes with share $\geq 5\%$")]:
     r = row(D, key); num[f"gene_{key}"] = r; rows.append(("Genes in $\\beta_1$" if key == "band_pcc_q25" else "", lab, r))
 L = [r"\begin{tabular}{llrrrrrr}", r"\toprule", r"Axis & Setting & $\sigma_1$ ($\mu$m) & $\beta_1$ model & $\beta_1$ oracle & $\Delta_{\mathrm{fine}}$ (\%) & Ratio & Specimens \\", r"\midrule"]
 for i, (ax, lab, r) in enumerate(rows):
     if ax == "Genes in $\\beta_1$": L.append(r"\midrule")
-    cells = [f"{r['sigma1']:.1f}", f"{r['b1m']:.3f}", f"{r['b1o']:.3f}", f"{r['dfine']:.1f}", f"{r['ratio']:.2f}", f"{r['k']}/8"]
+    cells = [f"{r['sigma1']:.1f}", f"{r['b1m']:.3f}", f"{r['b1o']:.3f}", f"{r['dfine']:.1f}", f"{r['ratio']:.2f}", f"{r['k']}/{r.get('n', len(SPEC))}"]
     if "default" in lab: cells = [r"\textbf{%s}" % c for c in cells]
     L.append(f"{ax} & {lab} & " + " & ".join(cells) + r" \\")
 L += [r"\bottomrule", r"\end{tabular}"]; open("paper/tab_operator.tex", "w").write("\n".join(L) + "\n")
