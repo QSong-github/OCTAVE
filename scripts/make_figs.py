@@ -557,8 +557,8 @@ def fig6():
     ax.set_xticks(range(len(SZ))); ax.set_xticklabels(SZ, rotation=30, ha="right", fontsize=5.5)
     ax.set_xlabel("Hotspot size class", fontsize=6)
     ax.set_ylabel("Recall", fontsize=6)
-    ax.set_title("Hotspot recall by size\n"
-                 f"per-region margin, largest $-$ smallest: {sel[BINS.index(16)]:+.3f} → {sel[-1]:+.3f}",
+    ax.set_title("Hotspot recall by size, per-region margin (largest $-$ smallest)\n"
+                 f"16→64 µm: {sel[BINS.index(16)]:+.3f} → {sel[-1]:+.3f}",
                  fontsize=6.2)
     ax.legend(fontsize=5.0, ncol=2, handlelength=1.0, loc="upper left",
               title="prediction bin", title_fontsize=5.2)

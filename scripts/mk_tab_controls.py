@@ -65,7 +65,7 @@ if X and xen.get("n_regions", 0) >= 16:   # 2026-09-14：区域数由数据决�
          f"Ridge on frozen features & {f3(xen['ridge'])} & 1.00 \\\\",
          f"Image partition, measured means ($K=20$; domain oracle) & {f3(xen['img'])} & {xen['img_frac'][0]:.2f} \\\\",
          f"Coordinate partition, measured means ($K=20$) & {f3(xen['coord'])} & {xen['coord_frac'][0]:.2f} \\\\",
-         f"Random matched-size partition, measured means & {f3(xen['rand'])} & {xen['rand_frac'][0]:.2f} \\\\",
+         f"Random matched-size partition, measured means ($K=20$) & {f3(xen['rand'])} & {xen['rand_frac'][0]:.2f} \\\\",
          f"Image partition, means from training blocks ($K=20$) & {f3(xen['train_img'])} & {xen['train_img_frac'][0]:.2f} \\\\",
          f"Image partition learned on training blocks, means from training blocks ($K=20$) & {f3(xen['ind_img'])} & {xen['ind_img_frac'][0]:.2f} \\\\",
          f"Coordinate partition, means from training blocks ($K=20$) & {f3(xen['train_coord'])} & {xen['train_coord_frac'][0]:.2f} \\\\",

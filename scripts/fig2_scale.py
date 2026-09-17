@@ -129,8 +129,8 @@ ax.set_xlabel("band width $\\sigma$ (µm)", labelpad=1)
 ax.set_ylabel("share of that field's variance\nin the band (%)", labelpad=2)
 vt0 = 100 * float(np.nanmedian([SPEC[s]["vt"][0] for s in names]))
 vr0 = 100 * float(np.nanmedian([SPEC[s]["vr"][0] for s in names]))
-ax.set_title(f"at the finest band: measurement {vt0:.0f}%,\npredictions {vr0:.0f}%", fontsize=7.4, pad=6)
-ax.legend(fontsize=6.0, loc="upper left", handlelength=1.3)
+ax.set_title(f"at the finest band: measurement {vt0:.0f}%,\ntrained model {vr0:.0f}%", fontsize=7.4, pad=6)
+ax.legend(fontsize=6.0, loc="upper right", handlelength=1.3)
 letter(ax, "b", x=-0.26)
 
 fig.suptitle("What the scalar hides: the same comparison, resolved over scale",

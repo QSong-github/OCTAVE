@@ -34,14 +34,19 @@ for c in ORDER:
     for k, _ in FEAT:
         e = "ciga" if k == "cigar" else k
         v = T[f"{c}_{k}"]
-        mark = r"$^{\dagger}$" if v["n_folds"] < nfold[c] else ""
+        mark = r"\rlap{$^{\dagger}$}" if v["n_folds"] < nfold[c] else ""
         cells += [f"{v['mean']:.3f}{mark}", f"{RID[e][c]:.3f}"]
     L.append(f"{c.replace('_', chr(92) + '_')} & {nfold[c]} & " + " & ".join(cells) + f" & {BEST[c]:.3f} " + r"\\")
 mean = []
 for k, _ in FEAT:
     e = "ciga" if k == "cigar" else k
     mean += [np.mean([T[f"{c}_{k}"]["mean"] for c in ORDER]), np.mean([RID[e][c] for c in ORDER])]
-L += [r"\midrule", "Mean & & " + " & ".join(f"{v:.3f}" for v in mean) + f" & {np.mean([BEST[c] for c in ORDER]):.3f} " + r"\\",
+short_bb = {k for c, k in short}
+mean_cells = []
+for (k, _), i in zip(FEAT, range(0, len(mean), 2)):
+    m = r"\rlap{$^{\dagger}$}" if k in short_bb else ""
+    mean_cells += [f"{mean[i]:.3f}{m}", f"{mean[i+1]:.3f}"]
+L += [r"\midrule", "Mean & & " + " & ".join(mean_cells) + f" & {np.mean([BEST[c] for c in ORDER]):.3f} " + r"\\",
       r"\bottomrule", r"\end{tabular}"]
 open("paper/tab_triplex.tex", "w").write("\n".join(L) + "\n")
 

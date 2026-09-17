@@ -106,8 +106,8 @@ src/          pipeline modules: encoder loading and embedding, ridge and effecti
 pipeline/     top-level drivers and aggregation: domain oracle, leave-one-cohort-out ridge, method
               comparison, parameter counts, probes, figure scripts, SLURM chain drivers (drv_*.sh)
 jobs/         SLURM job scripts (paths point at our cluster's project directory; edit for your cluster)
-scripts/      table, text and source-data generators: every number in the manuscript is written by one
-              of these from a result file, so no figure or table is typed by hand
+scripts/      table, text and source-data generators: every measured number in the manuscript is written
+              by one of these from a result file; the one hand-typed table is the protocol-settings table
 environment/  conda environment exports
 ```
 

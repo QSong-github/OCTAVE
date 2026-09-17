@@ -56,7 +56,7 @@ CITE.update({"kaiko_vitb8": "kaiko", "lunit_vits16": "lunit", "lunit_r50_swav": 
              "lunit_r50_moco": "lunit", "ctranspath": "ctranspath", "gpfm": "gpfm", "retccl": "retccl",
              "dinov2_base": "dinov2", "dinov2_giant": "dinov2", "dinov3_vitb16": "dinov3", "dinov3_vith16": "dinov3",
              "clip_vitl14": "clip", "pathgen_clip": "pathgen", "siglip2": "siglip2", "biomedclip": "biomedclip",
-             "hibou_b": "hibou", "gigapath_flash": "gigapath", "path_foundation": "pathfoundation", "mstar": "mstar", "distillpath_ks16": "distillpath", "distillpath_is16": "distillpath", "litefm": "litepath", "litefm_s": "litepath", "litefm_l": "litepath", "litevirchow2": "litepath", "pathryoshka_b": "pathryoshka"})
+             "hibou_b": "hibou", "gigapath_flash": "gigapathflash", "path_foundation": "pathfoundation", "mstar": "mstar", "distillpath_ks16": "distillpath", "distillpath_is16": "distillpath", "litefm": "litepath", "litefm_s": "litepath", "litefm_l": "litepath", "litevirchow2": "litepath", "pathryoshka_b": "pathryoshka"})
 LBL = lambda e: "%s \\citep{%s}" % (NAME.get(e, e), CITE[e]) if e in CITE else NAME.get(e, e)
 
 # ═══ 表 1（正文）逐样本：标量落差 vs 最细带落差
@@ -218,10 +218,10 @@ if os.path.exists(zp):
     ZS = json.load(open(zp))
     ZS = sorted(ZS, key=lambda r: r["k20"]["orc_z"] - r["k20"]["orc"])
     t = ["\\begin{tabular}{lrrrrrr}", "\\toprule",
-         "Encoder & Oracle & Oracle, std. & Difference & Ratio & Ratio, std. & Cohorts, raw/std. \\\\", "\\midrule"]
+         "Encoder & Oracle & Oracle, std. & Difference & Ratio & Ratio, std. & Cohorts, raw $\\to$ std. \\\\", "\\midrule"]
     for r in ZS:
         v = r["k20"]
-        t.append(f"{LBL(r['enc'])} & {v['orc']:.3f} & {v['orc_z']:.3f} & {v['orc_z']-v['orc']:+.3f} & {v['share']:.0f}\\% & {v['share_z']:.0f}\\% & {v['std'][2]}/{v['zs'][2]} \\\\")
+        t.append(f"{LBL(r['enc'])} & {v['orc']:.3f} & {v['orc_z']:.3f} & {v['orc_z']-v['orc']:+.3f} & {v['share']:.0f}\\% & {v['share_z']:.0f}\\% & {v['std'][2]}$\\to${v['zs'][2]} \\\\")
     d = np.array([abs(r["k20"]["orc_z"] - r["k20"]["orc"]) for r in ZS if r["enc"] != "openmidnight"])
     ds = np.array([abs(r["k20"]["share_z"] - r["k20"]["share"]) for r in ZS if r["enc"] != "openmidnight"])
     shz = np.array([r["k20"]["share_z"] for r in ZS]); sh0 = np.array([r["k20"]["share"] for r in ZS])
@@ -355,7 +355,7 @@ if os.path.exists(bp):
         v = (PARM.get(e) or {}).get("params")
         return "--" if not v else "%.0f" % (v / 1e6)
     t = ["\\begin{tabular}{lrrrrrrr}", "\\toprule",
-         "Encoder & M & Model & Oracle & Ratio & Difference & Mean/SE & Cohorts \\\\", "\\midrule"]
+         "Encoder & M & Model & Oracle & Ratio & Difference & $|t|$ & Cohorts \\\\", "\\midrule"]
     for r in BS:
         a = S(r)
         t.append(f"{LBL(r['enc'])} & {pm(r['enc'])} & {a['mod']:.4f} & {a['blk']:.4f} & {a['share']:.0f}\\% & "
