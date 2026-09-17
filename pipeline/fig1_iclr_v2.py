@@ -219,7 +219,7 @@ ax.set_xticks(np.arange(3)); ax.set_xticklabels(labs, fontsize=6.0)
 ax.set_ylabel("variance in the finest band (%)", labelpad=2)
 ymax = max(100 * d["bpow"]["truth"] for d in D); ax.set_ylim(0, ymax * 1.30)
 rat = [d["bpow"]["truth"] / max(d["bpow"]["ridge"], d["bpow"]["dom20"]) for d in D] + [d["bpow"]["truth"] / min(d["bpow"]["ridge"], d["bpow"]["dom20"]) for d in D]
-ax.set_title("both predictions are %.0f–%.0f$\\times$ too smooth\n(solid: section 1, faded: section 2)" % (min(rat), max(rat)), fontsize=6.8, pad=4)
+ax.set_title("both predictions are %.1f–%.1f$\\times$ too smooth\n(solid: section 1, faded: section 2)" % (min(rat), max(rat)), fontsize=6.8, pad=4)
 fig.text(0.700, 0.47, "c", fontsize=9, fontweight="bold", va="top", ha="left")
 
 fig.suptitle("What the score captures is the large-scale pattern, not the fine structure", fontsize=9.2, y=0.985, fontweight="bold")

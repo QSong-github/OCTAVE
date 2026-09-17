@@ -140,7 +140,7 @@ def fig_moran():
             f"shape of the gap not resolvable at n = {NSP}",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.4,
             linespacing=1.45, color=P["grey_d"])
-    ax.legend(fontsize=5.5, loc="lower right", handlelength=1.0, borderpad=0.1)
+    ax.legend(fontsize=5.5, loc="upper left", handlelength=1.0, borderpad=0.1)
     # 内嵌：预测值一律高于真值。**两种形状声称都已撤回**——
     #   「压缩」：OLS 斜率 0.55 = r x sd比 = 0.635 x 0.870，主由回归稀释；
     #             8 样本均值的 Pitman-Morgan 配对方差检验 P = 0.90。
@@ -149,7 +149,7 @@ def fig_moran():
     # n=8 只能确立**方向**。故只报中位与全距，并明说形状不可辨。
     # 注：偏移 = pred − true 是逐基因膨胀的**均值**；JSON 里的 moran_diff 是其
     #     **中位**（src/nine.py:156），两者差 ≤0.032，即该分布的偏度。
-    ins = ax.inset_axes([0.03, 0.56, 0.38, 0.41])
+    ins = ax.inset_axes([0.62, 0.04, 0.35, 0.36])
     ins.scatter(mt, mp, s=7, color=P["red"], zorder=3)
     lo, hi = 0.2, 1.0
     ins.plot([lo, hi], [lo, hi], "--", color=P["grey_m"], lw=0.7)
@@ -234,7 +234,11 @@ def fig_moran():
     # ── d (formerly e)  基因层面的解离：PCC 追随 Moran，σ 弱得多且反向 ──
     ax = fig.add_subplot(gs[1, 3:])
     rows = []
+    # 面板 d 的范围与 a–c/e/f 一致：只取 results/xenium 里有的区域（首发 16，Cervical 无 per-gene ⇒ 15）
+    _xen_names = {os.path.basename(f) for f in glob.glob(f"{RES}/xenium/*.json")}
     for f in sorted(glob.glob(f"{RES}/per_gene_xen/*.json")):
+        if os.path.basename(f) not in _xen_names:
+            continue
         d = json.load(open(f)); G = d["genes"]
         pg = np.array([G[g]["pcc"] for g in G]); mg = np.array([G[g]["moran"] for g in G])
         eg = np.array([G[g]["eq"] for g in G])
@@ -560,15 +564,15 @@ def fig_knobs():
         ax.plot([0, 1], [x_, y_], "-", color=P["grey_l"], lw=0.7, zorder=1)
     ax.scatter([0] * len(X0), X0, s=13, color=P["blue"], marker="o", zorder=3)
     ax.scatter([1] * len(Y0), Y0, s=13, color=P["red"], marker="v", zorder=3)
-    ax.plot([0, 1], [np.median(X0), np.median(Y0)], "-", color=P["black"], lw=2, zorder=4)
+    ax.plot([0, 1], [X0.mean(), Y0.mean()], "-", color=P["black"], lw=2, zorder=4)
     ax.set_xlim(-0.3, 1.3); ax.set_xticks([0, 1])
-    ax.set_xticklabels(["log1p\n(actual)", "CP10K\n(documented)"], fontsize=5.8)
+    ax.set_xticklabels(["log1p\n(as scored)", "CP10K"], fontsize=5.8)
     ax.set_ylabel("Mean per-gene PCC")
-    ax.set_title("Documented normalisation\ncosts a third of the score", fontsize=6.4)
+    ax.set_title(f"Normalisation choice\ncosts {100*(X0.mean()-Y0.mean())/X0.mean():.0f}% of the score", fontsize=6.4)
     ax.text(0.5, -0.34, f"{int((Y0 < X0).sum())}/{len(X0)} encoders and "
             f"{sum(1 for v in dcoh.values() if v < 0)}/{len(dcoh)} cohorts fall;\n"
             f"mean {X0.mean():.4f} → {Y0.mean():.4f} "
-            f"({100*(Y0.mean()-X0.mean())/X0.mean():+.1f}%)  ·  HEST cohort",
+            f"({100*(Y0.mean()-X0.mean())/X0.mean():+.1f}%)  ·  HEST benchmark, 72-sample mean",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.2,
             linespacing=1.4, color=P["grey_d"])
     lab(ax, "a", x=-0.42, y=1.16)
@@ -662,7 +666,7 @@ def fig_knobs():
         ax.text(i + w/2, b_ + 0.006, f"{b_:.3f}", ha="center", fontsize=5.4,
                 color=P["grey_d"])
     ax.set_ylim(0, max(dmo + dla) * 1.30)
-    ax.set_title("One choice moves the score,\nthe other moves the resolution", fontsize=6.4)
+    ax.set_title("The gene panel changes the target;\nthe encoder patch does not", fontsize=6.4)
     ax.legend(fontsize=5.0, loc="upper right", handlelength=1.1)
     ax.text(0.5, -0.30, "the crop sweep leaves the target and its calibration curve\n"
             "numerically unchanged at every setting",
@@ -817,14 +821,14 @@ def fig_protocol():
     ax.axvline(0, color=P["grey_m"], lw=0.8)
     ax.set_yticks([])
     ax.set_xlabel("$\\sigma$ change per +0.01 PCC (%)", fontsize=6)
-    ax.set_xlim(vals.min() * 1.18, abs(vals.min()) * 0.92)
+    ax.set_xlim(vals.min() * 1.32, abs(vals.min()) * 0.92)
     for yi, v, nmm in zip(y, vals, names):
         ax.text(v - 0.4, yi, f"{v:+.1f}", va="center", ha="right", fontsize=5.4,
                 color=P["grey_d"])
         ax.text(0.5, yi, nmm.replace("\n", " · "), va="center", ha="left",
                 fontsize=4.8, color=P["grey_d"])
     ax.set_title(f"Rate spans {vals.min():.1f} to {vals.max():.1f}%\n"
-                 "within one dataset", fontsize=6.4)
+                 "within one benchmark", fontsize=6.4)
     lab(ax, "e", x=-0.16, y=1.18)
 
     save(fig, "Fig3_evaluation_protocol")
@@ -896,7 +900,7 @@ def fig_methods():
     lo_ = min(np.nanmin(v) for v in tab.values())
     ax.set_ylim(min(0, lo_ * 1.5) - 0.01, max(np.nanmax(v) for v in tab.values()) * 1.32)
     ax.axhline(0, color=P["grey_m"], lw=0.6, zorder=0)
-    ax.set_title(f"Three published methods vs a linear baseline on frozen features\n"
+    ax.set_title(f"Three end-to-end methods vs a linear baseline on frozen features\n"
                  f"(baseline higher in {len(COH_)-nwin}/{len(COH_)} cohorts)",
                  fontsize=6.4)
     ax.legend(fontsize=5.2, ncol=4, loc="upper center", handlelength=1.1,
@@ -915,7 +919,7 @@ def fig_methods():
     ax.plot(lim, lim, "--", color=P["grey_m"], lw=0.8)
     ax.set_xlim(lim); ax.set_ylim(lim); ax.set_aspect("equal")
     ax.set_xlabel("Ridge + phikon-v2 (PCC)", fontsize=6)
-    ax.set_ylabel("Published method (PCC)", fontsize=6)
+    ax.set_ylabel("End-to-end method (PCC)", fontsize=6)
     ax.set_title("Per sample; above diagonal = beats baseline", fontsize=6.4)
     ax.legend(fontsize=5.0, loc="upper left", handlelength=1.0, title="samples won",
               title_fontsize=5.0)

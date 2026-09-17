@@ -400,7 +400,7 @@ def fig4():
     _hi = max(np.nanmax(v) for v in tab.values())
     ax.set_ylim(min(0, _lo * 1.6) - 0.01, _hi * 1.30)
     ax.axhline(0, color=P["grey_m"], lw=0.6, zorder=0)
-    ax.set_title("Published methods vs a linear baseline on frozen features\n"
+    ax.set_title("End-to-end methods vs a linear baseline on frozen features\n"
                  f"(baseline higher in {len(present)-nwin}/{len(present)} cohorts)")
     ax.legend(fontsize=5.5, ncol=3, loc="upper center", handlelength=1.2,
               bbox_to_anchor=(0.5, 1.0), columnspacing=1.2)
@@ -418,7 +418,7 @@ def fig4():
     lim = [-0.05, 0.85]
     ax.plot(lim, lim, "--", color=P["grey_m"], lw=0.8)
     ax.set_xlim(lim); ax.set_ylim(lim); ax.set_aspect("equal")
-    ax.set_xlabel("Ridge + phikon-v2 (PCC)"); ax.set_ylabel("Published method (PCC)")
+    ax.set_xlabel("Ridge + phikon-v2 (PCC)"); ax.set_ylabel("End-to-end method (PCC)")
     ax.set_title(f"Per sample (n={n_s})")
     ax.legend(fontsize=5.5, loc="upper left", handlelength=1.0)
     lab(ax, "b", x=-0.24)
@@ -557,8 +557,8 @@ def fig6():
     ax.set_xticks(range(len(SZ))); ax.set_xticklabels(SZ, rotation=30, ha="right", fontsize=5.5)
     ax.set_xlabel("Hotspot size class", fontsize=6)
     ax.set_ylabel("Recall", fontsize=6)
-    ax.set_title("Hotspot recall by size\n"
-                 f"per-region margin, largest $-$ smallest: {sel[BINS.index(16)]:+.3f} → {sel[-1]:+.3f}",
+    ax.set_title("Hotspot recall by size, per-region margin (largest $-$ smallest)\n"
+                 f"16→64 µm: {sel[BINS.index(16)]:+.3f} → {sel[-1]:+.3f}",
                  fontsize=6.2)
     ax.legend(fontsize=5.0, ncol=2, handlelength=1.0, loc="upper left",
               title="prediction bin", title_fontsize=5.2)
