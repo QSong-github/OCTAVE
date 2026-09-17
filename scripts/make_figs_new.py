@@ -900,7 +900,7 @@ def fig_methods():
     lo_ = min(np.nanmin(v) for v in tab.values())
     ax.set_ylim(min(0, lo_ * 1.5) - 0.01, max(np.nanmax(v) for v in tab.values()) * 1.32)
     ax.axhline(0, color=P["grey_m"], lw=0.6, zorder=0)
-    ax.set_title(f"Three published methods vs a linear baseline on frozen features\n"
+    ax.set_title(f"Three end-to-end methods vs a linear baseline on frozen features\n"
                  f"(baseline higher in {len(COH_)-nwin}/{len(COH_)} cohorts)",
                  fontsize=6.4)
     ax.legend(fontsize=5.2, ncol=4, loc="upper center", handlelength=1.1,
@@ -919,7 +919,7 @@ def fig_methods():
     ax.plot(lim, lim, "--", color=P["grey_m"], lw=0.8)
     ax.set_xlim(lim); ax.set_ylim(lim); ax.set_aspect("equal")
     ax.set_xlabel("Ridge + phikon-v2 (PCC)", fontsize=6)
-    ax.set_ylabel("Published method (PCC)", fontsize=6)
+    ax.set_ylabel("End-to-end method (PCC)", fontsize=6)
     ax.set_title("Per sample; above diagonal = beats baseline", fontsize=6.4)
     ax.legend(fontsize=5.0, loc="upper left", handlelength=1.0, title="samples won",
               title_fontsize=5.0)

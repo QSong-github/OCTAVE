@@ -242,7 +242,7 @@ if os.path.exists(mp):
          "Method & PCC & Below encoders & Margin per cohort & Cohorts won \\\\",
          "\\midrule"]
     MCITE = {"HisToGene": "histogene", "Hist2ST": "hist2st", "BLEEP": "bleep",
-             "HECLIP": "heclip", "HGGEP": "hggep", "THItoGene": "thitogene"}
+             "HECLIP": "heclip", "HGGEP": "hggep", "THItoGene": "thitogene", "DeepSpot": "deepspot"}
     for k, v in rows:
         nm = "%s \\citep{%s}" % (k, MCITE[k]) if k in MCITE else k
         t.append(f"{nm} & {v['mean_sample']:.4f} & {v['n_below_encoders']}/{v['n_encoders']} & "

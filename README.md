@@ -34,13 +34,14 @@ nowhere else, and each source keeps its own licence and access conditions.
 
 ## Models
 
-The evaluation scores 57 frozen image encoders paired with a ridge head. Six published
-end-to-end methods are run separately, as a check that the ridge baseline is not weak.
+The evaluation scores 57 frozen image encoders paired with a ridge head. Eight end-to-end
+methods are run separately on the benchmark, and iStar on the Xenium protocol, as a check that
+the ridge baseline is not weak.
 
 | Models | What we use | How to obtain |
 |---|---|---|
-| Frozen encoders | 57 pathology and general-purpose encoders, 6M to 1.1B parameters, each with its own published preprocessing | Named and configured one by one in `src/hest_embed_v2.py`, which loads each from its published source through `timm`, `transformers`, `open_clip` or the authors' own loader. UNI, Virchow, GigaPath, H-optimus, CONCH and others are gated: request access on Hugging Face and leave the token where `huggingface_hub` finds it. Path Foundation is a TensorFlow SavedModel and runs in the second environment |
-| Published methods | HisToGene, Hist2ST, BLEEP, HECLIP, HGGEP, THItoGene, and iStar on the Xenium protocol | Clone the authors' repositories into `methods/`; the adaptors `src/<method>_hest.py` run them under the benchmark protocol and document every change |
+| Frozen encoders | 57 pathology and general-purpose encoders, 6M to 1.1B parameters, each with the preprocessing its authors specify | Named and configured one by one in `src/hest_embed_v2.py`, which loads each from its published source through `timm`, `transformers`, `open_clip` or the authors' own loader. UNI, Virchow, GigaPath, H-optimus, CONCH and others are gated: request access on Hugging Face and leave the token where `huggingface_hub` finds it. Path Foundation is a TensorFlow SavedModel and runs in the second environment |
+| End-to-end methods | HisToGene, Hist2ST, BLEEP, HECLIP, HGGEP, THItoGene, DeepSpot and TRIPLEX on the benchmark; iStar on the Xenium protocol | Clone the authors' repositories into `methods/`; the adaptors `src/<method>_hest.py` run them under the benchmark protocol and document every change. DeepSpot takes its features from `src/deepspot_feats.py`; TRIPLEX runs through the authors' code after `src/triplex_subsample.py` and the neighbourhood dumps of `jobs/triplex_hest.sh` |
 
 ## Usage
 
@@ -59,7 +60,7 @@ python pipeline/blk_agg.py && python pipeline/blkz_agg.py
 python scripts/mk_tables.py && python scripts/headline_numbers.py
 ```
 
-`pipeline/drv_one.sh <encoder ...>` chains these stages on SLURM. Published methods are run fold by
+`pipeline/drv_one.sh <encoder ...>` chains these stages on SLURM. The end-to-end methods are run fold by
 fold with `src/<method>_hest.py`, merged with `pipeline/merge_folds.py` and compared with
 `pipeline/methods_agg2.py`.
 
@@ -113,7 +114,7 @@ environment/  conda environment exports
 
 ## Conventions
 
-- Every encoder uses its own published preprocessing (mean/std, input size, pooling); the choice is
+- Every encoder uses the preprocessing its authors specify (mean/std, input size, pooling); the choice is
   recorded next to each entry in `src/hest_embed_v2.py`, and a CPU probe (`pipeline/probe_cfg.py`)
   checks it before any full run.
 - Statistics are computed at the specimen level (Xenium) or cohort level (benchmark) with exact
@@ -129,4 +130,4 @@ The manuscript is under review. A citation entry will be added when it is public
 The code in this repository is released under the MIT License (see `LICENSE`). The data it reads
 are not ours to relicense: HEST-Benchmark is CC BY-NC-SA 4.0 and gated, the Xenium and Visium HD
 datasets follow 10x Genomics' terms, several encoder weights are gated by their publishers, and
-each published method keeps the licence of its own repository.
+each end-to-end method keeps the licence of its own repository.
