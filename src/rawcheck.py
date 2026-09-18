@@ -11,7 +11,7 @@
 """
 import numpy as np, anndata as ad, h5py, os
 
-P = "/path/to/spatial2exp/he2st_align"
+P = "/path/to/align_workspace"
 SLIDES = ["Visium_HD_Human_Colon_Cancer_P2", "Visium_HD_Human_Colon_Cancer_P5"]
 
 b = ad.read_h5ad(os.path.join(P, "data/binned_16um.h5ad"))

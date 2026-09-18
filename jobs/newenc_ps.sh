@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=nps
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-default
+#SBATCH --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-11
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=48G

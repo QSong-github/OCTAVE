@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""审稿意见 Q4：Xenium 各区域、各扩散带的拆半可靠性。对 16 µm 分箱 counts 做二项拆半（每个 count c 抽 h~Binom(c,1/2)），
+"""复核意见 Q4：Xenium 各区域、各扩散带的拆半可靠性。对 16 µm 分箱 counts 做二项拆半（每个 count c 抽 h~Binom(c,1/2)），
 两半各自 log1p，用与主流水线相同的算子（k=8、29 µm、lazy 1/2）做同样的带分解，逐基因算两半的带内相关 c_half，
 Spearman–Brown 校正到全深度 c_full = 2c/(1+c)。基因集与主流水线一致（全场方差最高的 200 个）。"""
 import argparse, json, os, sys, numpy as np, anndata as ad

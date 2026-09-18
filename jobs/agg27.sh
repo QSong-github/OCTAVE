@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J agg27
-#SBATCH --qos=YOUR_QOS --partition=hpg-default
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH -c 2 --mem=16G -t 00:30:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -eu

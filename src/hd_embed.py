@@ -49,7 +49,7 @@ if __name__ == "__main__":
     dev = "cuda" if torch.cuda.is_available() else "cpu"
 
     if a_.validate:
-        PA = "/path/to/spatial2exp/he2st_align"
+        PA = "/path/to/align_workspace"
         import h5py
         with h5py.File(f"{PA}/data/binned_16um.h5ad", "r") as h:
             sid = h["obs"]["slide_id"]

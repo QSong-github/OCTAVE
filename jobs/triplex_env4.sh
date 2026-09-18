@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J tpxenv4
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 2:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 2:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 # PyPI 的 "hest" 是别的项目；MahmoodLab 的 HEST 只能从 GitHub 装。装到独立目录（不动 he2st/HEST 旧版），置于 PYTHONPATH 最前。
 set -u

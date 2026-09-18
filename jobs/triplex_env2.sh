@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J tpxenv2
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 2:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 2:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 # TRIPLEX 需要新版 HEST（hest.bench.cpath_model_zoo、hestcore）。不动 he2st/HEST 的旧版：把新版 hest 装到独立目录并置于 PYTHONPATH 最前；hestcore 与 wget 装进 triplex 环境。
 set -u

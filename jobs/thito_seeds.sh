@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=thitoseed
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-b200,hpg-rtx6000,hpg-turin
+#SBATCH --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:b200:1
 #SBATCH --array=0-57
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
 #SBATCH --time=10:00:00
 #SBATCH --output=/path/to/systema4ST/logs/%x_%A_%a.out
-# 审稿意见：THItoGene 只跑了一次。补两个固定种子（1、2），加上原始运行共三次；协议与 jobs/thito_arr.sh 完全一致。
+# 复核意见：THItoGene 只跑了一次。补两个固定种子（1、2），加上原始运行共三次；协议与 jobs/thito_arr.sh 完全一致。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
 cd /path/to/systema4ST; export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True

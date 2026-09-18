@@ -7,7 +7,7 @@ E2="hibou_b gigapath_flash"
 cat > jobs/b3emb.sh <<SH
 #!/bin/bash
 #SBATCH -J b3emb
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000,hpg-turin --gres=gpu:1 --array=0-1 -c 6 --mem=16G -t 24:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:1 --array=0-1 -c 6 --mem=16G -t 24:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
@@ -31,7 +31,7 @@ ALPHAS="0.1 1 10 100 1000 10000 100000 1000000 10000000 100000000 1000000000"
 cat > jobs/b3ds.sh <<SH
 #!/bin/bash
 #SBATCH -J b3ds
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-$((NOK*13-1)) -c 4 --mem=24G -t 8:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-$((NOK*13-1)) -c 4 --mem=24G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
@@ -44,5 +44,5 @@ python -u src/hest_effres_ps.py --encoder \$X --skip_sigma --ridge_alpha \$a --o
 SH
 sbatch jobs/b3ds.sh >/dev/null
 while [ "$(squeue -u $USER -r -h -n b3ds | wc -l)" -gt 0 ]; do sleep 60; done
-J=$(sbatch --parsable --qos=YOUR_QOS -p hpg-default -c 2 --mem=16G -t 1:00:00 -J b3agg -o logs/b3agg_%j.out --wrap="source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest; cd /path/to/systema4ST; python3 ridge_loco.py $(echo $OK | tr ' ' ','); python3 blk_agg.py | tail -8")
+J=$(sbatch --parsable --qos=YOUR_QOS -p YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00 -J b3agg -o logs/b3agg_%j.out --wrap="source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest; cd /path/to/systema4ST; python3 ridge_loco.py $(echo $OK | tr ' ' ','); python3 blk_agg.py | tail -8")
 while [ "$(squeue -j $J -h | wc -l)" -gt 0 ]; do sleep 20; done; cat logs/b3agg_${J}.out

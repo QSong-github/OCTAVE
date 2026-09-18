@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J waivds
-#SBATCH --qos=YOUR_QOS --partition=hpg-default
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-81 -c 2 --mem=12G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J blkz
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-49 -c 4 --mem=24G -t 6:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-49 -c 4 --mem=24G -t 6:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest

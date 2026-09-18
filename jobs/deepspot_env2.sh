@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J dsenv2
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=8G -t 1:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=8G -t 1:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 # 作者包不 pip 安装（其 pyproject 的 license classifier 被新 setuptools 拒绝），改用 PYTHONPATH 直接导入仓库；只补 lightning。
 set -e

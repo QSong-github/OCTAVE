@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=blurds
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-default
+#SBATCH --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-15
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G

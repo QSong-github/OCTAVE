@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J tpxcheck
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 0:30:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 0:30:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate triplex
 cd /path/to/systema4ST

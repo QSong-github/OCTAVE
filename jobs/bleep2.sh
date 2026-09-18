@@ -6,7 +6,7 @@
 #SBATCH --mem=128G
 #SBATCH --time=48:00:00
 #SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
-# 三处修正(相对 38899898):
+# 三处修正(相对首轮):
 #  ① 不再 | tail —— 那会缓冲到进程结束, 1.4 小时零输出无法判断死活
 #  ② 每折即时落盘 + 断点续跑 —— 48h 墙钟下"跑完才写"等于超时即全丢
 #  ③ epochs 40 → 12 —— L4 上 ResNet50 约 250 img/s, CCRCC 单折 6 万 patch×40ep

@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=flrk
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-default
+#SBATCH --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-449
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G

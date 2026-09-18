@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J xenpfgpu
-#SBATCH --qos=YOUR_QOS --partition=hpg-turin --gres=gpu:l4:1 --array=0-15 -c 2 --mem=24G -t 12:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:l4:1 --array=0-15 -c 2 --mem=24G -t 12:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 # 第二段（L4 GPU，tfpf 环境，只用 h5py/numpy/TF）：逐分片推理并删除分片，最后拼接。
 set -e

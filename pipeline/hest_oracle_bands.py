@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""第一份审稿意见：在 HEST（~100 µm 间距）上做 OCTAVE 式的 Δ_fine/Δ_scalar。
+"""复核意见：在 HEST（~100 µm 间距）上做 OCTAVE 式的 Δ_fine/Δ_scalar。
 本脚本只补 domain oracle 的逐样本逐带 PCC；ridge 的逐带 PCC 已在 results/hest_effres_ps_{enc}.json（官方 α）。
 算子、σ 标定、带分解与 hest_effres_ps.py 完全同一份代码（直接 import）；oracle 配方与 hest_blocks.py 逐参数一致。"""
 import os, sys, json, numpy as np, anndata as ad

@@ -208,7 +208,7 @@ print(f"ROI x{x0:.0f} y{y0:.0f} bins={nsel} 窗内域数={ndom}（中位梯度�
 DOWN = float(open(os.path.join(ROOT, f"istar_run/{TAG}_{FOLD}/level-downsample.txt")).read()
              .split()[0]) if os.path.exists(
     os.path.join(ROOT, f"istar_run/{TAG}_{FOLD}/level-downsample.txt")) else 4.000053157559005
-HEP = os.path.join("/path/to/spatial2exp/he2st_align",
+HEP = os.path.join("/path/to/align_workspace",
                    f"istar_run/{TAG}_{FOLD}/he-raw.jpg")
 hp = pxl[m][tem][sel] / DOWN
 crop = Image.open(HEP).crop((int(hp[:, 0].min()), int(hp[:, 1].min()),

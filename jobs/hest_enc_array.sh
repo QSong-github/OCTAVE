@@ -15,7 +15,7 @@ conda activate hest
 cd /path/to/systema4ST
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 export HF_HOME=/path/to/systema4ST/.hf
-# dinov2/dinov3 已缓存在 phenofm, 复用避免重下
+# dinov2/dinov3 已缓存在另一个项目的 HF 缓存, 复用避免重下
 export HF_HUB_CACHE=/path/to/systema4ST/.hf/hub
 ENC=(ciga hibou_b dinov2_large dinov3_vitl16 lunit_vits8 kaiko_vitb16 kaiko_vits16 kaiko_vitl14 phikon)
 E=${ENC[$SLURM_ARRAY_TASK_ID]}

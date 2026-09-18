@@ -11,7 +11,7 @@
 """
 import numpy as np, anndata as ad
 
-H5AD = "/path/to/spatial2exp/he2st_align/data/binned_16um.h5ad"
+H5AD = "/path/to/align_workspace/data/binned_16um.h5ad"
 
 a = ad.read_h5ad(H5AD)
 print(f"n_obs={a.n_obs}  n_vars={a.n_vars}", flush=True)

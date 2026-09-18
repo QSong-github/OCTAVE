@@ -5,7 +5,7 @@ python3 add_waiv.py
 cat > jobs/waivemb.sh <<'SH'
 #!/bin/bash
 #SBATCH -J waivemb
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000,hpg-turin
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1 --array=0-1 -c 6 --mem=96G -t 24:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -eu
@@ -26,7 +26,7 @@ say "阶段2 下游"
 cat > jobs/waivds.sh <<'SH'
 #!/bin/bash
 #SBATCH -J waivds
-#SBATCH --qos=YOUR_QOS --partition=hpg-default
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-81 -c 2 --mem=12G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e

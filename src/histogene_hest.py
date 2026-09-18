@@ -69,11 +69,11 @@ def load_slide(sid, cohort, genes, rng):
 def main():
     ap = argparse.ArgumentParser()
     # 作者 tutorial.ipynb 的发表配置: HisToGene(n_layers=8, learning_rate=1e-5), max_epochs=100
-    # 首轮(38940897)我误用了函数签名默认值(n_layers=4, lr=1e-4), lr 高 10 倍导致欠拟合。
+    # 首轮我误用了函数签名默认值(n_layers=4, lr=1e-4), lr 高 10 倍导致欠拟合。
     ap.add_argument("--epochs", type=int, default=100)
     ap.add_argument("--n_layers", type=int, default=8)
     ap.add_argument("--lr", type=float, default=1e-5)
-    # 按发表配置跑过一轮(38945010)后, 结果并未改善 ⇒ "lr 错"这个诊断被证伪。
+    # 按发表配置跑过一轮后, 结果并未改善 ⇒ "lr 错"这个诊断被证伪。
     # 真正的混杂是梯度步数: HisToGene 一整片=一个样本, 步数=切片数×epoch。
     # 作者 HER2ST 32 片×100ep=3200 步; HEST 队列只有 2–20 片 ⇒ 200–2000 步。
     # --match_steps 按队列调 epoch 使步数统一到 3200, 直接消除这个混杂。

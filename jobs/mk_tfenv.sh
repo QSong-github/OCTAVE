@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J tfenv
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 4 --mem=32G -t 2:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 4 --mem=32G -t 2:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh

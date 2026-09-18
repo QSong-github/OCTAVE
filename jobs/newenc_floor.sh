@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=nfloor
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-default
+#SBATCH --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-479
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12G
@@ -9,7 +9,7 @@
 #SBATCH --output=/path/to/systema4ST/logs/%x_%A_%a.out
 # 新编码器的匹配检索地板：12 编码器 × 10 队列 × 4 个 k = 480。
 # k=50 落在 hest_floor_<E>/，其余落在 hest_floor_k<K>_<E>/，与既有命名一致。
-# 不设并发上限；QOS 的 cpu=115 是唯一约束。
+# 不设并发上限；QOS 的 CPU 配额是唯一约束。
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest

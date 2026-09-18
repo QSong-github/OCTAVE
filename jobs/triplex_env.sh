@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J tpxenv
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 3:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 3:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 # TRIPLEX 环境：克隆 hest（不动共享环境），--no-deps 补 addict/einops/wandb；flash_attn 用垫片（默认配置不调用）。
 set -e

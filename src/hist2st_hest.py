@@ -17,7 +17,7 @@
 超参用作者 README 的发表配置：zinb=0.25, nb=False, bake=5, lamb=0.5,
 kernel=5, patch=7, depth1=2, depth2=8, depth3=4, heads=16, channel=32。
 
-首轮（39350013）跑出 27/72 个样本恰好 0.0000，查证为**我的实现偏离**而非方法能力，
+首轮跑出 27/72 个样本恰好 0.0000，查证为**我的实现偏离**而非方法能力，
 三处均已修正：
   ① **孤立点 ⇒ NaN**：作者 calcADJ 的 Grid 裁边在 PRAD 的 2/15 片上留下度为 0 的点，
      而 gcn.py 的 aggregate 做 `adj.div(num_neigh)`，0/0 = NaN 污染整个前向。

@@ -54,7 +54,7 @@ def group_means(X, labels):
 def decompose(pred, truth, labels):
     """分解恒等式的四个分量 + 两边数值。逐基因算后取均值。
 
-    全程 float64: 首轮(38049415)在 float32 下最大误差 ~1e-3, 需排除是精度而非理论缺口。
+    全程 float64: 首轮在 float32 下最大误差 ~1e-3, 需排除是精度而非理论缺口。
     常数预测器(Var=0)下 η̂ 无定义, 恒等式本就不适用, 单独标记而不是算出个假值。
     """
     pred = np.asarray(pred, np.float64); truth = np.asarray(truth, np.float64)

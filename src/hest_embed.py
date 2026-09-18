@@ -2,7 +2,7 @@
 """
 跨 72 样本的模型半 —— HEST-benchmark 官方协议下的"报告 PCC"。
 
-首版(38096723)是我自己复刻协议, 有四处偏差, 数字全废:
+首版是我自己复刻协议, 有四处偏差, 数字全废:
   Ridge alpha 我用 1e4, 官方是 100/(D×G)≈9.8e-4 —— 差 7 个数量级, 回归被压成常数
   降维       我漏了 StandardScaler
   归一化     我用 CP10k+log1p, 官方 normalize_adata 只做 sc.pp.log1p

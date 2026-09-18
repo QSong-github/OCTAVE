@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J xenmultiall
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 -t 6:00:00 --nice=50000
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 -t 6:00:00 --nice=50000
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 # 内存按区域分层提交（sbatch --mem 与 --array 由 restart_tiers.sh 按区域峰值 RSS 给出），作业名保持 xenmultiall 以便调速器统一节流。
 set -e

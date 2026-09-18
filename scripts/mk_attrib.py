@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""第四份审稿意见的补充分析汇总（results/xen_attrib/*.json → results/attrib_numbers.json, paper/tab_attrib.tex, paper/attrib_text.tex）。
+"""复核意见的补充分析汇总（results/xen_attrib/*.json → results/attrib_numbers.json, paper/tab_attrib.tex, paper/attrib_text.tex）。
 聚合与正文一致：区域→标本中位数→跨标本中位数（范围为跨标本）。"""
 import json, glob, os, numpy as np
 R = os.environ.get("S4ST_RESULTS", "results")

@@ -11,7 +11,7 @@ say "冒烟：ciga seed0"
 cat > jobs/mlpsmoke.sh <<'SH'
 #!/bin/bash
 #SBATCH -J mlpsmoke
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 2:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 2:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
@@ -33,7 +33,7 @@ say "全量：30 编码器 × 3 种子"
 cat > jobs/mlpall.sh <<SH
 #!/bin/bash
 #SBATCH -J mlpall
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-89 -c 2 --mem=16G -t 4:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-89 -c 2 --mem=16G -t 4:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
@@ -56,7 +56,7 @@ grep -c "hest_mlp_ps_" k_sens_mlp.py cohort_spread_mlp.py
 cat > jobs/mlpagg.sh <<'SH'
 #!/bin/bash
 #SBATCH -J mlpagg
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 1:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest

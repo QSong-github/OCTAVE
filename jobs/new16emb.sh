@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J new16emb
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000,hpg-turin
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1 --array=0-15 -c 6 --mem=16G -t 24:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -eu

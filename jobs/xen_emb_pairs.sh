@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J xenembfix
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000 --gres=gpu:1 --array=0-17 -c 6 --mem=48G -t 12:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:1 --array=0-17 -c 6 --mem=48G -t 12:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J dsenv
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 3:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 3:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 # DeepSpot 专用环境：克隆 hest（不动共享环境），补 lightning，--no-deps 装作者包
 set -e

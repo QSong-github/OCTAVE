@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J pmusk
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1 -c 6 --mem=64G -t 01:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -eu

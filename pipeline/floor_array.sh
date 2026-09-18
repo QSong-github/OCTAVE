@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=hfloor
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-default
+#SBATCH --partition=YOUR_CPU_PARTITION
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=48G
 #SBATCH --time=4:00:00

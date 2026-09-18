@@ -1,6 +1,6 @@
 #!/bin/bash
 # 检验无损压缩能否恢复与母项目管线的等价性。
-# JPEG Q=95 只带来 1.2% 像素 MAE，却使 hibou-L 嵌入余弦掉到 0.889（诊断 39021309）。
+# JPEG Q=95 只带来 1.2% 像素 MAE，却使 hibou-L 嵌入余弦掉到 0.889（已诊断）。
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest

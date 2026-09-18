@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=omidiag
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-b200,hpg-rtx6000,hpg-turin
+#SBATCH --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=96G
@@ -19,15 +19,3 @@ HAVE=$(stat -c%s "$CK")
 echo "checkpoint $HAVE / $WANT"
 [ "$HAVE" = "$WANT" ] || { echo "大小不符"; exit 1; }
 python -u omi_diag.py; exit 0
-import zipfile, torch, numpy as np
-p = "methods/OmiCLIP/checkpoint.pt"
-assert zipfile.is_zipfile(p), "zip 校验失败"
-# 与 hest_embed_v2.py 里同一处理：只放行这一个 global，不整体关掉 weights_only
-torch.serialization.add_safe_globals([np.core.multiarray.scalar, np.dtype])
-from open_clip import create_model_from_pretrained
-m, pre = create_model_from_pretrained("coca_ViT-L-14", device="cpu", pretrained=p)
-with torch.no_grad():
-    f = m.encode_image(torch.randn(1, 3, 224, 224))
-print("encode_image 输出", tuple(f.shape))
-print("preprocess:", pre)
-exit 0

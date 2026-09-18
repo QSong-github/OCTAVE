@@ -24,7 +24,7 @@ from scipy import sparse
 import evaluate as E
 from effres import build_operator, calibrate_sigma, PX_PER_UM
 
-PARENT = "/path/to/spatial2exp/he2st_align"
+PARENT = "/path/to/align_workspace"
 BINNED = os.path.join(PARENT, "data/binned_16um.h5ad")
 RAW = os.path.join(PARENT, "st_bench/data/{slide}/adata_16um.h5ad")
 SLIDES = ["Visium_HD_Human_Colon_Cancer_P2", "Visium_HD_Human_Colon_Cancer_P5"]
@@ -72,7 +72,7 @@ def main():
         assert r.n_obs == int(te.sum()), f"行数不一致 {r.n_obs} vs {int(te.sum())}"
 
         # ---- 行序核对 + x_um 污染诊断
-        # 首轮(38039974)发现 st_bench 的 x_um/y_um 与 pxl 差一个中位 166/242µm 的非仿射位移,
+        # 首轮发现 st_bench 的 x_um/y_um 与 pxl 差一个中位 166/242µm 的非仿射位移,
         # 且尺度因子 <1 (P2 0.971, P5 0.916) —— 点云被向原点收缩, 正是 coord.npy 的
         # NaN→0 污染的指纹, 且与 NaN 比例(5.9%/7.7%)呈剂量-反应。故 x_um 不可用于建图。
         # 行序本身没问题: 若行序错乱, 仿射残差应是组织尺度(~2000µm)而非百微米量级。

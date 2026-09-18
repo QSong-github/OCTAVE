@@ -94,7 +94,7 @@ def main():
         chk = dict(frozen_dom20_pcc=fz, seed0_dom20_pcc=s0, delta=s0 - fz,
                    frozen_ridge_pcc=rz, ridge_delta=r_pcc - rz,
                    reproduces=bool(abs(s0 - fz) < 1e-9))
-        tag = "一致" if chk["reproduces"] else "不一致（多半是线程数不同，见 CLAIMS B7）"
+        tag = "一致" if chk["reproduces"] else "不一致（多半是线程数不同，见内部记录）"
         print("\n  锚点：seed 0 与冻结值 delta=%+.3e；岭回归 delta=%+.3e  %s"
               % (s0 - fz, r_pcc - rz, tag), flush=True)
 

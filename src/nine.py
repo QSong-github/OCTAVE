@@ -139,7 +139,7 @@ c_half = float(np.nanmean(np.mean(ch,0))); c = 2*c_half/(1+c_half); ceil = float
 
 # ── Moran ──
 # 图必须限制到被 CV 覆盖的子集：少数过小的块被跳过，cov 覆盖率 ~99.8%，
-# 若仍用全图 A 会维度不符（首轮 39033276-280 即因此失败）。
+# 若仍用全图 A 会维度不符（首轮的一个数组任务即因此失败）。
 Ac = A[cov][:, cov].tocsr()
 def moran(M):
     Mc = M - M.mean(0)

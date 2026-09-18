@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J xenemball
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000 --gres=gpu:1 --array=0-719 -c 6 --mem=48G -t 12:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:1 --array=0-719 -c 6 --mem=48G -t 12:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 # 其余 45 个编码器的 Xenium 嵌入（path_foundation 为 TensorFlow/CPU，单独处理）。物理视野 61.4 µm，与 hibou_l 同协议。
 set -u

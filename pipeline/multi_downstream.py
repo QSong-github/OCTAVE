@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""第四份审稿意见 #5：OCTAVE 的最细带分数是否比标量更能预测真实编码器的下游效用。
+"""复核意见 #5：OCTAVE 的最细带分数是否比标量更能预测真实编码器的下游效用。
 对每个编码器（ridge 头，同 16×16 块 CV，同 50 HVG）算：标量 PCC、最细带 β1，以及 oracle_downstream.readouts 的六个下游读数
 （SVG top-k Jaccard、SVG 秩相关、热点 Jaccard、边界位移 µm、共定位保持、热点召回选择性）。读数函数一律 import，不重写。"""
 import argparse, json, os, sys, numpy as np, anndata as ad

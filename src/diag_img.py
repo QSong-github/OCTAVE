@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """诊断: 母项目 P2 金字塔 vs 我 vips 转的 P2 金字塔，为何嵌入不等价。"""
 import glob, numpy as np, openslide, h5py
-PA = "/path/to/spatial2exp/he2st_align"
+PA = "/path/to/align_workspace"
 A = glob.glob(f"{PA}/data/virtualST/*P2/*PYRAMIDAL*.tif*")[0]
 B = "/path/to/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_PYRAMIDAL.tif"
 sa, sb = openslide.OpenSlide(A), openslide.OpenSlide(B)

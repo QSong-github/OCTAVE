@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """1px 步长的平移搜索 —— 上一轮步长 4px，1–2px 的偏移会被漏掉。"""
 import glob, numpy as np, openslide, h5py
-PA = "/path/to/spatial2exp/he2st_align"
+PA = "/path/to/align_workspace"
 A = glob.glob(f"{PA}/data/virtualST/*P2/*PYRAMIDAL*.tif*")[0]
 L = "/path/to/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_LOSSLESS.tif"
 with h5py.File(f"{PA}/data/binned_16um.h5ad", "r") as h:

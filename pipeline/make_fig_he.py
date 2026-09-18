@@ -24,7 +24,7 @@ Image.MAX_IMAGE_PIXELS = None
 
 sys.path.insert(0, "/path/to/systema4ST/src")
 
-PARENT = "/path/to/spatial2exp/he2st_align"
+PARENT = "/path/to/align_workspace"
 H5AD = os.path.join(PARENT, "data/binned_16um.h5ad")
 EMB = os.path.join(PARENT, "results")
 HE = os.path.join(PARENT, "istar_run/P2_checker/he-raw.jpg")

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J xenpfcut
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-15 -c 2 --mem=16G -t 12:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-15 -c 2 --mem=16G -t 12:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 # 第一段（CPU 节点，hest 环境；hest 在 GPU 节点上 import anndata 会崩，所以切块必须在 CPU 节点做）：把该区域尚未嵌入的分片切成 gzip HDF5。
 set -e

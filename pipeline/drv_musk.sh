@@ -5,7 +5,7 @@ python3 add_musk.py
 cat > jobs/muskemb.sh <<'SH'
 #!/bin/bash
 #SBATCH -J muskemb
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000,hpg-turin
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1 -c 6 --mem=96G -t 36:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -eu
@@ -23,7 +23,7 @@ say "阶段2 下游"
 cat > jobs/muskps.sh <<'SH'
 #!/bin/bash
 #SBATCH -J muskps
-#SBATCH --qos=YOUR_QOS --partition=hpg-default
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH -c 4 --mem=48G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -eu
@@ -35,7 +35,7 @@ SH
 cat > jobs/muskfloor.sh <<'SH'
 #!/bin/bash
 #SBATCH -J muskfloor
-#SBATCH --qos=YOUR_QOS --partition=hpg-default
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-39 -c 2 --mem=12G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e

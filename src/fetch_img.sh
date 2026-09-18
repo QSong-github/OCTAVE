@@ -1,6 +1,6 @@
 #!/bin/bash
 # 下载全分辨率 H&E 并转成 openslide 可读的金字塔 tiff
-# 首轮(39020526) tar 因 square_016um/spatial 里几张预览图是指向 square_002um 的硬链接而退出，
+# 首轮 tar 因 square_016um/spatial 里几张预览图是指向 square_002um 的硬链接而退出，
 # 但三个必需文件（矩阵/坐标/scalefactors）已全部落盘 —— 故本轮只补图像，且不以 tar 退出码为准。
 set -u
 B=https://cf.10xgenomics.com/samples/spatial-exp/3.0.0

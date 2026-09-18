@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""审稿意见（第二份）#1/#4：Xenium 上的分区对照与已知退化恢复实验。
+"""复核意见#1/#4：Xenium 上的分区对照与已知退化恢复实验。
 对照：坐标 K-means 分区 oracle、随机等规模分区 oracle、仅用训练块估计域均值的可学习域预测器（同 16×16 块 CV）。
 退化：对实测场施加 模糊/白噪声/边界平移/热点抹除，各自把强度调到与岭回归相同的标量 PCC，再比较各带 β_i。"""
 import argparse, json, os, sys, numpy as np, anndata as ad

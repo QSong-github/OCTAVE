@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=refig_ps
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --cpus-per-task=32 --mem=64G --time=3:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --cpus-per-task=32 --mem=64G --time=3:00:00
 #SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 # 逐页审查后的四张图重画：Fig1（标题 3.9–8.5×）、Fig4=Fig2_what_pcc_measures（插图挪到右下、面板 d 限定首发 15 区域）、
 # Fig3（面板 e 负号裁切 xlim）、Fig5（面板 e 标题）。与 jobs/fig1v2.sh / jobs/refig2.sh 同一环境与资源。

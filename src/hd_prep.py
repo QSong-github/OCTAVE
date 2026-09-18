@@ -12,7 +12,7 @@
   obs        = slide_id, array_row, array_col, in_tissue
   obsm['pxl']= [x=pxl_col_in_fullres, y=pxl_row_in_fullres]  ← openslide read_region 的 (x,y) 顺序
   uns        = px_per_um（由 scalefactors 的 microns_per_pixel 取倒数）
-坐标一律用 pxl（母项目的 obs['x_um'] 与 coord.npy 被 NaN 均值污染，见 FINDINGS 第 6 节）。
+坐标一律用 pxl（母项目的 obs['x_um'] 与 coord.npy 被 NaN 均值污染，见 内部记录 第 6 节）。
 """
 import os, sys, json, glob, argparse, numpy as np, anndata as ad, scanpy as sc
 from scipy import sparse

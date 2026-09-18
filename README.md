@@ -106,11 +106,18 @@ src/          pipeline modules: encoder loading and embedding, ridge and effecti
               benchmark, the Octave pipeline on Xenium and Visium HD, method adaptors, data preparation
 pipeline/     top-level drivers and aggregation: domain oracle, leave-one-cohort-out ridge, method
               comparison, parameter counts, probes, figure scripts, SLURM chain drivers (drv_*.sh)
-jobs/         SLURM job scripts (paths point at our cluster's project directory; edit for your cluster)
+jobs/         SLURM job scripts. Site-specific values are placeholders: `/path/to` for the project
+              directory, `YOUR_QOS` for the QOS and `YOUR_CPU_PARTITION` / `YOUR_GPU_PARTITION` for the
+              partitions. Set all four for your cluster before submitting anything.
 scripts/      table, text and source-data generators: every measured number in the manuscript is written
               by one of these from a result file; the one hand-typed table is the protocol-settings table
 environment/  conda environment exports
 ```
+
+The job scripts assume a flat project root: they `cd` into the project directory and call each module by
+its bare file name (`python3 -u ablate_agg.py`). The release groups those same files into `src/` and
+`pipeline/`, so copy or symlink both directories' contents into the project root before submitting, or
+adjust the paths in the job scripts.
 
 ## Conventions
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""审稿意见（第二份）#1：HEST 基准上的分区对照，逐编码器、逐样本，配方与 hest_blocks.py 逐参数一致。
+"""复核意见#1：HEST 基准上的分区对照，逐编码器、逐样本，配方与 hest_blocks.py 逐参数一致。
 oracle_image      = 本样本图像嵌入 PCA(50)→KMeans(20)→实测域均值（应等于 hest_blocks 的 blk_k20，用作核对）
 oracle_coord      = 仅用点坐标 KMeans(20) 的分区 + 实测域均值（空间 Voronoi 型对照）
 oracle_random     = 把图像分区标签随机置换（等规模随机分区）+ 实测域均值

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J dsfeat
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200 --gres=gpu:1 --array=0-19 -c 6 --mem=64G -t 12:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:1 --array=0-19 -c 6 --mem=64G -t 12:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 # DeepSpot 特征：spot tile + 3×3 子 tile，编码器 uni_v1 / hoptimus0（作者论文列出的基座之二）。幂等（按样本落盘）。
 set -u

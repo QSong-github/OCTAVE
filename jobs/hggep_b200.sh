@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=hggepb2
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-b200
+#SBATCH --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:b200:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G

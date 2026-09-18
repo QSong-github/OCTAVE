@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""审稿意见：多个真实编码器（ridge 头）在 Xenium 上的 OCTAVE 轮廓与尺度特异排名。
+"""复核意见：多个真实编码器（ridge 头）在 Xenium 上的 OCTAVE 轮廓与尺度特异排名。
 输入 results/blocks_xen_bands_{enc}/*.json（hibou_l 取 blocks_xen_bands_base）。聚合：区域→标本中位数→跨标本中位数。
 输出：每编码器的标量 PCC、各带 β_i、自身分区 oracle 的比值；标量排名 vs 各带排名的 Spearman 与成对名次反转数；PCC 接近但 β1 相差大的编码器对。"""
 import json, glob, os, numpy as np

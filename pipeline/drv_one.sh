@@ -8,7 +8,7 @@ TAG=$(echo $E2 | tr ' ' '_' | cut -c1-20)
 cat > jobs/emb_${TAG}.sh <<EOF
 #!/bin/bash
 #SBATCH -J emb_${TAG}
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000,hpg-turin --gres=gpu:1 --array=0-$((N-1)) -c 6 --mem=16G -t 24:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:1 --array=0-$((N-1)) -c 6 --mem=16G -t 24:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
@@ -26,7 +26,7 @@ ALPHAS="0.1 1 10 100 1000 10000 100000 1000000 10000000 100000000 1000000000"
 cat > jobs/ds_${TAG}.sh <<EOF
 #!/bin/bash
 #SBATCH -J ds_${TAG}
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-$((NOK*13-1)) -c 4 --mem=24G -t 8:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-$((NOK*13-1)) -c 4 --mem=24G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
@@ -39,6 +39,6 @@ python -u src/hest_effres_ps.py --encoder \$X --skip_sigma --ridge_alpha \$a --o
 EOF
 J2=$(sbatch --parsable jobs/ds_${TAG}.sh); say "下游数组 $J2 已发（$((NOK*13)) 任务）"
 while squeue -j $J2 -h 2>/dev/null | grep -q .; do sleep 60; done
-J3=$(sbatch --parsable --qos=YOUR_QOS -p hpg-default -c 2 --mem=16G -t 1:00:00 -J agg_${TAG} -o logs/agg_${TAG}_%j.out --wrap="source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest; cd /path/to/systema4ST; python3 ridge_loco.py $(echo $OK | tr ' ' ',') && python3 blk_agg.py | tail -8 && python3 methods_agg2.py | tail -12 && python3 pcount3.py $OK && S4ST_RESULTS=results python3 headline_numbers.py")
+J3=$(sbatch --parsable --qos=YOUR_QOS -p YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00 -J agg_${TAG} -o logs/agg_${TAG}_%j.out --wrap="source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest; cd /path/to/systema4ST; python3 ridge_loco.py $(echo $OK | tr ' ' ',') && python3 blk_agg.py | tail -8 && python3 methods_agg2.py | tail -12 && python3 pcount3.py $OK && S4ST_RESULTS=results python3 headline_numbers.py")
 while squeue -j $J3 -h 2>/dev/null | grep -q .; do sleep 20; done
 say "汇总完成"; grep -v "^$" logs/agg_${TAG}_${J3}.out | tail -40

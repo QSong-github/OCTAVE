@@ -5,7 +5,7 @@ N=$(echo $ENC | wc -w); echo "编码器 $N 个"
 cat > jobs/blk.sh <<SH
 #!/bin/bash
 #SBATCH -J blk
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-$((N-1)) -c 4 --mem=24G -t 4:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-$((N-1)) -c 4 --mem=24G -t 4:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest

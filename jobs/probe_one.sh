@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J probe1
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 4 --mem=24G -t 1:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 4 --mem=24G -t 1:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
 cd /path/to/systema4ST; export PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4

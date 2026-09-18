@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=fig1v3med
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --cpus-per-task=16 --mem=64G --time=3:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --cpus-per-task=16 --mem=64G --time=3:00:00
 #SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest

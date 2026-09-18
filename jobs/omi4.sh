@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=omi4
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-b200,hpg-rtx6000,hpg-turin
+#SBATCH --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=96G

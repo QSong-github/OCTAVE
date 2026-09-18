@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH -J xenemb10
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000 --gres=gpu:1 --array=0-159 -c 6 --mem=48G -t 12:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:1 --array=0-159 -c 6 --mem=48G -t 12:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
-# 审稿意见：多个真实编码器在 Xenium 上的 OCTAVE 曲线。物理视野仍锁 61.4 µm（与 hibou_l 一致）。
+# 复核意见：多个真实编码器在 Xenium 上的 OCTAVE 曲线。物理视野仍锁 61.4 µm（与 hibou_l 一致）。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
 cd /path/to/systema4ST; export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1

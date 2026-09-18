@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J genps
-#SBATCH --qos=YOUR_QOS --partition=hpg-default
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH -c 4 --mem=48G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -eu

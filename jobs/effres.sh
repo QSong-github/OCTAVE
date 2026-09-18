@@ -5,7 +5,7 @@
 #SBATCH --mem=64G
 #SBATCH --time=12:00:00
 #SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
-# 不申请 GPU: hest 环境在 GPU 分区(c0605a-s4)上 numcodecs/blosc 导入失败,
+# 不申请 GPU: hest 环境在 GPU 分区上 numcodecs/blosc 导入失败,
 # 而 align.py 的 MLP 头本就有 CPU 回退 (dev = cuda if available else cpu)。
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh

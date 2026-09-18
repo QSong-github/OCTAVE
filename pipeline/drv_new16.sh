@@ -10,7 +10,7 @@ say "阶段1 抽嵌入 $N 个（GPU）"
 cat > jobs/new16emb.sh <<SH
 #!/bin/bash
 #SBATCH -J new16emb
-#SBATCH --qos=YOUR_QOS --partition=hpg-b200,hpg-rtx6000,hpg-turin
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1 --array=0-$((N-1)) -c 6 --mem=16G -t 24:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -eu
@@ -33,7 +33,7 @@ ALPHAS="0.1 1 10 100 1000 10000 100000 1000000 10000000 100000000 1000000000"
 cat > jobs/new16ds.sh <<SH
 #!/bin/bash
 #SBATCH -J new16ds
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-$((NOK*13-1)) -c 4 --mem=24G -t 8:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-$((NOK*13-1)) -c 4 --mem=24G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
@@ -51,7 +51,7 @@ say "阶段3 留一队列选 α + 块预言机汇总"
 cat > jobs/new16agg.sh <<SH
 #!/bin/bash
 #SBATCH -J new16agg
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 1:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest

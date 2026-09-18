@@ -141,7 +141,7 @@ def fold(TAG):
     s_ = ((xt[:, 0] >= best["x0"]) & (xt[:, 0] < best["x0"] + SIDE) & (xt[:, 1] >= best["y0"]) & (xt[:, 1] < best["y0"] + SIDE))
     ds_file = os.path.join(ROOT, f"istar_run/{TAG}_{FOLD}/level-downsample.txt")
     DOWN = float(open(ds_file).read().split()[0]) if os.path.exists(ds_file) else 4.000053157559005
-    HEP = os.path.join("/path/to/spatial2exp/he2st_align", f"istar_run/{TAG}_{FOLD}/he-raw.jpg")
+    HEP = os.path.join("/path/to/align_workspace", f"istar_run/{TAG}_{FOLD}/he-raw.jpg")
     hp = pxl[m][tem][s_] / DOWN
     crop = Image.open(HEP).crop((int(hp[:, 0].min()), int(hp[:, 1].min()), int(np.ceil(hp[:, 0].max())), int(np.ceil(hp[:, 1].max()))))
     sub = xt[s_]; ix = np.round((sub[:, 0] - best["x0"]) / 16.0).astype(int); iy = np.round((sub[:, 1] - best["y0"]) / 16.0).astype(int)

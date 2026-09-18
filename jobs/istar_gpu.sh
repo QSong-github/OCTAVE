@@ -13,7 +13,7 @@
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate /path/to/miniconda3/envs/istar
-ISTAR=/path/to/spatial2exp/iStar        # 只读: 官方仓库
+ISTAR=/path/to/istar_workspace        # 只读: 官方仓库
 RUN=/path/to/systema4ST/istar_run
 export PYTHONWARNINGS=ignore
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader

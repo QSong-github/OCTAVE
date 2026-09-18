@@ -20,7 +20,7 @@ import evaluate as E, retrieval as R
 from baselines import ridge_predict
 from effres import build_operator, calibrate_sigma, PX_PER_UM, SLIDES, SEB
 
-PARENT = "/path/to/spatial2exp/he2st_align"
+PARENT = "/path/to/align_workspace"
 RAW = os.path.join(PARENT, "st_bench/data/{s}/adata_16um.h5ad")
 
 ap = argparse.ArgumentParser()

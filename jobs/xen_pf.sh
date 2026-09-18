@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J xenpf
-#SBATCH --qos=YOUR_QOS --partition=hpg-turin --gres=gpu:l4:1 --array=0-15 -c 2 --mem=32G -t 24:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:l4:1 --array=0-15 -c 2 --mem=32G -t 24:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 # Path Foundation（TF SavedModel）两段式，L4 GPU（TF 2.17 的 CUDA 构建不支持 B200/Blackwell，sm_90a ptxas 报错；L4 为 sm_89 可用）：hest 环境切块写分片 → tfpf 环境推理，逐分片交替，最后拼接。分片用完即删。
 set -e

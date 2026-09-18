@@ -13,7 +13,7 @@ if [ "$N" -ge 72 ]; then
   cat > jobs/orps.sh <<'SH'
 #!/bin/bash
 #SBATCH -J orps
-#SBATCH --qos=YOUR_QOS --partition=hpg-default
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH -c 4 --mem=48G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -eu
@@ -25,7 +25,7 @@ SH
   cat > jobs/orfloor.sh <<'SH'
 #!/bin/bash
 #SBATCH -J orfloor
-#SBATCH --qos=YOUR_QOS --partition=hpg-default
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-39 -c 2 --mem=12G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e

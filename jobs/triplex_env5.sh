@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J tpxenv5
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 2:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 2:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 # HEST 的旧模型库在 2026-03 被移除（#132）；TRIPLEX（2025-05）需要它。装 v1.2.0，不行再退到 v1.1.0。检查失败则本作业失败（下游依赖 afterok）。
 set -u

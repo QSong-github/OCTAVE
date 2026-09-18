@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""第四份审稿意见 #5：11 个编码器的下游读数与 标量 PCC / 最细带 β1 的跨编码器关系。
+"""复核意见 #5：11 个编码器的下游读数与 标量 PCC / 最细带 β1 的跨编码器关系。
 输入 results/multi_ds/{tower}_{region}.json（multi_downstream.py）。聚合：区域→标本中位数→跨标本中位数，得到每个编码器一行；
 再在 11 个编码器上算每个读数与 PCC、与 β1 的 Spearman（numpy 实现，置换 P），并做「逐标本」版本：每个标本内 11 个编码器的秩相关，再取中位。
 输出 results/multi_ds_summary.json 与 paper/tab_multids.tex。"""

@@ -8,7 +8,7 @@ say "岭回归 α 网格：30 编码器 × 7 α"
 cat > jobs/ralpha.sh <<SH
 #!/bin/bash
 #SBATCH -J ralpha
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-209 -c 2 --mem=16G -t 2:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-209 -c 2 --mem=16G -t 2:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
@@ -28,7 +28,7 @@ sed -e 's#hest_effres_ps_#hest_rsel_ps_#g' -e 's#/k_sensitivity.json#/k_sensitiv
 cat > jobs/rselagg.sh <<SH
 #!/bin/bash
 #SBATCH -J rselagg
-#SBATCH --qos=YOUR_QOS --partition=hpg-default -c 2 --mem=16G -t 1:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest

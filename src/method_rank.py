@@ -29,7 +29,7 @@ PX = {"Visium_HD_Human_Colon_Cancer_P2": 3.6499, "Visium_HD_Human_Colon_Cancer_P
 ABLATIONS = {"stEnc_st_pca", "stEnc_NicheFormer", "stEnc_scGPT_spatial",
              "stEnc_scGPT", "stEnc_Novae"}
 
-# iStar 默认排除：FINDINGS §2.4 记录了两处未解决的不对称 ——
+# iStar 默认排除：内部记录 记录了两处未解决的不对称 ——
 #   ① 它被喂的是 log-expr 而非原始 counts；
 #   ② 其余方法用 Hibou-L 特征，而 iStar 用自带 HIPT 骨干。
 # 在这两处修好之前，把它与其余方法并列排名是无效比较（骨干与输入都不同）。
@@ -97,7 +97,7 @@ def main():
     if not args.include_istar and ISTAR in methods:
         methods.remove(ISTAR)
         print(f"已排除 {ISTAR}：骨干(HIPT vs Hibou-L)与输入(log-expr vs counts)均不对称，"
-              f"与其余方法并列排名无效（FINDINGS §2.4）", flush=True)
+              f"与其余方法并列排名无效（内部记录）", flush=True)
     print(f"{a.n_obs} bin × {a.n_vars} 基因；方法 {len(methods)}: {methods}", flush=True)
 
     per = {m: {"pcc": [], "sig": [], "flag": []} for m in methods}

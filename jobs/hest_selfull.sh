@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -J hestselfull
-#SBATCH --qos=YOUR_QOS --partition=hpg-default --array=0-56 -c 4 --mem=24G -t 8:00:00
+#SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-56 -c 4 --mem=24G -t 8:00:00
 #SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
 # Unified benchmark baseline: ridge with the leave-one-cohort-out selected alpha (per cohort), with bands.
 set -e

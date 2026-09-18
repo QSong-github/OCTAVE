@@ -31,7 +31,7 @@ import evaluate as E
 from baselines import ridge_predict
 from effres import build_operator, calibrate_sigma, PX_PER_UM, SLIDES, SEB
 
-RAW = "/path/to/spatial2exp/he2st_align/st_bench/data/{s}/adata_16um.h5ad"
+RAW = "/path/to/align_workspace/st_bench/data/{s}/adata_16um.h5ad"
 ap = argparse.ArgumentParser()
 ap.add_argument("--tower", default="hibou_l");    ap.add_argument("--tmax", type=int, default=2048)
 ap.add_argument("--chunk", type=int, default=1200); ap.add_argument("--minfrac", type=float, default=0.005)
@@ -103,7 +103,7 @@ for s in SLIDES:
     com = [(j, gi[g]) for j, g in enumerate(bgene) if g in gi][:40]
     bs = bexpr[m]
     # 行序核对用置换零分布, 不用绝对阈值: 两文件归一化口径不同(预处理片做过文库归一化),
-    # 对齐时 r≈0.90 而非 1.0 —— 首轮(38982574)我用 0.95 硬阈值把正确对齐误判为错位。
+    # 对齐时 r≈0.90 而非 1.0 —— 首轮我用 0.95 硬阈值把正确对齐误判为错位。
     rr = np.array([pearsonr(bs[:, j], Y[:, k])[0] for j, k in com])
     pm = np.random.default_rng(0).permutation(Y.shape[0])
     rs = np.array([pearsonr(bs[:, j], Y[pm, k])[0] for j, k in com])

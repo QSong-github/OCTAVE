@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=fig1blk
 #SBATCH --qos=YOUR_QOS
-#SBATCH --partition=hpg-default
+#SBATCH --partition=YOUR_CPU_PARTITION
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=64G
 #SBATCH --time=3:00:00

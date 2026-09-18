@@ -79,7 +79,7 @@ sheet("Fig2c_variance", ["region", "specimen", "sigma (um)", "ladder step t", "v
       rows2c, "Fig 2c", "results/blocks_xen_bands/*.json", "each band renormalises; band PCC is not a decomposition of the scalar PCC")
 
 # ═══ 图 3 / 表 2、3、5：编码器 x k
-# 2026-09-01：检索地板线已撤出论文（见 CLAIMS.md）。以下三块只在设了
+# 2026-09-01：检索地板线已撤出论文（见 内部记录）。以下三块只在设了
 # S4ST_FLOOR_SHEETS=1 时生成，证据本身冻结在 results/ 的 JSON 里。
 if os.environ.get("S4ST_FLOOR_SHEETS") == "1":
   K = J("k_sensitivity.json"); rows = []
@@ -253,7 +253,7 @@ sheet("Table1_band_choice", ["ladder step t", "sigma (um)", "scalar shortfall (%
       rows, "Table 1 sensitivity", "results/blocks_xen_bands/*.json",
       "which band is called the finest; the data are binned to 16 um, so the first rung sits below the bin pitch")
 
-# ═══ β₁ 是否比 PCC 更贴合下游效用（两次检验，均不支持；见 CLAIMS B10）
+# ═══ β₁ 是否比 PCC 更贴合下游效用（两次检验，均不支持；见内部记录）
 bv = os.path.join(R, "blur_verdict.json"); ba = os.path.join(R, "blur_ds_all.json")
 if os.path.exists(ba):
     BA = json.load(open(ba))
@@ -411,7 +411,7 @@ for k, v in SD.items():
 
 # ═══ 索引页放最前
 
-# ── 2026-09-05 审稿意见驱动的新结果 ──
+# ── 2026-09-05 复核意见驱动的新结果 ──
 def _load_dir(d): return {json.load(open(f))["name"]: json.load(open(f)) for f in sorted(glob.glob(os.path.join(R, d, "*.json")))}
 _rows = []
 for _tag in ["base", "k4", "k12", "lazy75"]:
@@ -461,7 +461,7 @@ if os.path.exists(os.path.join(R, "xen_multi_rank.json")):
     sheet("Xenium_multi_encoder", ["encoder", "pcc_ridge", "pcc_oracle_K20", "oracle_over_ridge", "fine_over_scalar_gap", "sigma1_um"] + [f"beta_t{c}" for c in _cps], _rows, "Appendix (multi-encoder OCTAVE)", "results/xen_multi_rank.json", "scripts/xen_multi_rank.py; specimen medians")
 
 
-# ── 第四份审稿意见的补充分析 ──
+# ── 复核意见的补充分析 ──
 _rows = []
 for _n, _d in _load_dir("xen_attrib").items():
     _m, _c, _t, _g, _o = _d["model_decomp"], _d["crossfit"], _d["trainonly"], _d["contiguity"], _d["operators"]

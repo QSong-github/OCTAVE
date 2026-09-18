@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """骨干匹配的 iStar 对照：在 iStar 自己的 HIPT 特征上跑 Ridge / kNN。
 
-FINDINGS §2.4 记录 iStar 表暂不可进论文，因两处不对称：
+内部记录 记录 iStar 表暂不可进论文，因两处不对称：
   ① 喂的是 log-expr 而非原始 counts；
   ② 其余方法用 Hibou-L 特征，而 iStar 用自带 HIPT。
 

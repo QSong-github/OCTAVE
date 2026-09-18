@@ -131,7 +131,7 @@ def main():
                  for cp in cps}
         bvar = {str(cp): float(np.mean(AB[cp][ok].var(0) / (Mf[ok].var(0) + 1e-12)))
                 for cp in cps}
-        # 审稿意见：最细带上低方差基因的处理——按基因过滤 / 按测量带方差加权 两种口径
+        # 复核意见：最细带上低方差基因的处理——按基因过滤 / 按测量带方差加权 两种口径
         pg = per_gene_pcc(BM[ok], BT[ok]); tv = BT[ok].var(0); share = tv / (Y[ok].var(0) + 1e-12)
         q25 = share >= np.percentile(share, 25); thr = share >= 0.05
         R[nm] = {"pcc": p, "sigma_um": e, "sigma_flag": fl, "band_pcc": b,
