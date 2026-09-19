@@ -4,7 +4,11 @@
 import glob, json, os, re
 import numpy as np
 from math import comb
-R = "/path/to/systema4ST/results"
+_here = os.path.dirname(os.path.abspath(__file__))
+for R in (os.environ.get("OCTAVE_RESULTS"), "/path/to/systema4ST/results",
+          os.path.join(_here, "results"), os.path.join(os.path.dirname(_here), "results")):
+    if R and os.path.isdir(R):
+        break
 
 
 def signp(k, n):
@@ -26,27 +30,45 @@ M = {"HisToGene": load_flat(R + "/histogene_matched.json"),
      "BLEEP":     load_flat(R + "/bleep_hest.json"),
      "HECLIP":    load_flat(R + "/heclip_hest.json"),
      "HGGEP":     load_flat(R + "/hggep_hest.json")}
+import os as _os
+if _os.path.exists(R + "/thitogene_hest.json"):          # 2026-09-03 扩集；折文件合并后才存在
+    M["THItoGene"] = load_flat(R + "/thitogene_hest.json")
 
-ENC = [os.path.basename(p)[len("hest_floor_"):] for p in glob.glob(R + "/hest_floor_*")
-       if os.path.isdir(p)]
+# 2026-09-14 扩集：DeepSpot（Nonchev et al. 2025）。作者未指定默认配置（README 并列 UNI / H-optimus-0 / Phikon；
+# notebook 训 10 epoch，论文设置反推约 500 步），故跑了两个基座 × 两种训练长度。
+# 2026-09-18 起每个配置单独成行，与其它六个方法同口径（各一次运行）；逐样本取四者最好的"信封"只写进正文一句，
+# 键 DeepSpot:best_of_4，制表脚本跳过它。
+DS_LABEL = {"hoptimus0": "DeepSpot, H-optimus-0, 10 epochs", "hoptimus0_steps500": "DeepSpot, H-optimus-0, 500 steps",
+            "uni_v1": "DeepSpot, UNI, 10 epochs", "uni_v1_steps500": "DeepSpot, UNI, 500 steps"}
+_ds = {}
+for _f in sorted(glob.glob(R + "/deepspot_hest_*.json")):
+    _tag = os.path.basename(_f)[len("deepspot_hest_"):-len(".json")]
+    M["DeepSpot:" + _tag] = load_flat(_f)
+    for _s, _v in json.load(open(_f)).items():
+        if isinstance(_v, dict) and "pcc" in _v and (_s not in _ds or _v["pcc"] > _ds[_s]["pcc"]):
+            _ds[_s] = _v
+if _ds:
+    M["DeepSpot:best_of_4"] = _ds
+
+# 2026-09-03：参照编码器 = 所有有留一队列选 α（LOCO）ridge 结果的编码器，与表 1 的分母同口径（不再限于有地板目录的 30 个）
+ENC = [os.path.basename(p)[len("hest_rsel_ps_"):-len(".json")] for p in glob.glob(R + "/hest_rsel_ps_*.json")]
 ENC = sorted(e for e in ENC if not re.match(r"^k\d+_", e))
 ENC = [e for e in ENC if e != "omiclip_raw"]   # omiclip 的未归一化变体，同一模型，不占两行
 E = {}
 for e in ENC:
-    ps = R + "/hest_effres_ps_%s.json" % e
-    fs = sorted(glob.glob(R + "/hest_floor_%s/*.json" % e))
-    if not os.path.exists(ps) or len(fs) != 10:
-        continue
+    ps = R + "/hest_rsel_ps_%s.json" % e
     mod = json.load(open(ps))["per_sample_pcc"]
+    fs = sorted(glob.glob(R + "/hest_floor_%s/*.json" % e))
     fl, coh = {}, {}
-    for f in fs:
-        d = json.load(open(f))
-        for s, v in d["samples"].items():
-            fl[s] = v["pcc"]; coh[s] = d["cohort"]
+    if len(fs) == 10:                      # 匹配检索地板只有原 30 个有；正文已不用，仅留档
+        for f in fs:
+            d = json.load(open(f))
+            for s, v in d["samples"].items():
+                fl[s] = v["pcc"]; coh[s] = d["cohort"]
     E[e] = dict(model=mod, floor=fl, cohort=coh)
-COH = list(E.values())[0]["cohort"]
+COH = next(v["cohort"] for v in E.values() if v["cohort"])
 enc_mean = {e: float(np.mean(list(v["model"].values()))) for e, v in E.items()}
-flo_mean = {e: float(np.mean(list(v["floor"].values()))) for e, v in E.items()}
+flo_mean = {e: float(np.mean(list(v["floor"].values()))) for e, v in E.items() if v["floor"]}
 best = max(enc_mean, key=enc_mean.get)
 worst_floor = min(flo_mean, key=flo_mean.get)
 print("参照：%d 个编码器 ridge 逐样本均值 %.4f–%.4f；匹配检索地板 %.4f–%.4f"

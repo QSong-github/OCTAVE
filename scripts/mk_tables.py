@@ -236,15 +236,20 @@ mp = os.path.join(R, "methods_vs_floor.json")
 if os.path.exists(mp):
     MV = json.load(open(mp))
     ref = MV["_reference"]
-    rows = sorted(((k, v) for k, v in MV.items() if k != "_reference"),
-                  key=lambda kv: -kv[1]["mean_sample"])
+    rows = sorted(((k, v) for k, v in MV.items() if k not in ("_reference", "DeepSpot:best_of_4")),
+                  key=lambda kv: -kv[1]["mean_sample"])   # 信封（逐样本取四配置最好）只进正文，不进表
+    DS_LABEL = {"hoptimus0": "DeepSpot, H-optimus-0, 10 epochs", "hoptimus0_steps500": "DeepSpot, H-optimus-0, 500 steps",
+                "uni_v1": "DeepSpot, UNI, 10 epochs", "uni_v1_steps500": "DeepSpot, UNI, 500 steps"}
     t = ["\\begin{tabular}{lrrrr}", "\\toprule",
          "Method & PCC & Below encoders & Margin per cohort & Cohorts won \\\\",
          "\\midrule"]
     MCITE = {"HisToGene": "histogene", "Hist2ST": "hist2st", "BLEEP": "bleep",
              "HECLIP": "heclip", "HGGEP": "hggep", "THItoGene": "thitogene", "DeepSpot": "deepspot"}
     for k, v in rows:
-        nm = "%s \\citep{%s}" % (k, MCITE[k]) if k in MCITE else k
+        if k.startswith("DeepSpot:"):                       # 四个配置各一行，与其它方法同口径（各一次运行）
+            nm = DS_LABEL.get(k.split(":", 1)[1], k)          # 引用放图注，行标签保持短，表才不必缩
+        else:
+            nm = "%s \\citep{%s}" % (k, MCITE[k]) if k in MCITE else k
         t.append(f"{nm} & {v['mean_sample']:.4f} & {v['n_below_encoders']}/{v['n_encoders']} & "
                  f"${v['cohort_mean']:+.4f} \\pm {v['cohort_sem']:.4f}$ & "
                  f"{v['cohorts_won']}/{v['n_cohorts']} \\\\")
@@ -254,7 +259,7 @@ if os.path.exists(mp):
           "\\bottomrule", "\\end{tabular}"]
     W("tab_methods.tex", t)
     allb = all(v["n_below_floors"] == v["n_floors"] for _, v in rows)
-    print(f"表 7 已发表方法: {len(rows)} 个, 全部低于全部地板={allb}, "
+    print(f"表 8 端到端方法: {len(rows)} 行, 全部低于全部地板={allb}, "
           f"最高 {rows[0][0]} {rows[0][1]['mean_sample']:.4f} vs 最低地板 {min(fm.values()):.4f}")
 else:
     print("表 7: methods_vs_floor.json 未找到，跳过")
