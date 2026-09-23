@@ -4,11 +4,11 @@
 （SVG top-k Jaccard、SVG 秩相关、热点 Jaccard、边界位移 µm、共定位保持、热点召回选择性）。读数函数一律 import，不重写。"""
 import argparse, json, os, sys, numpy as np, anndata as ad
 from scipy import sparse
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 from downstream2 import knn_graph, block_cv_predict
 from oracle_downstream import readouts
 from per_gene_xen import build_operator, per_gene_pcc
-PREP = "/path/to/systema4ST/data/prepped_xen"; EMB = "/path/to/systema4ST/results/emb_xen"; OUTD = "/path/to/systema4ST/results/multi_ds"
+PREP = "/path/to/project/data/prepped_xen"; EMB = "/path/to/project/results/emb_xen"; OUTD = "/path/to/project/results/multi_ds"
 ap = argparse.ArgumentParser(); ap.add_argument("--name", required=True); ap.add_argument("--tower", required=True); ap.add_argument("--hvg", type=int, default=50); a = ap.parse_args()
 A = ad.read_h5ad(f"{PREP}/{a.name}_bin16.h5ad"); xy = np.asarray(A.obsm["pxl"], np.float64) / float(A.uns["px_per_um"])
 Yall = np.log1p(np.asarray(sparse.csr_matrix(A.X).todense(), np.float32)); X = np.nan_to_num(np.load(f"{EMB}/emb_{a.tower}_{a.name}.npy").astype(np.float32))

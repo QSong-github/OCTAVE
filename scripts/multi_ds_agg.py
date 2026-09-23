@@ -4,7 +4,7 @@
 再在 11 个编码器上算每个读数与 PCC、与 β1 的 Spearman（numpy 实现，置换 P），并做「逐标本」版本：每个标本内 11 个编码器的秩相关，再取中位。
 输出 results/multi_ds_summary.json 与 paper/tab_multids.tex。"""
 import json, glob, os, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results")
+R = os.environ.get("OCTAVE_RESULTS", "results")
 SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
         "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
         "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本

@@ -16,7 +16,7 @@ effres.py 给出各方法的分尺度相关 r(σ), 但 16µm bin 有 57.7% 零�
 顺带修正 effres.py 的一个错误: 真值功率占比必须【逐基因中心化】后再算, 否则 log1p 的
 DC 分量(均值≈1.15)把分母撑爆, 所有频带都显得只占零点几个百分点。
 
-只读源数据, 结果写 systema4ST/results。
+只读源数据, 结果写 project/results。
 """
 import os, sys, json, argparse, numpy as np, anndata as ad
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +24,7 @@ from scipy import sparse
 import evaluate as E
 from effres import build_operator, calibrate_sigma, PX_PER_UM
 
-PARENT = "/path/to/align_workspace"
+PARENT = "/path/to/upstream_align"
 BINNED = os.path.join(PARENT, "data/binned_16um.h5ad")
 RAW = os.path.join(PARENT, "st_bench/data/{slide}/adata_16um.h5ad")
 SLIDES = ["Visium_HD_Human_Colon_Cancer_P2", "Visium_HD_Human_Colon_Cancer_P5"]

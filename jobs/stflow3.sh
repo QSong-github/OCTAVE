@@ -1,22 +1,22 @@
 #!/bin/bash
 #SBATCH --job-name=stflow3
 #SBATCH --qos=YOUR_QOS
-#SBATCH --gres=gpu:l4:1
+#SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=24:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # STFlow 走 ciga 路线: UNI/GigaPath 都是 HF gated, 但 train.py 的 feature_dim 里
 # 第三个选项 ciga(512d) 对应 Ciga 等人的自监督病理 ResNet18, 权重在 GitHub release, 开放。
 #
 # 对第三方代码只做一处改动: 注释掉 benchmark.py 里【与所选编码器无关的】UNI/GigaPath
 # 无条件下载(第 253-256 行, 属安装脚本残留)。方法本身逻辑一行未动, 改动留痕以备复核。
 set -u
-V=/path/to/systema4ST/venv_np1
-M=/path/to/systema4ST/methods/STFlow
+V=/path/to/project/venv_np1
+M=/path/to/project/methods/STFlow
 B=/path/to/he2st/HEST/eval/bench_data
-OUT=/path/to/systema4ST/stflow_run
-export HF_HOME=/path/to/systema4ST/.hf
+OUT=/path/to/project/stflow_run
+export HF_HOME=/path/to/project/.hf
 source $V/bin/activate
 echo "节点 $(hostname)"; mkdir -p $OUT/weights/ciga $OUT/embed $OUT/results
 
@@ -55,9 +55,9 @@ python - <<PY
 import re
 p="$M/stflow/app/hest/benchmark.py"
 s=open(p).read()
-if "# [systema4ST]" not in s:
+if "# [project]" not in s:
     for pat in ['snapshot_download(repo_id="MahmoodLab/hest-bench"','hf_hub_download("MahmoodLab/UNI"','hf_hub_download("prov-gigapath/prov-gigapath"']:
-        s=re.sub(r'(\n\s*)('+re.escape(pat)+r')', r'\1# [systema4ST] 与 --encoders 无关的安装脚本残留, 已停用\n\1# \2', s)
+        s=re.sub(r'(\n\s*)('+re.escape(pat)+r')', r'\1# [project] 与 --encoders 无关的安装脚本残留, 已停用\n\1# \2', s)
     open(p,"w").write(s); print("  ✅ 已注释 3 处无条件下载")
 else: print("  已处理过")
 PY

@@ -14,7 +14,7 @@ fulltx  留下三个必须澄清的问题：
 """
 import json, numpy as np
 from scipy.stats import pearsonr, spearmanr
-RES = "/path/to/systema4ST/results"
+RES = "/path/to/project/results"
 SL = ["P2", "P5"]
 
 def partial(x, y, z):

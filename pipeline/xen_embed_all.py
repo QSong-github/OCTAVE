@@ -3,7 +3,7 @@
 逐 kind 的前向逻辑与 hest_embed_v2.embed_and_barcodes 逐行同构，只把输入从 h5 的 224 块换成 openslide 在 level 0 按 obsm['pxl'] 切出的 ctx_px 方块
 （物理视野 61.4 µm，与 hd_embed.py 相同）。输出 results/emb_xen/emb_{enc}_{region}.npy。"""
 import os, sys, argparse, numpy as np, torch, anndata as ad
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 import hest_embed_v2 as HE
 def embed_batch(model, kind, arr, dev, size=224):
     from PIL import Image

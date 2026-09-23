@@ -3,8 +3,8 @@
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
 B=https://cf.10xgenomics.com/samples/spatial-exp/3.0.0
-R=/path/to/systema4ST/data/visiumhd
-cd /path/to/systema4ST
+R=/path/to/project/data/visiumhd
+cd /path/to/project
 
 N=Visium_HD_Human_Colon_Cancer_P2
 if [ ! -d "$R/$N/binned_outputs/square_016um" ]; then

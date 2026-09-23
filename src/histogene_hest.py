@@ -22,7 +22,7 @@ HisToGene 在 HEST-benchmark 上的运行 —— 模型原样用作者代码, �
 import os, sys, glob, json, argparse, numpy as np, h5py, torch
 import torch.nn.functional as F
 
-HG = "/path/to/systema4ST/methods/HisToGene"
+HG = "/path/to/project/methods/HisToGene"
 sys.path.insert(0, HG)
 sys.path.insert(0, "/path/to/he2st/HEST/src")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

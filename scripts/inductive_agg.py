@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """归纳式分区预测器与上下文岭回归的汇总。Xenium：results/xen_inductive/*.json（标本级中位）；HEST：results/hest_inductive_{enc}.json + hest_rsel_ps（队列级中位再跨编码器）。"""
 import json, glob, os, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results")
+R = os.environ.get("OCTAVE_RESULTS", "results")
 SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
         "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
         "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本

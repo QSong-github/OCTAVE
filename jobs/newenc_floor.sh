@@ -6,14 +6,14 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12G
 #SBATCH --time=8:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH --output=/path/to/project/logs/%x_%A_%a.out
 # 新编码器的匹配检索地板：12 编码器 × 10 队列 × 4 个 k = 480。
 # k=50 落在 hest_floor_<E>/，其余落在 hest_floor_k<K>_<E>/，与既有命名一致。
 # 不设并发上限；QOS 的 CPU 配额是唯一约束。
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 ENC=(uni_v1 virchow conch_v1 keep openmidnight hibou_l h0_mini plip quiltnet hoptimus1 genbio_pathfm omiclip)
 COH=(CCRCC COAD HCC IDC LUNG LYMPH_IDC PAAD PRAD READ SKCM)

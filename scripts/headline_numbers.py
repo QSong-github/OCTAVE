@@ -11,7 +11,7 @@ def _spearman_perm(x, y, nperm=200000, seed=0):
     for _ in range(nperm):
         cnt += abs(np.corrcoef(rx, rng.permutation(ry))[0, 1]) >= abs(rho) - 1e-12
     return rho, (cnt + 1) / (nperm + 1)
-R = os.environ.get("S4ST_RESULTS") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "results")
+R = os.environ.get("OCTAVE_RESULTS") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "results")
 S = json.load(open(os.path.join(R, "hest_blocks_summary.json")))
 P = json.load(open(os.path.join(R, "encoder_params.json")))
 rows = [d for d in S if d["enc"] in P] if "--all" not in sys.argv else S

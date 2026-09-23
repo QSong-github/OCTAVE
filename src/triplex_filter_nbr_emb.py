@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """邻居嵌入按目标 patch 的条码顺序过滤（目标 patch 已下采样，邻居块 h5 未改）。幂等：attrs['filtered_to_target']。"""
 import sys, os, glob, h5py, numpy as np
-d = f"/path/to/systema4ST/data/triplex/{sys.argv[1]}"; m = sys.argv[2]
+d = f"/path/to/project/data/triplex/{sys.argv[1]}"; m = sys.argv[2]
 for p in sorted(glob.glob(f"{d}/patches/*.h5")):
     sid = os.path.basename(p)[:-3]; e = f"{d}/emb/neighbor/{m}/{sid}.h5"
     if not os.path.exists(e): continue

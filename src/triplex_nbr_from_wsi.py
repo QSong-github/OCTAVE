@@ -5,7 +5,7 @@
 import sys, os, h5py, numpy as np, openslide
 from PIL import Image
 C, sid = sys.argv[1], sys.argv[2]
-d = f"/path/to/systema4ST/data/triplex/{C}"; N = 5
+d = f"/path/to/project/data/triplex/{C}"; N = 5
 p = f"{d}/patches/{sid}.h5"
 with h5py.File(p, "r") as h:
     co = h["coords"][:].astype(np.int64); bc = np.asarray(h["barcode"][:]).flatten(); at = dict(h["img"].attrs)
@@ -14,7 +14,7 @@ if swapped: co = co[:, ::-1]                                    # 还原为文�
 tgt = int(at.get("patch_size", 224)); fac = float(at.get("factor", 1.0))
 src_224 = int(round(224 * fac)) if tgt == 224 else tgt          # 224 目标对应的源窗口边长
 src_nbr = src_224 * N                                           # 邻居窗口源边长
-s = openslide.OpenSlide(f"/path/to/systema4ST/data/hest_wsis/wsis/{sid}.tif")
+s = openslide.OpenSlide(f"/path/to/project/data/hest_wsis/wsis/{sid}.tif")
 off = (src_nbr - src_224) // 2
 out = f"{d}/patches/neighbor/{sid}.h5"; os.makedirs(os.path.dirname(out), exist_ok=True)
 if os.path.exists(out): os.remove(out)

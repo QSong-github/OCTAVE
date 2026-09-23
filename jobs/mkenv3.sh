@@ -4,12 +4,12 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=04:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-V=/path/to/systema4ST/venv_stmethods
-M=/path/to/systema4ST/methods
+V=/path/to/project/venv_stmethods
+M=/path/to/project/methods
 source $V/bin/activate
 echo "节点 $(hostname)"
 echo "=== 补装 mkenv2 暴露的缺口 ==="

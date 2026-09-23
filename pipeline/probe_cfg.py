@@ -2,7 +2,7 @@
 """CPU 探针 + 打印 timm data config（核对 mean/std 与模型卡一致）。"""
 import sys, time, numpy as np, torch, timm
 from timm.data import resolve_model_data_config
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 import hest_embed_v2 as H
 P = "/path/to/he2st/HEST/eval/bench_data/CCRCC/patches/INT1.h5"
 torch.set_num_threads(4)

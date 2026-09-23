@@ -1,8 +1,8 @@
 #!/bin/bash
-# (1) 本会话作业一律 Nice=50000，让用户其它会话的新作业先调度；(2) 本会话运行核数 留出少量核不占满，只节流名为 xenmultiall 的阵列。
+# (1) 本会话作业一律 Nice=50000，让用户其它会话的新作业先调度；(2) 本会话运行核数 留出少量核不占满，只节流名为 xenmulti 的阵列。
 # 节流按实际核数：允许运行的大阵列任务总数 ALLOW = 在跑的大阵列任务数 + 空余核数/每任务核数；多个同名阵列时，每个阵列的 throttle = ALLOW − 其它阵列在跑的任务数，总和不会超过 ALLOW。
-CAP=109; BIG=xenmultiall; PER=2
-MINE="xenmultiall|xenanfix|xenpfcut|xenpfgpu|xenpfan|istarxen|istareval|istarhipt|fig1v3|fig1v3med|xenembfix|hestind|xenind"
+CAP=${OCTAVE_CPU_CAP:-64}; BIG=xenmulti; PER=2
+MINE="xenmulti|xenanfix|xenpfcut|xenpfgpu|xenpfan|istarxen|istareval|istarhipt|fig1v3|fig1v3med|xenembfix|hestind|xenind"
 while true; do
   for J in $(squeue -u $USER -h -t PD -o "%i %j" | grep -E " ($MINE)$" | awk '{print $1}' | sed 's/_\[.*//; s/_[0-9]*$//' | sort -u); do
     nice=$(scontrol show job $J 2>/dev/null | grep -o "Nice=[0-9-]*" | head -1 | cut -d= -f2); [ "${nice:-0}" -lt 50000 ] && scontrol update JobId=$J Nice=50000 2>/dev/null

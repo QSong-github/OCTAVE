@@ -1,9 +1,9 @@
 #!/bin/bash
 # 忠实实现作者配置（mse + 0.25×ZINB + 0.5×自蒸馏）后显存需求约 6 倍：
-# bake=5 要额外 5 次前向并保留激活。22GB 的 L4 连最小队列都装不下 ⇒ 全部走 B200。
+# bake=5 要额外 5 次前向并保留激活。小显存 GPU 连最小队列都装不下 ⇒ 全部走大显存卡。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 COH=(SKCM HCC LUNG PAAD COAD READ IDC LYMPH_IDC PRAD CCRCC)
 N=${#COH[@]}

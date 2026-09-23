@@ -3,7 +3,7 @@
 对部分样本（如 TENX111）两边条码体系不同，交集为空，训练集长度为 0。基准任务本身带 adata（bench_data/{C}/adata/{id}.h5ad，
 即本项目其它六个方法用的同一份表达），其条码与 patch 完全一致。此脚本用基准 adata 覆盖 TRIPLEX 副本，并按 patch 条码顺序对齐。"""
 import sys, os, glob, h5py, numpy as np, anndata as ad
-B = "/path/to/he2st/HEST/eval/bench_data"; C = sys.argv[1]; d = f"/path/to/systema4ST/data/triplex/{C}"
+B = "/path/to/he2st/HEST/eval/bench_data"; C = sys.argv[1]; d = f"/path/to/project/data/triplex/{C}"
 for p in sorted(glob.glob(f"{d}/patches/*.h5")):
     sid = os.path.basename(p)[:-3]
     with h5py.File(p, "r") as h:

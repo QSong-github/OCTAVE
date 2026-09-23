@@ -2,7 +2,7 @@
 """把多编码器（Xenium）结果的数字写进正文：摘要句、贡献句、§3.3 段、讨论句。输入 results/xen_multi_rank.json、results/encoder_params.json；
 名称映射取自 mk_tables.py。用法：python scripts/mk_multi_main.py [--dry]（--dry 只写到 scratch，不动 paper/main.tex）。"""
 import json, os, re, sys, ast as _ast, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results"); M = json.load(open(f"{R}/xen_multi_rank.json")); P = json.load(open(f"{R}/encoder_params.json"))
+R = os.environ.get("OCTAVE_RESULTS", "results"); M = json.load(open(f"{R}/xen_multi_rank.json")); P = json.load(open(f"{R}/encoder_params.json"))
 E = M["encoders"]; order = sorted(E, key=lambda e: -E[e]["pcc"]); n = len(order); rk = M["ranking"]; pairs = rk["1"]["pairs"]
 def _name_map():
     """从 mk_tables.py 取显示名：NAME = {...} 以及后续的 NAME.update({...})。"""

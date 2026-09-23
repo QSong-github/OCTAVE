@@ -5,7 +5,7 @@
 种子按样本固定（default_rng(abs(hash)) 不稳定，改用 sid 的 sha1），可复现。"""
 import sys, os, glob, json, hashlib, h5py, numpy as np
 MAXSPOT = 4000
-d = f"/path/to/systema4ST/data/triplex/{sys.argv[1]}"; sel_all = {}
+d = f"/path/to/project/data/triplex/{sys.argv[1]}"; sel_all = {}
 for p in sorted(glob.glob(f"{d}/patches/*.h5")):
     sid = os.path.basename(p)[:-3]
     with h5py.File(p, "r+") as h:

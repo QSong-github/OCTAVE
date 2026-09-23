@@ -5,7 +5,7 @@ pixel_mean/std 为 ImageNet 统计量、image_size=224、DINOv2 架构（取 [CL
 与脚本里既有的 "hf" 分支完全一致，因此只需登记仓库名。
 Phaet 是 Phikon-v2 的微调版，Mascaret 是 Midnight-12k 的微调版。"""
 import ast
-p = "/path/to/systema4ST/src/hest_embed_v2.py"
+p = "/path/to/project/src/hest_embed_v2.py"
 s = open(p).read()
 assert "phaet" not in s
 a = '"dinov3_vitl16": "facebook/dinov3-vitl16-pretrain-lvd1689m"}'

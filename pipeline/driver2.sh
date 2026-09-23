@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /path/to/systema4ST
+cd /path/to/project
 say(){ echo "[$(date +%H:%M:%S)] $*"; }
 python3 fix_raw.py
 rm -f results/hest_emb/*_omiclip_raw.npz results/hest_effres_ps_omiclip_raw.json

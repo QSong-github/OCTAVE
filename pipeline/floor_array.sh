@@ -8,6 +8,6 @@
 #SBATCH --output=logs/hfloor_%A_%a.out
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 C=$(sed -n "${SLURM_ARRAY_TASK_ID}p" cohorts.txt)
 python -u src/hest_floor.py --cohort "$C"

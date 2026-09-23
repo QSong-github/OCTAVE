@@ -20,7 +20,7 @@ import evaluate as E, retrieval as R
 from baselines import ridge_predict
 from effres import build_operator, calibrate_sigma, PX_PER_UM, SLIDES, SEB
 
-PARENT = "/path/to/align_workspace"
+PARENT = "/path/to/upstream_align"
 RAW = os.path.join(PARENT, "st_bench/data/{s}/adata_16um.h5ad")
 
 ap = argparse.ArgumentParser()
@@ -132,6 +132,6 @@ print(f"  预测/真值 中位={np.nanmedian(r):.2f}×  Q1 层={np.nanmedian(r[V
 print(f"  ⇒ 空间性最弱的基因被膨胀得最厉害 = 凭空制造空间结构")
 
 json.dump({g: {k: float(np.nanmean(acc[g][k])) for k in acc[g]} for g in G},
-          open(f"/path/to/systema4ST/results/per_gene_{a_.tower}.json", "w"),
+          open(f"/path/to/project/results/per_gene_{a_.tower}.json", "w"),
           indent=2, ensure_ascii=False)
 print(f"\n已存 results/per_gene_{a_.tower}.json")

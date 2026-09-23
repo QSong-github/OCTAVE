@@ -1,6 +1,6 @@
 #!/bin/bash
 # 第二批：hibou_b + gigapath_flash 抽嵌入（GPU），path_foundation 由 pfemb 作业产出；三者齐后跑同一套下游。
-cd /path/to/systema4ST
+cd /path/to/project
 say(){ echo "[$(date +%H:%M:%S)] $*"; }
 python3 patch_b3.py || exit 1
 E2="hibou_b gigapath_flash"
@@ -8,10 +8,10 @@ cat > jobs/b3emb.sh <<SH
 #!/bin/bash
 #SBATCH -J b3emb
 #SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:1 --array=0-1 -c 6 --mem=16G -t 24:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH -o /path/to/project/logs/%x_%A_%a.out
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST; export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
+cd /path/to/project; export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 export HF_TOKEN=\$(cat /path/to/.cache/huggingface/token); export HUGGING_FACE_HUB_TOKEN=\$HF_TOKEN; unset HF_HUB_OFFLINE
 A=($E2); X=\${A[\$SLURM_ARRAY_TASK_ID]}
 [ "\$(ls results/hest_emb/*_\${X}.npz 2>/dev/null | wc -l)" -ge 72 ] && exit 0
@@ -32,10 +32,10 @@ cat > jobs/b3ds.sh <<SH
 #!/bin/bash
 #SBATCH -J b3ds
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-$((NOK*13-1)) -c 4 --mem=24G -t 8:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH -o /path/to/project/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST; export OMP_NUM_THREADS=4 BLK_K=20,50,200
+cd /path/to/project; export OMP_NUM_THREADS=4 BLK_K=20,50,200
 A=($OK); AL=($ALPHAS); I=\$SLURM_ARRAY_TASK_ID; X=\${A[\$((I/13))]}; J=\$((I%13))
 if [ \$J = 0 ]; then O=results/hest_effres_ps_\${X}.json; [ -s \$O ] && exit 0; exec python -u src/hest_effres_ps.py --encoder \$X --skip_sigma --out \$O; fi
 if [ \$J = 12 ]; then [ -s results/hest_blocks_\${X}.json ] && exit 0; exec python -u hest_blocks.py \$X; fi
@@ -44,5 +44,5 @@ python -u src/hest_effres_ps.py --encoder \$X --skip_sigma --ridge_alpha \$a --o
 SH
 sbatch jobs/b3ds.sh >/dev/null
 while [ "$(squeue -u $USER -r -h -n b3ds | wc -l)" -gt 0 ]; do sleep 60; done
-J=$(sbatch --parsable --qos=YOUR_QOS -p YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00 -J b3agg -o logs/b3agg_%j.out --wrap="source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest; cd /path/to/systema4ST; python3 ridge_loco.py $(echo $OK | tr ' ' ','); python3 blk_agg.py | tail -8")
+J=$(sbatch --parsable --qos=YOUR_QOS -p YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00 -J b3agg -o logs/b3agg_%j.out --wrap="source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest; cd /path/to/project; python3 ridge_loco.py $(echo $OK | tr ' ' ','); python3 blk_agg.py | tail -8")
 while [ "$(squeue -j $J -h | wc -l)" -gt 0 ]; do sleep 20; done; cat logs/b3agg_${J}.out

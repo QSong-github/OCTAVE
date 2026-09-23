@@ -2,7 +2,7 @@
 """附录：HEST（100 µm 间距）上的 OCTAVE 式差距。输入 results/hest_octave_delta.json（scripts/hest_octave_delta.py）。
 输出 paper/tab_hestdelta.tex（跨 57 编码器的中位数与范围）与 paper/hestdelta_text.tex（段落，数字全部由此生成）。"""
 import json, os, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results"); D = json.load(open(f"{R}/hest_octave_delta.json"))
+R = os.environ.get("OCTAVE_RESULTS", "results"); D = json.load(open(f"{R}/hest_octave_delta.json"))
 A = {k: np.array([d[k] for d in D]) for k in D[0] if k != "enc"}; n = len(D)
 med = lambda k: float(np.median(A[k])); lo = lambda k: float(A[k].min()); hi = lambda k: float(A[k].max())
 rows = [("Scalar $\\mathrm{PCC}$, ridge", "pr"), ("Scalar $\\mathrm{PCC}$, domain oracle", "po"), ("Finest-band $\\beta_1$, ridge", "b1r"), ("Finest-band $\\beta_1$, domain oracle", "b1o")]

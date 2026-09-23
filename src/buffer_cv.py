@@ -84,5 +84,5 @@ for g in GRIDS:
             v = mean(k)
             print(f"{f'块 {g}×{g}, 缓冲 {d:g}µm':>30s}{v:>10.4f}{v/base:>10.3f}")
 print(f"{'跨片（无共享组织）':>30s}{0.5785:>10.4f}{0.5785/base:>10.3f}   ← 三方夹逼实测")
-json.dump(out, open("/path/to/systema4ST/results/buffer_cv.json", "w"),
+json.dump(out, open("/path/to/project/results/buffer_cv.json", "w"),
           indent=2, ensure_ascii=False)

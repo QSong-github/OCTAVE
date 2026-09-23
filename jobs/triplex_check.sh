@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -J tpxcheck
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 0:30:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate triplex
-cd /path/to/systema4ST
+cd /path/to/project
 python - <<PY
 import importlib, sys
 for m in ["hest","hest.bench","hest.bench.cpath_model_zoo.inference_models","hestcore","hestcore.segmentation","trident","loguru","wget","einops","addict","wandb","torchmetrics","pytorch_lightning"]:

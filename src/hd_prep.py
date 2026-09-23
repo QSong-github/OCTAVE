@@ -7,18 +7,18 @@
   人 CRC P1（第三个病人）· 人癌旁正常 P3 · 人胰腺 · 鼠脑/肾/胚胎/小肠
 覆盖跨病人 / 癌-正常 / 跨器官 / 跨物种四个方向。
 
-输出与母项目 binned_16um.h5ad 同构:
+输出与上游项目 binned_16um.h5ad 同构:
   X          = 原始计数（稀疏）
   obs        = slide_id, array_row, array_col, in_tissue
   obsm['pxl']= [x=pxl_col_in_fullres, y=pxl_row_in_fullres]  ← openslide read_region 的 (x,y) 顺序
   uns        = px_per_um（由 scalefactors 的 microns_per_pixel 取倒数）
-坐标一律用 pxl（母项目的 obs['x_um'] 与 coord.npy 被 NaN 均值污染，见 内部记录 第 6 节）。
+坐标一律用 pxl（上游项目的 obs['x_um'] 与 coord.npy 被 NaN 均值污染，见 内部记录 第 6 节）。
 """
 import os, sys, json, glob, argparse, numpy as np, anndata as ad, scanpy as sc
 from scipy import sparse
 
-ROOT = "/path/to/systema4ST/data/visiumhd"
-OUT = "/path/to/systema4ST/data/prepped"
+ROOT = "/path/to/project/data/visiumhd"
+OUT = "/path/to/project/data/prepped"
 
 def prep(name):
     d = os.path.join(ROOT, name)

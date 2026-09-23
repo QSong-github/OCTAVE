@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
 #SBATCH --time=00:30:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest

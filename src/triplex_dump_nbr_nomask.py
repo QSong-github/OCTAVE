@@ -3,13 +3,13 @@
 原因是 1120 px（约 560 µm）的窗口大量越出掩膜轮廓。掩膜只是切块时的取舍，不是模型的一部分，
 故对这些片改用 use_mask=False 重切邻居块，其余与作者 save_patches 完全一致（224×5 px、0.5 µm/px、随后 match_to_target）。"""
 import sys, os
-sys.path.insert(0, "/path/to/systema4ST/methods/hest_new")
-sys.path.insert(0, "/path/to/systema4ST/methods/triplex_shim")
-sys.path.insert(0, "/path/to/systema4ST/methods/TRIPLEX/src")
+sys.path.insert(0, "/path/to/project/methods/hest_new")
+sys.path.insert(0, "/path/to/project/methods/triplex_shim")
+sys.path.insert(0, "/path/to/project/methods/TRIPLEX/src")
 from hest import iter_hest
 from preprocess.prepare_data import match_to_target
 C, sid = sys.argv[1], sys.argv[2]
-H = "/path/to/systema4ST/data/hest_wsis"; out = f"/path/to/systema4ST/data/triplex/{C}"
+H = "/path/to/project/data/hest_wsis"; out = f"/path/to/project/data/triplex/{C}"
 st = [s for s in iter_hest(H, id_list=[sid])][0]
 if st._tissue_contours is None: st.segment_tissue(method="deep")
 p = f"{out}/patches/neighbor/{sid}.h5"

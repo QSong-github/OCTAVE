@@ -8,6 +8,6 @@ from huggingface_hub import snapshot_download
 m = tf.saved_model.load(snapshot_download("google/path-foundation"))
 n = int(sum(int(np.prod(v.shape)) for v in m.variables))
 print("  path_foundation %9.1f M  (%d variables)" % (n / 1e6, len(m.variables)))
-P = "/path/to/systema4ST/results/encoder_params.json"
+P = "/path/to/project/results/encoder_params.json"
 out = json.load(open(P)); out["path_foundation"] = {"params": n, "hidden": 384}
 json.dump(out, open(P, "w"), indent=1); print("共 %d 个" % len(out))

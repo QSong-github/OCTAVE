@@ -1,5 +1,5 @@
 import ast
-p = "/path/to/systema4ST/src/hest_effres_ps.py"; s = open(p).read()
+p = "/path/to/project/src/hest_effres_ps.py"; s = open(p).read()
 if "--mlp_alpha" not in s:
     a = '    ap.add_argument("--seed", type=int, default=0, help="仅 mlp 用：初始化与早停验证集划分")\n'
     assert s.count(a) == 1

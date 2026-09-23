@@ -5,7 +5,7 @@
 Figure 1 v3 的图注、2.2 走读段与附录（原选窗图）图注，全部由 results/fig1_v3{TAG}_numbers.json 生成。
 用法：python3 scripts/mk_fig1_text.py [TAG]   TAG='' 为随机窗版，'med' 为中位数窗版。"""
 import json, os, sys
-R = os.environ.get("S4ST_RESULTS", "results"); TAG = sys.argv[1] if len(sys.argv) > 1 else ""
+R = os.environ.get("OCTAVE_RESULTS", "results"); TAG = sys.argv[1] if len(sys.argv) > 1 else ""
 d = json.load(open(f"{R}/fig1_v3{TAG}_numbers.json")); P2, P5 = d["P2"], d["P5"]; mode = "median" if TAG == "med" else "random"
 rule = ("the window whose finest-band gap is closest to the median over all candidate windows of that section" if mode == "median"
         else f"a window drawn at random (seed {P2.get('seed', 0)}) from the candidate windows of that section")

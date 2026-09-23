@@ -3,7 +3,7 @@
 输入：results/thitogene_hest.json（原始合并结果，样本→{cohort, folds, pcc}）与 results/thito_seeds/thitogene_{COH}_f{FOLD}_s{SEED}.json（逐折）。
 输出：每次运行 72 样本的均值、队列级均值、三次的均值±标准差；与 57 个编码器 ridge 的样本均值比较（methods_vs_floor.json 的 _reference.encoder_mean）。"""
 import json, glob, os, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results")
+R = os.environ.get("OCTAVE_RESULTS", "results")
 runs = {"original": json.load(open(f"{R}/thitogene_hest.json"))}
 for seed in (1, 2):
     m = {}

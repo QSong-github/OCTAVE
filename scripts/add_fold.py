@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """给两个适配器加 --fold，使数组作业能逐折并行；每个任务独立落盘，避免并发写同一文件。"""
 import os, ast, re
-B = "/path/to/systema4ST"
+B = "/path/to/project"
 SPEC = [("src/hggep_hest.py", "a_",
          '        for kf in range(len(glob.glob(os.path.join(B, c, "splits", "test_*.csv")))):\n'),
         ("src/heclip_hest.py", "a",

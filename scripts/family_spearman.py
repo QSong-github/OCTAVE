@@ -4,7 +4,7 @@
 输出 results/family_spearman.json。"""
 import json, os, collections, numpy as np
 
-R = os.environ.get("S4ST_RESULTS", "results")
+R = os.environ.get("OCTAVE_RESULTS", "results")
 S = {e["enc"]: e for e in json.load(open(f"{R}/hest_blocks_summary.json"))}
 P = json.load(open(f"{R}/encoder_params.json"))
 DISTILLED = {"litevirchow2", "h0_mini", "litefm", "litefm_l", "litefm_s",

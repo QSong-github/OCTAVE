@@ -9,7 +9,7 @@ Visium HD 能做而 HEST 做不到的: 最细频带到 ~10µm, 所以 Moran's I 
 可以一直测到接近单细胞尺度。
 
 方法只用两个合法锚点(imageKNN 纯形态学下界 / Ridge = HEST 参照协议), 不含任何
-母项目自研方法, 也不含把第三方编码器塞进检索管线的消融。
+上游项目自研方法, 也不含把第三方编码器塞进检索管线的消融。
 """
 import os, sys, json, argparse, numpy as np, anndata as ad
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

@@ -4,7 +4,7 @@
 # §22 让评测栅格跟着预测栅格走，得到「调粗涨 48%」；本设计固定栅格后结论反向。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 FILES=($(ls data/prepped_xen/*_bin16.h5ad))
 F=${FILES[$SLURM_ARRAY_TASK_ID]}
 N=$(basename "$F" _bin16.h5ad)

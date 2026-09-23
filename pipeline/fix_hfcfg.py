@@ -5,7 +5,7 @@ Phaet 用 ImageNet（与旧行为一致，改动对它是恒等），
 Mascaret 继承 Midnight 的 0.5/0.5/0.5 —— 套 ImageNet 会静默压低它的表现。
 与 trident / bioptimus / CLIP 各分支同理：绝不默认套 ImageNet。"""
 import ast
-p = "/path/to/systema4ST/src/hest_embed_v2.py"
+p = "/path/to/project/src/hest_embed_v2.py"
 s = open(p).read()
 
 a = '    m = AutoModel.from_pretrained(HF_REPOS[name], trust_remote_code=True).eval().to(dev)\n    return m, "hf"'

@@ -1,29 +1,29 @@
 #!/bin/bash
 #SBATCH --job-name=stflow5
 #SBATCH --qos=YOUR_QOS
-#SBATCH --gres=gpu:l4:1
+#SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=48:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # PyTorch 2.6+ 的 torch.load 默认 weights_only=True, CIGA 官方 ckpt 里含 Lightning
 # 的 ModelCheckpoint 对象, 被安全反序列化拒绝。
 # 解法: 把官方 ckpt 预处理成【纯张量】文件({'state_dict': tensors}), STFlow 的
 #   torch.load(...)['state_dict'] 原样可读。不改第三方代码, 也不全局篡改 torch.load 默认值。
 set -u
-V=/path/to/systema4ST/venv_np1
-M=/path/to/systema4ST/methods/STFlow
+V=/path/to/project/venv_np1
+M=/path/to/project/methods/STFlow
 B=/path/to/he2st/HEST/eval/bench_data
-OUT=/path/to/systema4ST/stflow_run
-export HF_HOME=/path/to/systema4ST/.hf
+OUT=/path/to/project/stflow_run
+export HF_HOME=/path/to/project/.hf
 source $V/bin/activate
 echo "节点 $(hostname)"
 
 echo "=== 0. ckpt 转纯张量 ==="
 python - <<'PY'
 import torch, os
-src = "/path/to/systema4ST/stflow_run/weights/ciga/tenpercent_resnet18.ckpt"
-dst = "/path/to/systema4ST/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
+src = "/path/to/project/stflow_run/weights/ciga/tenpercent_resnet18.ckpt"
+dst = "/path/to/project/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
 os.makedirs(os.path.dirname(dst), exist_ok=True)
 # 官方 GitHub release(已发表论文), 来源可信 → weights_only=False 仅用于这一次转换
 ck = torch.load(src, map_location="cpu", weights_only=False)

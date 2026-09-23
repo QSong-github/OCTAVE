@@ -4,8 +4,8 @@
 折数取基准自带的划分；某个特征上 TRIPLEX 实际完成的折数少于基准折数时，该格加剑号并在脚注说明。"""
 import json, glob, os, numpy as np
 
-R = os.environ.get("S4ST_RESULTS", "results")
-T = json.load(open(os.environ.get("S4ST_TRIPLEX", "results_new/triplex/triplex_hest.json")))
+R = os.environ.get("OCTAVE_RESULTS", "results")
+T = json.load(open(os.environ.get("OCTAVE_TRIPLEX", "results_new/triplex/triplex_hest.json")))
 COH = {k: v["cohort"] for k, v in json.load(open(f"{R}/hest_blocks_ciga.json"))["samples"].items()}
 ORDER = ["SKCM", "HCC", "LUNG", "PAAD", "COAD", "READ", "IDC", "LYMPH_IDC", "PRAD", "CCRCC"]
 FEAT = [("cigar", "CIGA (ResNet-18) features"), ("uni_v1", "UNI features")]

@@ -10,7 +10,7 @@ import os
 分母两套：官方 ridge（α=100/(D·G)，欠正则）与留一队列选 α 的 ridge。以后者为准。"""
 import json, glob, os, numpy as np
 from math import comb
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 signp = lambda k, n: min(1.0, 2 * sum(comb(n, i) for i in range(k, n + 1)) / 2 ** n)
 ENC = sorted(x for x in (os.path.basename(f)[len("hest_blocks_"):-5] for f in [f for f in glob.glob(f"{R}/hest_blocks_*.json") if not os.path.basename(f).startswith(("hest_blocks_z_", "hest_blocks_summary"))]) if x != "summary")
 rows = []

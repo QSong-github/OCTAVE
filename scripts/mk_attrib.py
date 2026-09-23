@@ -2,7 +2,7 @@
 """复核意见的补充分析汇总（results/xen_attrib/*.json → results/attrib_numbers.json, paper/tab_attrib.tex, paper/attrib_text.tex）。
 聚合与正文一致：区域→标本中位数→跨标本中位数（范围为跨标本）。"""
 import json, glob, os, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results")
+R = os.environ.get("OCTAVE_RESULTS", "results")
 SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
         "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
         "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """正文用的紧凑分区对照表（tab_controls_main.tex）：基准（队列级中位数再跨编码器取中位）与 Xenium（标本级中位数）并排。输入 results/controls_numbers.json。"""
 import json, os
-R = os.environ.get("S4ST_RESULTS", "results"); n = json.load(open(f"{R}/controls_numbers.json")); h = n["hest"]; x = n["xen"]
+R = os.environ.get("OCTAVE_RESULTS", "results"); n = json.load(open(f"{R}/controls_numbers.json")); h = n["hest"]; x = n["xen"]
 rows = [("Ridge on frozen features (trained model)", h["ridge"]["median"], 1.0, x["ridge"][0], 1.0),
         ("Image partition, measured means (domain oracle)", h["img"]["median"], h["img_over_ridge"]["median"], x["img"][0], x["img_frac"][0]),
         ("Image partition, means learned from training data", h["train"]["median"], h["train_over_ridge"]["median"], x["train_img"][0], x["train_img_frac"][0]),

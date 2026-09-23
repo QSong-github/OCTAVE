@@ -11,8 +11,8 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 warnings.filterwarnings("ignore")
 B = "/path/to/he2st/HEST/eval/bench_data"
-EMB = "/path/to/systema4ST/results/hest_emb"
-R = "/path/to/systema4ST/results"
+EMB = "/path/to/project/results/hest_emb"
+R = "/path/to/project/results"
 KS = [int(x) for x in os.environ.get("BLK_K", "20").split(",")]
 ZS = os.environ.get("BLK_ZSCORE", "0") == "1"      # 2026-09-03：稳健性检查——PCA 前各维标准化
 

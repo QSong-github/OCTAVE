@@ -14,13 +14,13 @@
                图像头 + **可训练表达编码器**,InfoNCE 对齐,再检索借表达。
                它与我们的关键差别: 表达表示是**在本数据上从头学**的, 而我们用**预训练冻结 ST 编码器**。
   knn_image  : 纯图像 kNN 检索(不用任何表达表示)—— 下界。
-  ours       : 我们的方法(冻结 ST 编码器 + 线性头 InfoNCE+JEPA + 检索)。
+  ours       : ST 编码器 + 线性对齐头 + 检索(上游项目基线之一)。
 """
 import os, sys, json, argparse, numpy as np, anndata as ad
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import evaluate as E, retrieval as R
 from align import build_aligner
-from st_encoder_bench import load_model_emb, H5AD, COLLAB, EMBDIR, SLIDES
+from st_encoder_bench import load_model_emb, H5AD, EXT_ST, EMBDIR, SLIDES
 
 
 def ridge_predict(Xtr, Ytr, Xte, alpha):
@@ -102,7 +102,7 @@ def main():
     img = np.nan_to_num(np.concatenate([
         np.load(os.path.join(EMBDIR, f"emb_{args.tower}_P2.npy")),
         np.load(os.path.join(EMBDIR, f"emb_{args.tower}_P5.npy"))]).astype(np.float32))
-    collab = np.nan_to_num(np.asarray(ad.read_h5ad(COLLAB).obsm["img_emb"], np.float32))
+    collab = np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32))
     print(f"塔={args.tower}({img.shape[1]}d)  N={n}  k={args.k}", flush=True)
 
     ALPHAS = [1.0, 10.0, 100.0, 1000.0, 10000.0]
@@ -130,10 +130,10 @@ def main():
         # 4) 纯图像 kNN
         p = R.image_floor(img[te], img[tr], Ytr, k=args.k)
         add("kNN图像检索(下界)", float(E.per_gene_pcc(p, expr[te], gidx).mean()))
-        # 5) 我们的方法
+        # 5) ST 编码器基线
         alg = build_aligner("mlp", hidden=0, jepa_weight=args.jepa, temp=args.temp, epochs=40).fit(img[tr], collab[tr])
         p = R.retrieve_cross_modal(alg.project_img(img[te]), alg.project_st(collab[tr]), Ytr, k=args.k)
-        add("★ 我们(冻结ST编码器+对齐+检索)", float(E.per_gene_pcc(p, expr[te], gidx).mean()))
+        add("ST encoder + alignment + retrieval", float(E.per_gene_pcc(p, expr[te], gidx).mean()))
 
     rows = sorted(((k, float(np.mean(v)), float(np.std(v))) for k, v in acc.items()),
                   key=lambda r: -r[1])

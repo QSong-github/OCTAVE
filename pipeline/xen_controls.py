@@ -7,10 +7,10 @@ from scipy import sparse
 from scipy.spatial import cKDTree
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 from per_gene_xen import build_operator, calibrate_sigma, per_gene_pcc, block_cv_predict
-PREP = "/path/to/systema4ST/data/prepped_xen"; EMB = "/path/to/systema4ST/results/emb_xen"
-OUTD = "/path/to/systema4ST/results/xen_controls"
+PREP = "/path/to/project/data/prepped_xen"; EMB = "/path/to/project/results/emb_xen"
+OUTD = "/path/to/project/results/xen_controls"
 ap = argparse.ArgumentParser(); ap.add_argument("--name", required=True); ap.add_argument("--tower", default="hibou_l")
 ap.add_argument("--ngene", type=int, default=200); ap.add_argument("--tmax", type=int, default=2048); a = ap.parse_args()
 cps = [1]

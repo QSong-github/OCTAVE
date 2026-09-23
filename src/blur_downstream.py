@@ -16,7 +16,7 @@ import numpy as np
 import anndata as ad
 from scipy import sparse
 
-S = "/path/to/systema4ST/src"
+S = "/path/to/project/src"
 sys.path.insert(0, S)
 from downstream2 import (gene_names, smooth, knn_graph, morans_i, block_cv_predict,
                          jaccard_topq, boundary_by_gradient, boundary_shift_um,
@@ -24,9 +24,9 @@ from downstream2 import (gene_names, smooth, knn_graph, morans_i, block_cv_predi
 from per_gene_xen import build_operator, per_gene_pcc
 from scipy.stats import spearmanr
 
-PREP = "/path/to/systema4ST/data/prepped_xen"
-EMB = "/path/to/systema4ST/results/emb_xen"
-RES = "/path/to/systema4ST/results"
+PREP = "/path/to/project/data/prepped_xen"
+EMB = "/path/to/project/results/emb_xen"
+RES = "/path/to/project/results"
 TS = [0, 1, 2, 4, 8, 16]
 
 

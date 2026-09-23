@@ -4,15 +4,15 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
 #SBATCH --time=08:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # 不用 conda create(上一轮报内部错误)。改为在 hest 之上叠一层 venv:
 #   --system-site-packages 继承 hest 已有的 torch/scanpy/h5py, 只 pip 装缺的,
 #   既不污染 hest, 也绕开 conda 求解器。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-M=/path/to/systema4ST/methods
-V=/path/to/systema4ST/venv_stmethods
+M=/path/to/project/methods
+V=/path/to/project/venv_stmethods
 echo "节点 $(hostname)"
 
 echo "=== 第一步: hest 里已有什么 ==="

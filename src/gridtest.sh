@@ -5,7 +5,7 @@
 # 则 σ 测的是模型性质，不是网格的产物。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 BINS=(8 32 64)
 B=${BINS[$SLURM_ARRAY_TASK_ID]}
 echo "=== Xenium 重新分箱 @ ${B}µm ==="

@@ -21,7 +21,7 @@
     r_global = √(η·η̂)·r_B + √((1-η)(1-η̂))·r_W
 这条恒等式成立与否, 决定论文的理论部分能不能写。
 
-注意: 池化残差版与母项目"按簇分别算再加权平均"的实现不同 —— 只有池化版才与恒等式精确对应。
+注意: 池化残差版与上游项目"按簇分别算再加权平均"的实现不同 —— 只有池化版才与恒等式精确对应。
 """
 import os, sys, json, argparse, numpy as np, anndata as ad
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

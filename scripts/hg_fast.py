@@ -2,7 +2,7 @@
 """HGGEP 的 build_adj_hypergraph 向量化替换 —— 数学等价，只消除 Python 循环。
 
 作者原版对 n 个节点逐个循环，每轮几次 kernel 启动加 4 次 list.append。
-n=4000 时约两万次启动，是启动延迟受限，换大卡无用（B200 上一折仍要 ~5 小时）。
+n=4000 时约两万次启动，是启动延迟受限，换大卡无用（大显存卡上一折仍要 ~5 小时）。
 
 等价性要点：
   · 原版 `torch.tensor(edge_weights)` / `torch.tensor(hypergraph_edges)` 会切断梯度，
@@ -13,7 +13,7 @@ n=4000 时约两万次启动，是启动延迟受限，换大卡无用（B200 �
 
 block 取 64：距离矩阵按行分块，临时张量是 (block, n, m)。HGGEP 在 n=4000、bake=5 下
 模型本身就要约 93 GB（4000 token 注意力 x 16 头 x 8 层 x 5 次增广），95 GB 的
-rtx6000 装不下，本项目只在 183 GB 的 B200 上跑它。分块只是把这一处的峰值压到可忽略。
+小显存卡装不下，本项目只在 大显存 GPU 上跑它。分块只是把这一处的峰值压到可忽略。
 """
 import torch
 from torch_geometric.data import Data

@@ -3,7 +3,7 @@
 邻居块由 HEST 的 dump_patches 按组织掩膜切出，个别 spot 会被丢掉（作者的 match_to_target 同样是取交集）；
 目标 patch 又经过 MAXSPOT=4000 下采样。此脚本在抽完特征后做一次对齐，幂等（attrs['aligned']）。"""
 import sys, os, glob, h5py, numpy as np, anndata as ad
-d = f"/path/to/systema4ST/data/triplex/{sys.argv[1]}"; m = sys.argv[2]
+d = f"/path/to/project/data/triplex/{sys.argv[1]}"; m = sys.argv[2]
 def bc_of(h, k="barcode"): return np.asarray(h[k][:]).flatten().astype(str)
 for p in sorted(glob.glob(f"{d}/patches/*.h5")):
     sid = os.path.basename(p)[:-3]

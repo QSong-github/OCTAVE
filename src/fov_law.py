@@ -14,7 +14,7 @@ extract_wsi_emb.py: ctx_px 是从 WSI level-0 读入的 context tile 边长, 默
  ③ 固定视野下(25 塔)σ 的跨度 = 表征质量的贡献, 与视野贡献分离
 """
 import json, glob, os, re, numpy as np
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 UMPX = 0.2739
 
 def load(d):

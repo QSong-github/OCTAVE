@@ -3,7 +3,7 @@
 import glob, json, os, re
 import numpy as np
 from math import comb
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 
 
 def spec(n):

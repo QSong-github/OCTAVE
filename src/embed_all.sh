@@ -2,7 +2,7 @@
 # 9 张片的 hibou_l 嵌入 —— 全部来自 10x 原始数据，统一管线（ctx_px=224, grid=1, level 0）
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 NAMES=(Visium_HD_Human_Colon_Cancer_P1 Visium_HD_Human_Colon_Cancer_P2 Visium_HD_Human_Colon_Cancer_P5 \
        Visium_HD_Human_Colon_Normal_P3 Visium_HD_Human_Pancreas Visium_HD_Mouse_Brain \
        Visium_HD_Mouse_Kidney Visium_HD_Mouse_Embryo Visium_HD_Mouse_Small_Intestine)

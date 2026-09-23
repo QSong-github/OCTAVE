@@ -5,12 +5,12 @@
 编码器加载与前向复用 hest_embed_v2 / xen_embed_all.embed_batch（与 57 编码器扫描同一份权重与预处理）。
 输出 results/deepspot_emb/{enc}/{cohort}/{sid}.npz: spot (n,d), sub (n,9,d), bc (n,), xy_array (n,2)。"""
 import os, sys, glob, argparse, numpy as np, torch, h5py, anndata as ad
-sys.path.insert(0, "/path/to/systema4ST"); sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project"); sys.path.insert(0, "/path/to/project/src")
 import hest_embed_v2 as HE
 from xen_embed_all import embed_batch
 B = "/path/to/he2st/HEST/eval/bench_data"
 ap = argparse.ArgumentParser(); ap.add_argument("--cohort", required=True); ap.add_argument("--encoder", required=True)
-ap.add_argument("--out", default="/path/to/systema4ST/results/deepspot_emb"); ap.add_argument("--batch", type=int, default=128)
+ap.add_argument("--out", default="/path/to/project/results/deepspot_emb"); ap.add_argument("--batch", type=int, default=128)
 ap.add_argument("--sub_batch", type=int, default=256); ap.add_argument("--grid", type=int, default=3)
 a = ap.parse_args(); dev = "cuda" if torch.cuda.is_available() else "cpu"
 model, kind = HE.encoder(a.encoder, dev)

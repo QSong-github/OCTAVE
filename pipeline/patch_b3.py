@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """接入 hibou_b（HF + 自带 image_mean/std）与 gigapath_flash（手工注册 DINOv2-S SwiGLU 架构）。"""
 import ast, shutil
-p = "/path/to/systema4ST/src/hest_embed_v2.py"; s = open(p).read()
+p = "/path/to/project/src/hest_embed_v2.py"; s = open(p).read()
 if "GIGA_FLASH" in s:
     print("已接入"); raise SystemExit
 shutil.copy(p, p + ".bak_pre_b3")

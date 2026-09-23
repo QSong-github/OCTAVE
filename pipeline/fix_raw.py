@@ -6,7 +6,7 @@ normalize=True，所以两个变体拿到的是同一批单位模长特征（实
 1.0000，逐元素差 3e-08，纯浮点噪声）。必须显式传 normalize=False。
 探针确认：normalize=False 时行范数 12.2112。"""
 import ast
-p = "/path/to/systema4ST/src/hest_embed_v2.py"
+p = "/path/to/project/src/hest_embed_v2.py"
 s = open(p).read()
 a = '''                f = model.encode_image(xb).float()
                 if kind[2] == "omiclip":

@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /path/to/systema4ST
+cd /path/to/project
 say(){ echo "[$(date +%H:%M:%S)] $*"; }
 python3 add_musk.py
 cat > jobs/muskemb.sh <<'SH'
@@ -7,10 +7,10 @@ cat > jobs/muskemb.sh <<'SH'
 #SBATCH -J muskemb
 #SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1 -c 6 --mem=96G -t 36:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 python -u src/hest_embed_v2.py --encoder musk --batch 48
 SH
@@ -25,10 +25,10 @@ cat > jobs/muskps.sh <<'SH'
 #SBATCH -J muskps
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH -c 4 --mem=48G -t 8:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4
 python -u src/hest_effres_ps.py --encoder musk --out results/hest_effres_ps_musk.json
 SH
@@ -37,10 +37,10 @@ cat > jobs/muskfloor.sh <<'SH'
 #SBATCH -J muskfloor
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-39 -c 2 --mem=12G -t 8:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH -o /path/to/project/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 COH=(CCRCC COAD HCC IDC LUNG LYMPH_IDC PAAD PRAD READ SKCM); KS=(10 50 200 800)
 I=$SLURM_ARRAY_TASK_ID; K=${KS[$((I/10))]}; C=${COH[$((I%10))]}
 if [ "$K" = "50" ]; then OUT=results/hest_floor_musk; else OUT=results/hest_floor_k${K}_musk; fi

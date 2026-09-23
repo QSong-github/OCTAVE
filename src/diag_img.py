@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""诊断: 母项目 P2 金字塔 vs 我 vips 转的 P2 金字塔，为何嵌入不等价。"""
+"""诊断: 上游项目 P2 金字塔 vs 我 vips 转的 P2 金字塔，为何嵌入不等价。"""
 import glob, numpy as np, openslide, h5py
-PA = "/path/to/align_workspace"
+PA = "/path/to/upstream_align"
 A = glob.glob(f"{PA}/data/virtualST/*P2/*PYRAMIDAL*.tif*")[0]
-B = "/path/to/systema4ST/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_PYRAMIDAL.tif"
+B = "/path/to/project/data/visiumhd/Visium_HD_Human_Colon_Cancer_P2/Visium_HD_Human_Colon_Cancer_P2_PYRAMIDAL.tif"
 sa, sb = openslide.OpenSlide(A), openslide.OpenSlide(B)
-print(f"母项目 {A.split('/')[-1]}\n  尺寸={sa.dimensions} 层={sa.level_count}")
+print(f"上游项目 {A.split('/')[-1]}\n  尺寸={sa.dimensions} 层={sa.level_count}")
 for k in ("openslide.vendor", "tiff.ImageDescription", "tiff.PhotometricInterpretation",
           "tiff.ResolutionUnit", "tiff.XResolution", "openslide.mpp-x"):
     print(f"    {k} = {str(sa.properties.get(k))[:110]}")

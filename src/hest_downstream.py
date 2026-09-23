@@ -34,8 +34,8 @@ import evaluate as E
 from hest_ladder import build_operator, calibrate_sigma
 
 B = "/path/to/he2st/HEST/eval/bench_data"
-EMB = "/path/to/systema4ST/results/hest_emb"
-SAMPLES = "/path/to/systema4ST/results/hest_samples.json"
+EMB = "/path/to/project/results/hest_emb"
+SAMPLES = "/path/to/project/results/hest_samples.json"
 MAXRET = 4000          # 检索指标的子采样上限(O(n^2))
 
 

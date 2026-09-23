@@ -18,7 +18,7 @@ HECLIP 的文件头自称 "developed based on the BLEEP"。逐项核对后，实
 import os, sys, glob, json, argparse, numpy as np, h5py, torch
 from torch.utils.data import Dataset, DataLoader
 
-HEC = "/path/to/systema4ST/methods/HECLIP/code"
+HEC = "/path/to/project/methods/HECLIP/code"
 sys.path.insert(0, HEC)
 sys.path.insert(0, "/path/to/he2st/HEST/src")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

@@ -1,6 +1,6 @@
 #!/bin/bash
 # 端到端驱动：等嵌入 → 发下游 → 等下游 → 汇总。全程无人值守。
-cd /path/to/systema4ST
+cd /path/to/project
 say(){ echo "[$(date +%H:%M:%S)] $*"; }
 
 say "阶段1 等 genps 与 omiclip_raw 嵌入"
@@ -15,10 +15,10 @@ if [ "$N" -ge 72 ]; then
 #SBATCH -J orps
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH -c 4 --mem=48G -t 8:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1 OMP_NUM_THREADS=4
 python -u src/hest_effres_ps.py --encoder omiclip_raw --out results/hest_effres_ps_omiclip_raw.json
 SH
@@ -27,10 +27,10 @@ SH
 #SBATCH -J orfloor
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-39 -c 2 --mem=12G -t 8:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH -o /path/to/project/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 COH=(CCRCC COAD HCC IDC LUNG LYMPH_IDC PAAD PRAD READ SKCM); KS=(10 50 200 800)
 I=$SLURM_ARRAY_TASK_ID; K=${KS[$((I/10))]}; C=${COH[$((I%10))]}

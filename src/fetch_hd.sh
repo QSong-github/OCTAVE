@@ -3,7 +3,7 @@
 # 流式解包只保留 square_016um —— binned_outputs.tar.gz 含 2/8/16µm 三档，我们只用 16µm
 set -u
 B=https://cf.10xgenomics.com/samples/spatial-exp/3.0.0
-ROOT=/path/to/systema4ST/data/visiumhd
+ROOT=/path/to/project/data/visiumhd
 NAMES=(Visium_HD_Human_Colon_Cancer_P1 Visium_HD_Human_Colon_Normal_P3 \
        Visium_HD_Human_Pancreas Visium_HD_Mouse_Brain Visium_HD_Mouse_Kidney \
        Visium_HD_Mouse_Embryo Visium_HD_Mouse_Small_Intestine)

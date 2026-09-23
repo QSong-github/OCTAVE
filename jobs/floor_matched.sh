@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=96G
 #SBATCH --time=8:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH --output=/path/to/project/logs/%x_%A_%a.out
 # 配对形态学下界：每个编码器用它**自己的**特征做 kNN 检索下界。
 # 之前只用 phikon_v2 特征做了一条下界，拿去和全部 15 个编码器比 ——
 # 弱编码器输给它只说明特征差，不能归因于"回归 vs 检索"。
@@ -14,7 +14,7 @@
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 ENC=(ciga conch_v15 dinov2_large dinov3_vitl16 gigapath hoptimus0 kaiko_vitb16 kaiko_vitl14 kaiko_vits16 lunit_vits8 midnight12k phikon phikon_v2 uni_v2 virchow2)
 COH=(CCRCC COAD HCC IDC LUNG LYMPH_IDC PAAD PRAD READ SKCM)

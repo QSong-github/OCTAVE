@@ -8,6 +8,6 @@
 #SBATCH --output=logs/pgxen_%A_%a.out
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 N=$(sed -n "${SLURM_ARRAY_TASK_ID}p" xen15.txt)
 python -u src/per_gene_xen.py --name "$N"

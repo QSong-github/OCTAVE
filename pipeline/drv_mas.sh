@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /path/to/systema4ST
+cd /path/to/project
 say(){ echo "[$(date +%H:%M:%S)] $*"; }
 python3 fix_hfcfg.py
 say "清掉用错归一化的 mascaret 产物"
@@ -18,10 +18,10 @@ cat > jobs/masemb.sh <<'SH'
 #SBATCH -J masemb
 #SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1 -c 6 --mem=96G -t 24:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 python -u src/hest_embed_v2.py --encoder mascaret --batch 128
 SH
@@ -45,10 +45,10 @@ cat > jobs/masds.sh <<'SH'
 #SBATCH -J masds
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION
 #SBATCH --array=0-40 -c 2 --mem=12G -t 8:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH -o /path/to/project/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export OMP_NUM_THREADS=2
 COH=(CCRCC COAD HCC IDC LUNG LYMPH_IDC PAAD PRAD READ SKCM); KS=(10 50 200 800)
 I=$SLURM_ARRAY_TASK_ID

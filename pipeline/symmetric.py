@@ -11,7 +11,7 @@
 报队列层级的均值±sem、|t|、赢的队列数与精确符号检验 P。"""
 import json, glob, os, sys, numpy as np
 from math import comb
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 KS = [10, 50, 200, 800]
 ALPHAS = ["0.1", "1", "10", "100", "1000", "10000", "100000", "1000000", "10000000", "100000000", "1000000000"]
 signp = lambda k, n: min(1.0, 2 * sum(comb(n, i) for i in range(k, n + 1)) / 2 ** n)

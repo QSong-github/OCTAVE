@@ -4,7 +4,7 @@
 # 但三个必需文件（矩阵/坐标/scalefactors）已全部落盘 —— 故本轮只补图像，且不以 tar 退出码为准。
 set -u
 B=https://cf.10xgenomics.com/samples/spatial-exp/3.0.0
-ROOT=/path/to/systema4ST/data/visiumhd
+ROOT=/path/to/project/data/visiumhd
 NAMES=(Visium_HD_Human_Colon_Cancer_P1 Visium_HD_Human_Colon_Normal_P3 \
        Visium_HD_Human_Pancreas Visium_HD_Mouse_Brain Visium_HD_Mouse_Kidney \
        Visium_HD_Mouse_Embryo Visium_HD_Mouse_Small_Intestine \
@@ -26,7 +26,7 @@ done
 [ -z "$SRC" ] && { echo "[$N] ✘ 无全分辨率图像"; exit 1; }
 ls -la "$SRC"
 
-# 转金字塔（母项目的 P2 也是 *PYRAMIDAL* 形态；openslide 读不了扁平 BigTIFF）
+# 转金字塔（上游项目的 P2 也是 *PYRAMIDAL* 形态；openslide 读不了扁平 BigTIFF）
 OUT="$D/${N}_PYRAMIDAL.tif"
 if [ -s "$OUT" ]; then
   echo "[$N] 金字塔已存在"

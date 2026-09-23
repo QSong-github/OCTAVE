@@ -2,10 +2,10 @@
 #SBATCH -J new16emb
 #SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION
 #SBATCH --gres=gpu:1 --array=0-15 -c 6 --mem=16G -t 24:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH -o /path/to/project/logs/%x_%A_%a.out
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1 HF_TOKEN=$(cat /path/to/.cache/huggingface/token)
 export HUGGING_FACE_HUB_TOKEN=$HF_TOKEN
 A=(kaiko_vitb8 lunit_vits16 lunit_r50_swav lunit_r50_bt lunit_r50_moco ctranspath gpfm retccl dinov2_base dinov2_giant dinov3_vitb16 dinov3_vith16 clip_vitl14 pathgen_clip siglip2 biomedclip); X=${A[$SLURM_ARRAY_TASK_ID]}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """附录：11 个编码器的下游读数与标量 / 最细带的关系（results/multi_ds_summary.json → paper/multids_text.tex）。数字全部由此生成。"""
 import json, os
-R = os.environ.get("S4ST_RESULTS", "results"); S = json.load(open(f"{R}/multi_ds_summary.json")); C = S["correlations"]; E = S["encoders"]
+R = os.environ.get("OCTAVE_RESULTS", "results"); S = json.load(open(f"{R}/multi_ds_summary.json")); C = S["correlations"]; E = S["encoders"]
 n = len(E); pcc = [v["pcc"] for v in E.values()]; b1 = [v["beta1"] for v in E.values()]
 hot = C["hotspot_jaccard"]; col = C["coloc_preserve"]; svg = C["svg_top_jaccard"]; rk = C["svg_rank_rho"]; sel = C["hotspot_recall_selectivity"]
 hj = [v["hotspot_jaccard"] for v in E.values()]; cp = [v["coloc_preserve"] for v in E.values()]

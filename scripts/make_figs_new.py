@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""新增主图。与 make_figs.py 共用样式与调色板（取自 nature-figure skill 的 PALETTE）。
+"""新增主图。与 make_figs.py 共用样式与调色板（统一调色板）。
 
 FigM「报告的 PCC 到底在测什么」—— 方案里价值最高的一张，此前完全没画。
 核心结论：报告分数很大程度上在测**组织本身有多平滑**，而不是模型有多好；
@@ -315,7 +315,7 @@ def fig_moran():
 def fig1_intro():
     """Fig 1 = 背景/框架/方法/数据集 + 度量的三段论。
 
-    archetype 改为 schematic-led composite（skill Pattern 12）：
+    archetype 改为 schematic-led composite：
     上半是两格示意图（任务与度量的定义），下半是四格定量证据。
     示意图不由 matplotlib 画 —— 留出精确占位框，另附生成提示词，
     最终在 Illustrator 里合成。占位框的长宽比即成图应满足的长宽比。

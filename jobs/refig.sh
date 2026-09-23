@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J refig
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 32 --mem=64G -t 2:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export MPLBACKEND=Agg OMP_NUM_THREADS=32 OPENBLAS_NUM_THREADS=32 MKL_NUM_THREADS=32
 echo "── Fig1"; python -u fig1_iclr.py
 echo "── Fig2"; python -u fig2_scale.py

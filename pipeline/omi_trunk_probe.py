@@ -1,6 +1,6 @@
 import torch, numpy as np, inspect
 from open_clip import create_model_from_pretrained
-p = "/path/to/systema4ST/methods/OmiCLIP/checkpoint.pt"
+p = "/path/to/project/methods/OmiCLIP/checkpoint.pt"
 m, pre = create_model_from_pretrained("coca_ViT-L-14", device="cpu", pretrained=p, weights_only=False)
 x = torch.randn(2, 3, 224, 224)
 print("visual 类型:", type(m.visual).__name__)

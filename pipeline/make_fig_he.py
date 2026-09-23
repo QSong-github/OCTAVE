@@ -22,9 +22,9 @@ import matplotlib.pyplot as plt
 from PIL import Image
 Image.MAX_IMAGE_PIXELS = None
 
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 
-PARENT = "/path/to/align_workspace"
+PARENT = "/path/to/upstream_align"
 H5AD = os.path.join(PARENT, "data/binned_16um.h5ad")
 EMB = os.path.join(PARENT, "results")
 HE = os.path.join(PARENT, "istar_run/P2_checker/he-raw.jpg")
@@ -32,7 +32,7 @@ DOWN = 4.000053157559005          # he-raw 像素 = pxl / DOWN
 UMPX_HE = 1.095925                # he-raw 每像素微米
 PX_PER_UM = {"Visium_HD_Human_Colon_Cancer_P2": 3.6499,
              "Visium_HD_Human_Colon_Cancer_P5": 3.6526}
-OUT = "/path/to/systema4ST/figures"
+OUT = "/path/to/project/figures"
 TOWER = "hibou_l"
 NG = 200
 TMAX = 2048
@@ -138,7 +138,7 @@ def main():
     F_true, F_pred, F_blur = proj(Y), proj(PRED), proj(blur[best])
 
     np.savez_compressed(
-        "/path/to/systema4ST/results/he_panel_P2.npz",
+        "/path/to/project/results/he_panel_P2.npz",
         xy=xy, F_true=F_true, F_pred=F_pred, F_blur=F_blur,
         pxl=pxl[te], pcc=pcc, sigma=sig[best], t=best,
         ladder_pcc=lad[best],

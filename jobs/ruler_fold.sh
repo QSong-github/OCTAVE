@@ -4,12 +4,12 @@
 #SBATCH --cpus-per-task=32
 #SBATCH --mem=128G
 #SBATCH --time=24:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
-# CPU 分区: hest 环境在 GPU 节点上 numcodecs/blosc 导入失败(见 effres_38035239)
+#SBATCH --output=/path/to/project/logs/%x_%j.out
+# CPU 分区: hest 环境在 GPU 节点上 numcodecs/blosc 导入失败(见早期一次作业日志)
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1
 export OMP_NUM_THREADS=32
 python -u src/ruler_fold.py --tower hibou_l --tmax 2048

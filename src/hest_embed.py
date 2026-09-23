@@ -31,12 +31,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
 B = "/path/to/he2st/HEST/eval/bench_data"
-EMB = "/path/to/systema4ST/results/hest_emb"
+EMB = "/path/to/project/results/hest_emb"
 
 
 # 全部开放权重(无需 HF 授权)。UNI/Virchow2/GigaPath/H-optimus/CONCH 是 gated,
 # 本地也无缓存 —— HEST 这条线暂时覆盖不到, 需账号授权。
-# Visium HD 那条线用母项目已提取的 .npy 嵌入, 不受此限(见 tower_sweep.py 的 25 塔)。
+# Visium HD 那条线用上游项目已提取的 .npy 嵌入, 不受此限(见 tower_sweep.py 的 25 塔)。
 HF_REPOS = {"phikon": "owkin/phikon", "phikon_v2": "owkin/phikon-v2",
             "hibou_b": "histai/hibou-b",
             "dinov2_large": "facebook/dinov2-large",
@@ -46,7 +46,7 @@ TIMM_REPOS = {"lunit_vits8": "hf_hub:1aurent/vit_small_patch8_224.lunit_dino",
               "kaiko_vitb16": "hf_hub:1aurent/vit_base_patch16_224.kaiko_ai_towards_large_pathology_fms",
               "kaiko_vits16": "hf_hub:1aurent/vit_small_patch16_224.kaiko_ai_towards_large_pathology_fms",
               "kaiko_vitl14": "hf_hub:1aurent/vit_large_patch14_reg4_dinov2.kaiko_ai_towards_large_pathology_fms"}
-CIGA_CKPT = "/path/to/systema4ST/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
+CIGA_CKPT = "/path/to/project/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
 ALL_ENC = ["resnet50", "ciga"] + list(HF_REPOS) + list(TIMM_REPOS)
 
 

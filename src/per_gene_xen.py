@@ -23,9 +23,9 @@ from sklearn.linear_model import Ridge
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-PREP = "/path/to/systema4ST/data/prepped_xen"
-EMB = "/path/to/systema4ST/results/emb_xen"
-OUTD = "/path/to/systema4ST/results/per_gene_xen"
+PREP = "/path/to/project/data/prepped_xen"
+EMB = "/path/to/project/results/emb_xen"
+OUTD = "/path/to/project/results/per_gene_xen"
 
 
 def gene_names(a):

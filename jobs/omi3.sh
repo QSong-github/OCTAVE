@@ -6,13 +6,13 @@
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=96G
 #SBATCH --time=36:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # 上次 checkpoint 只下到 4.5/7.1 GB 就被截断（zipfile.is_zipfile 为 False）。
 # 这次断点续传并按 HF 报的字节数校验，不足就判失败，不让半截文件进管线。
 set -eu
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 pip install --no-cache-dir --no-deps open_clip_torch 2>&1 | tail -1
 pip install --no-cache-dir ftfy regex 2>&1 | tail -1

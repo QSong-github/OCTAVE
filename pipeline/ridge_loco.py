@@ -5,7 +5,7 @@
 输出 results/hest_rsel_ps_<enc>.json（与 hest_effres_ps_ 同结构，可直接喂 k_sens/cohort_spread），
 以及 results/ridge_alpha_grid.json（逐编码器 × α 的样本均值与逐队列选中的 α）。"""
 import json, glob, os, sys, numpy as np
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 ALPHAS = ["0.1", "1", "10", "100", "1000", "10000", "100000"]
 ENC = sys.argv[1].split(",")
 grid = {}

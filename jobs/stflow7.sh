@@ -1,19 +1,19 @@
 #!/bin/bash
 #SBATCH --job-name=stflow7
 #SBATCH --qos=YOUR_QOS
-#SBATCH --gres=gpu:l4:1
+#SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=48:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # 最后两处: ① 两脚本都要父目录(我先前读错了 benchmark.py 的代码路径)
 #          ② scvi 是废弃包, 需要 scvi-tools 才有 scvi.distributions(依赖扫描器映射表的漏洞)
 set -u
-V=/path/to/systema4ST/venv_np1
-M=/path/to/systema4ST/methods/STFlow
+V=/path/to/project/venv_np1
+M=/path/to/project/methods/STFlow
 B=/path/to/he2st/HEST/eval/bench_data
-OUT=/path/to/systema4ST/stflow_run
-export HF_HOME=/path/to/systema4ST/.hf
+OUT=/path/to/project/stflow_run
+export HF_HOME=/path/to/project/.hf
 export CHECKPOINT_PATH=$OUT/weights/fm_v1/ciga/tenpercent_resnet18.ckpt
 source $V/bin/activate
 echo "节点 $(hostname)"

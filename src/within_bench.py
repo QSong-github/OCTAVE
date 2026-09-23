@@ -10,7 +10,7 @@
   half    : 按中位 x 切成左右两半 + 隔离带 —— 最难的片内口径(接近跨区域外推)
 
 隔离带: 用 KD 树丢掉距任一测试点 < margin µm 的训练点, 从根上断掉边界泄漏。
-方法集与跨片表一致: 我们(冻结ST) / 各 ST 编码器 / BLEEP-style / Ridge(HEST协议) / 纯图像kNN。
+方法集与跨片表一致: ST 编码器基线 / 各 ST 编码器 / BLEEP-style / Ridge(HEST协议) / 纯图像kNN。
 每张切片独立评测后再平均。
 """
 import os, sys, json, argparse, numpy as np, anndata as ad
@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import evaluate as E, retrieval as R
 from align import build_aligner
 from baselines import ridge_predict, bleep
-from st_encoder_bench import load_model_emb, H5AD, COLLAB, EMBDIR, SLIDES
+from st_encoder_bench import load_model_emb, H5AD, EXT_ST, EMBDIR, SLIDES
 
 UM = 2.0   # obsm['spatial'] 存的是 2µm bin 索引 → ×2 得 µm
 
@@ -69,7 +69,7 @@ def main():
     img = np.nan_to_num(np.concatenate([
         np.load(os.path.join(EMBDIR, f"emb_{args.tower}_P2.npy")),
         np.load(os.path.join(EMBDIR, f"emb_{args.tower}_P5.npy"))]).astype(np.float32))
-    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(COLLAB).obsm["img_emb"], np.float32)),
+    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32)),
           "st_pca": np.asarray(a.obsm["st_pca"], np.float32)}
     for m in ("nicheformer", "scgpt_spatial", "scgpt", "novae"):
         e = load_model_emb(m, n, nps)
@@ -101,7 +101,7 @@ def main():
             al = build_aligner("mlp", hidden=0, jepa_weight=args.jepa,
                                temp=args.temp, epochs=40).fit(img[tr], st[tr])
             p = R.retrieve_cross_modal(al.project_img(img[te]), al.project_st(st[tr]), Ytr, k=args.k)
-            nm = "★ 我们(合作者ST)" if enc == "collab" else f"ST={enc}"
+            nm = "ST=external" if enc == "collab" else f"ST={enc}"
             add(nm, E.per_gene_pcc(p, expr[te], gidx).mean())
 
     rows = sorted(((k, float(np.mean(v)), float(np.std(v))) for k, v in acc.items()),

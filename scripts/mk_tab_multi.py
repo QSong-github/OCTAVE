@@ -2,7 +2,7 @@
 """附录：多个真实编码器（ridge 头）在 Xenium 上的 OCTAVE 轮廓与尺度特异排名。输入 results/xen_multi_rank.json（scripts/xen_multi_rank.py）
 与 results/encoder_params.json。输出 paper/tab_multi.tex 与 paper/multi_text.tex（段落数字全部由此生成）。"""
 import json, os, ast as _ast, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results"); M = json.load(open(f"{R}/xen_multi_rank.json")); P = json.load(open(f"{R}/encoder_params.json"))
+R = os.environ.get("OCTAVE_RESULTS", "results"); M = json.load(open(f"{R}/xen_multi_rank.json")); P = json.load(open(f"{R}/encoder_params.json"))
 import glob as _glob, re as _re
 # 区域数与标本数由数据决定（原先写死 16 / 8）
 _REGS = sorted(os.path.basename(f)[:-5] for f in _glob.glob(f"{R}/blocks_xen_bands/*.json"))

@@ -5,7 +5,7 @@
 """
 import glob, json, os, re
 import numpy as np
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 BINS = [8, 16, 32, 64]
 GR = [16, 8, 4, 2]
 

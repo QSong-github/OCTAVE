@@ -4,16 +4,16 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=06:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # 三个方法(HisToGene/Hist2ST/THItoGene)依赖 scprep, 其编译产物要求 numpy<2,
 # 而 hest 是 numpy 2.x —— venv --system-site-packages 继承了 numpy2, 所以叠加装不可能解决。
 # 必须独立环境。这里用纯 venv(不继承系统包) + numpy<2 的整套。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-M=/path/to/systema4ST/methods
-V1=/path/to/systema4ST/venv_np1        # numpy<2: HisToGene/Hist2ST/THItoGene
-V2=/path/to/systema4ST/venv_stmethods  # 已有: BLEEP/STFlow/ST-Net
+M=/path/to/project/methods
+V1=/path/to/project/venv_np1        # numpy<2: HisToGene/Hist2ST/THItoGene
+V2=/path/to/project/venv_stmethods  # 已有: BLEEP/STFlow/ST-Net
 echo "节点 $(hostname)"
 
 echo "=== A. numpy<2 独立环境 ==="

@@ -2,7 +2,7 @@
 """iStar（端到端超分方法）与 ridge / 上下文 ridge / 域 oracle / 可学习域预测器在同一 half 折、同一批测试 bin 上的比较（results/istar_xen/*.json）。
 聚合：区域→标本中位数→跨标本中位数；报告标量 PCC、最细带 β1、最细带方差份额，以及 iStar 相对 ridge 的差与标本计数。输出 results/istar_numbers.json 与 paper/tab_istar.tex。"""
 import json, glob, os, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results")
+R = os.environ.get("OCTAVE_RESULTS", "results")
 SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
         "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
         "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本

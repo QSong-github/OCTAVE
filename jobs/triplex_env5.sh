@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH -J tpxenv5
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 2:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 # HEST 的旧模型库在 2026-03 被移除（#132）；TRIPLEX（2025-05）需要它。装 v1.2.0，不行再退到 v1.1.0。检查失败则本作业失败（下游依赖 afterok）。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate triplex
-cd /path/to/systema4ST
-export PYTHONPATH=/path/to/systema4ST/methods/hest_new:/path/to/systema4ST/methods/triplex_shim:/path/to/systema4ST/methods/TRIPLEX/src
+cd /path/to/project
+export PYTHONPATH=/path/to/project/methods/hest_new:/path/to/project/methods/triplex_shim:/path/to/project/methods/TRIPLEX/src
 check() { python - <<PY
 import importlib, sys, os
 bad=0

@@ -12,13 +12,13 @@ iStar 是单切片超分方法: 给它某切片的 spot(counts+locs)+ 整张 H&E
 
 坐标: locs 用 he-raw.jpg 像素空间(= 全分辨率 tiff 的某金字塔层)。
 
-【systema4ST 的两处修改, 相对母项目版本】
+【project 的两处修改, 相对上游项目版本】
 1. train/test 划分的坐标改用 obsm['pxl']/px_per_um, 不再用 obsm['spatial']*2。
-   母项目版本用 spatial, 而 spatial 被 prep_bin.py 的 NaN→0 质心 bug 污染(位移中位
+   上游项目版本用 spatial, 而 spatial 被 prep_bin.py 的 NaN→0 质心 bug 污染(位移中位
    P2 149µm / P5 286µm)。棋盘块 320µm、隔离带 64µm 都小于或可比于该位移 ⇒ 空间分块
    实质失效、隔离带完全失效 ⇒ 训练 spot 与测试 bin 相邻 ⇒ iStar 分数被泄漏抬高。
    注意 iStar 拿到的 spot 位置(pxl_raw)本来就是干净的, 坏的只是 train/test 归属。
-2. 基因名改用 var['gene'] 的真实符号; 母项目版本取 var_names, 那是 '0'..'199' 占位索引。
+2. 基因名改用 var['gene'] 的真实符号; 上游项目版本取 var_names, 那是 '0'..'199' 占位索引。
 """
 import os, sys, argparse, numpy as np, anndata as ad, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

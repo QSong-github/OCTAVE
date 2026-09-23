@@ -1,6 +1,6 @@
 import numpy as np, anndata as ad
 from scipy import sparse
-E = "/path/to/align_workspace/exports/predictions_withinslide.h5ad"
+E = "/path/to/upstream_align/exports/predictions_withinslide.h5ad"
 a = ad.read_h5ad(E)
 X = np.asarray(a.X.todense() if sparse.issparse(a.X) else a.X, np.float32)
 sl = a.obs["slide_id"].astype(str).values

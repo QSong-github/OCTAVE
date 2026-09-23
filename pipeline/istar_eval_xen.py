@@ -9,11 +9,11 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.linear_model import Ridge
 Image.MAX_IMAGE_PIXELS = None
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 from per_gene_xen import build_operator, per_gene_pcc
 import anndata as ad
 from scipy import sparse
-PREP = "/path/to/systema4ST/data/prepped_xen"; EMB = "/path/to/systema4ST/results/emb_xen"; RUN = "/path/to/systema4ST/istar_run"; OUTD = "/path/to/systema4ST/results/istar_xen"
+PREP = "/path/to/project/data/prepped_xen"; EMB = "/path/to/project/results/emb_xen"; RUN = "/path/to/project/istar_run"; OUTD = "/path/to/project/results/istar_xen"
 ap = argparse.ArgumentParser(); ap.add_argument("--name", required=True); ap.add_argument("--win", type=int, default=1); a = ap.parse_args()
 d = f"{RUN}/xen_{a.name}_half/"; t = np.load(d + "test.npz", allow_pickle=True)
 pxl_raw = t["pxl_raw"].astype(np.float64); xt = t["xy_um"].astype(np.float64); Yte = t["truth"].astype(np.float32); genes = [str(g) for g in t["eval_genes"]]; te_idx = t["test_idx"]; tr_idx = t["train_idx"]

@@ -27,9 +27,9 @@ from align import build_aligner
 from baselines import ridge_predict, bleep
 import st_encoder_bench as SEB
 
-PARENT = "/path/to/align_workspace"
+PARENT = "/path/to/upstream_align"
 SEB.H5AD = os.path.join(PARENT, "data/binned_16um.h5ad")
-SEB.COLLAB = os.path.join(PARENT, "data/binned_16um_dino1024.h5ad")
+SEB.EXT_ST = os.path.join(PARENT, "data/binned_16um_dino1024.h5ad")
 SEB.EMBDIR = os.path.join(PARENT, "results")
 SEB.STBENCH = os.path.join(PARENT, "st_bench")
 SLIDES = SEB.SLIDES
@@ -109,7 +109,7 @@ def main():
     img = np.nan_to_num(np.concatenate([
         np.load(os.path.join(SEB.EMBDIR, f"emb_{args.tower}_P2.npy")),
         np.load(os.path.join(SEB.EMBDIR, f"emb_{args.tower}_P5.npy"))]).astype(np.float32))
-    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(SEB.COLLAB).obsm["img_emb"], np.float32)),
+    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(SEB.EXT_ST).obsm["img_emb"], np.float32)),
           "st_pca": np.asarray(a.obsm["st_pca"], np.float32)}
     for m in ("nicheformer", "scgpt", "novae", "scgpt_spatial"):
         e = SEB.load_model_emb(m, n, nps)

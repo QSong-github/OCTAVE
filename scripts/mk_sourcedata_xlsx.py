@@ -80,8 +80,8 @@ sheet("Fig2c_variance", ["region", "specimen", "sigma (um)", "ladder step t", "v
 
 # ═══ 图 3 / 表 2、3、5：编码器 x k
 # 2026-09-01：检索地板线已撤出论文（见 内部记录）。以下三块只在设了
-# S4ST_FLOOR_SHEETS=1 时生成，证据本身冻结在 results/ 的 JSON 里。
-if os.environ.get("S4ST_FLOOR_SHEETS") == "1":
+# OCTAVE_FLOOR_SHEETS=1 时生成，证据本身冻结在 results/ 的 JSON 里。
+if os.environ.get("OCTAVE_FLOOR_SHEETS") == "1":
   K = J("k_sensitivity.json"); rows = []
   for k in sorted(K, key=int):
       for e, r in sorted(K[k].items()):

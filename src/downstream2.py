@@ -27,8 +27,8 @@ from sklearn.linear_model import Ridge
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 
-PREP = "/path/to/systema4ST/data/prepped_xen"
-EMB = "/path/to/systema4ST/results/emb_xen"
+PREP = "/path/to/project/data/prepped_xen"
+EMB = "/path/to/project/results/emb_xen"
 
 
 def gene_names(a):

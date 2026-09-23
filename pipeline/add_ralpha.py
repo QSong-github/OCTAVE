@@ -1,5 +1,5 @@
 import ast
-p = "/path/to/systema4ST/src/hest_effres_ps.py"; s = open(p).read()
+p = "/path/to/project/src/hest_effres_ps.py"; s = open(p).read()
 if "--ridge_alpha" not in s:
     a = '    ap.add_argument("--mlp_alpha", type=float, default=1e-4'
     assert s.count(a) == 1

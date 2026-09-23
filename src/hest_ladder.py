@@ -24,7 +24,7 @@ from scipy.spatial import cKDTree
 import evaluate as E
 
 B = "/path/to/he2st/HEST/eval/bench_data"
-SAMPLES = "/path/to/systema4ST/results/hest_samples.json"
+SAMPLES = "/path/to/project/results/hest_samples.json"
 PITCH_UM = 100.0                      # hest_coords.py: 全部样本统一 100µm 栅格
 
 

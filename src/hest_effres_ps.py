@@ -26,8 +26,8 @@ warnings.filterwarnings("ignore")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 B = "/path/to/he2st/HEST/eval/bench_data"
-EMB = "/path/to/systema4ST/results/hest_emb"
-LADDER = "/path/to/systema4ST/results/hest_ladder.json"
+EMB = "/path/to/project/results/hest_emb"
+LADDER = "/path/to/project/results/hest_ladder.json"
 
 
 def build_operator(xy_um, k=6):

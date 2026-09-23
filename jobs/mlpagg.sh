@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH -J mlpagg
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 python3 -u k_sens_mlp.py | tail -45
 python3 -u cohort_spread_mlp.py | tail -6
 python3 - <<'PY'

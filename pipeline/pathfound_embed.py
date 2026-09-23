@@ -8,7 +8,7 @@ os.environ["HF_TOKEN"] = TOK; os.environ["HUGGING_FACE_HUB_TOKEN"] = TOK
 import tensorflow as tf
 from huggingface_hub import snapshot_download   # hub 1.x 已移除 from_pretrained_keras；仓库本身是 TF SavedModel
 B = "/path/to/he2st/HEST/eval/bench_data"
-EMB = "/path/to/systema4ST/results/hest_emb"
+EMB = "/path/to/project/results/hest_emb"
 ENC = "path_foundation"; BS = 128
 SHARD = int(os.environ.get("SHARD", 0)); NSHARD = int(os.environ.get("NSHARD", 1))
 print("GPU:", tf.config.list_physical_devices("GPU"), flush=True)

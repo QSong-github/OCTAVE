@@ -19,7 +19,7 @@ HEST 的 patches/<sid>.h5 里已经是**同样中心、同样 224×224** 的切�
 import os, sys, glob, json, argparse, numpy as np, h5py, torch
 from torch.utils.data import Dataset, DataLoader
 
-BLEEP = "/path/to/systema4ST/methods/BLEEP"
+BLEEP = "/path/to/project/methods/BLEEP"
 sys.path.insert(0, BLEEP)
 sys.path.insert(0, "/path/to/he2st/HEST/src")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

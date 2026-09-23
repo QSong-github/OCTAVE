@@ -6,8 +6,8 @@
 iStar 是超分辨方法，imageKNN/BLEEP 是检索方法（输出被 k 个参考谱平均而天然粗化）。
 若 σ 排序在方法之间翻转，则「领域用一个会选错方法的指标」成立。
 
-数据来源：母项目导出的逐 bin 预测（同一批 bin、同一批基因、同一真值）。
-**评测本身独立设计**，不沿用母项目的协议：
+数据来源：上游项目导出的逐 bin 预测（同一批 bin、同一批基因、同一真值）。
+**评测本身独立设计**，不沿用上游项目的协议：
   · HVG 只在 train 上选（防泄漏）
   · σ 用阶梯匹配（估计量 A，与 25 塔扫描 / nine.py 同口径）
   · 只在 split=='test' 上评分；within-slide 文件的 excluded_margin 天然排除
@@ -35,7 +35,7 @@ ABLATIONS = {"stEnc_st_pca", "stEnc_NicheFormer", "stEnc_scGPT_spatial",
 # 在这两处修好之前，把它与其余方法并列排名是无效比较（骨干与输入都不同）。
 # 需要包含时显式传 --include_istar，且结论必须标注该限制。
 ISTAR = "baseline_iStar_official"
-NICE = {"ours_collaboratorST": "ours", "baseline_Ridge_HEST": "Ridge(HEST协议)",
+NICE = {"ext_st_encoder": "ST encoder", "baseline_Ridge_HEST": "Ridge(HEST协议)",
         "baseline_BLEEPstyle": "BLEEP式检索", "baseline_MLPregression": "MLP回归",
         "baseline_imageKNN": "imageKNN(下界)", "baseline_iStar_official": "iStar官方"}
 

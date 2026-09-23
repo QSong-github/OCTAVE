@@ -2,7 +2,7 @@
 """
 图像塔扫描 —— 检验"等价分辨率 ≈110µm"是否依赖编码器。
 
-母项目已为 P2/P5 提取了 49 份嵌入, 其中包含 HF gated 的最强几个
+上游项目已为 P2/P5 提取了 49 份嵌入, 其中包含 HF gated 的最强几个
 (uni_v1/uni_v2/virchow/virchow2/gigapath/hoptimus0/conch/gpfm/keep/openmidnight)。
 用嵌入本身不需要权重, 所以这条线上可以直接覆盖到领域最强档 —— 这正是之前
 标记为"需 HF 授权"的那一项。

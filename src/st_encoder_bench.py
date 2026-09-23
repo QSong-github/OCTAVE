@@ -19,7 +19,7 @@ from run import run
 import evaluate as E, retrieval as R
 
 H5AD = "data/binned_16um.h5ad"
-COLLAB = "data/binned_16um_dino1024.h5ad"      # obsm['img_emb'] 实为合作者 ST 编码器
+EXT_ST = "data/binned_16um_dino1024.h5ad"      # obsm['img_emb'] 为外部 ST 编码器的嵌入
 EMBDIR = "results"
 STBENCH = "st_bench"
 SLIDES = ["Visium_HD_Human_Colon_Cancer_P2", "Visium_HD_Human_Colon_Cancer_P5"]
@@ -71,7 +71,7 @@ def main():
     n = a.n_obs
     n_per_slide = [int((slide == s).sum()) for s in SLIDES]
 
-    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(COLLAB).obsm["img_emb"], np.float32)),
+    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32)),
           "st_pca": np.asarray(a.obsm["st_pca"], np.float32)}
     for m in MODELS:
         e = load_model_emb(m, n, n_per_slide)

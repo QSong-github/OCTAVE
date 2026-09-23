@@ -6,10 +6,10 @@ fold：train/test 用 within_bench.make_split(xy_um, "half", 320 µm 块, 64 µm
      test.npz 存测试 bin 的像素坐标、µm 坐标、真值与基因名。"""
 import os, sys, argparse, numpy as np, anndata as ad, pandas as pd
 from scipy import sparse
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 from within_bench import make_split
 from per_gene_xen import gene_names
-PREP = "/path/to/systema4ST/data/prepped_xen"; XEN = "/path/to/systema4ST/data/xenium"
+PREP = "/path/to/project/data/prepped_xen"; XEN = "/path/to/project/data/xenium"
 def tif_path(N):
     for f in (f"{XEN}/{N}/{N}_PYRAMIDAL.tif", f"{XEN}/{N}/{N}_he_image.ome.tif"):
         if os.path.exists(f): return f

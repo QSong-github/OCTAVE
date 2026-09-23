@@ -2,7 +2,7 @@
 """把逐折并行产生的分片合并成与其它方法同结构的一个 JSON。"""
 import glob, json, os, sys
 import numpy as np
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 tag = sys.argv[1]                      # heclip / hggep
 out = os.path.join(R, "%s_hest.json" % tag)
 acc = {}

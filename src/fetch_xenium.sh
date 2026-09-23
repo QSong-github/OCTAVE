@@ -7,7 +7,7 @@
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
 B=https://cf.10xgenomics.com/samples/xenium
-R=/path/to/systema4ST/data/xenium
+R=/path/to/project/data/xenium
 NAMES=(Human_Breast_Biomarkers_S1_Top:4.0.0 Human_Breast_Biomarkers_S1_Mid:4.0.0 Human_Breast_Biomarkers_S1_Bot:4.0.0 \
        Human_Breast_Biomarkers_S2_Top:4.0.0 Human_Breast_Biomarkers_S2_Mid:4.0.0 Human_Breast_Biomarkers_S2_Bot:4.0.0 \
        Human_Breast_Biomarkers_S3_Top:4.0.0 Human_Breast_Biomarkers_S3_Mid:4.0.0 Human_Breast_Biomarkers_S3_Bot:4.0.0 \

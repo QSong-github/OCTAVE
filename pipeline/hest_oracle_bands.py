@@ -6,10 +6,10 @@ import os, sys, json, numpy as np, anndata as ad
 from scipy import sparse
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 import hest_effres_ps as H
-B = getattr(H, "B", "/path/to/he2st/HEST/eval/bench_data"); EMB = getattr(H, "EMB", "/path/to/systema4ST/results/hest_emb")
-LADDER = H.LADDER; R = "/path/to/systema4ST/results"
+B = getattr(H, "B", "/path/to/he2st/HEST/eval/bench_data"); EMB = getattr(H, "EMB", "/path/to/project/results/hest_emb")
+LADDER = H.LADDER; R = "/path/to/project/results"
 enc = sys.argv[1]; K = 20; tmax = 1024
 cps = [1]
 while cps[-1] < tmax: cps.append(cps[-1] * 2)

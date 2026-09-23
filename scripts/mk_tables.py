@@ -313,8 +313,8 @@ if sw:
 
 # ═══ 表 9（附录）替代头在全部 30 个编码器上：每个标签一张表，与各自 k=50 地板、队列层级误差棒。
 #     标签：mlp10 / mlp100 = MLP λ=10 / 100（种子 0 进表，种子 sd 另列）；rsel = 留一队列选 α 的岭回归（无种子）。
-# 2026-09-01：检索地板线已撤出论文。以下替代头的表只在设了 S4ST_FLOOR_TABLES=1 时生成。
-if os.environ.get("S4ST_FLOOR_TABLES") == "1":
+# 2026-09-01：检索地板线已撤出论文。以下替代头的表只在设了 OCTAVE_FLOOR_TABLES=1 时生成。
+if os.environ.get("OCTAVE_FLOOR_TABLES") == "1":
   LABEL = {"mlp10": "MLP, $\\lambda=10$", "mlp100": "MLP, $\\lambda=100$", "rsel": "Ridge, $\\alpha$ selected per cohort"}
   K0 = json.load(open(os.path.join(R, "k_sensitivity.json")))["50"]
   RL = lambda d, e: (d[e]["rel_ok"] if d[e].get("rel_ok") is not None else d[e]["rel"])

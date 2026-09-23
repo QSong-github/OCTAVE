@@ -24,7 +24,7 @@ import evaluate as E, retrieval as R
 from baselines import ridge_predict
 from effres import build_operator, calibrate_sigma, PX_PER_UM, SLIDES
 
-PARENT = "/path/to/align_workspace"
+PARENT = "/path/to/upstream_align"
 
 
 def main():

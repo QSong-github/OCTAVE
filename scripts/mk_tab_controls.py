@@ -3,7 +3,7 @@
 HEST：results/hest_controls_{enc}.json（hest_controls.py）+ hest_blocks_{enc}.json（论文口径的图像 oracle blk_k20）+ hest_effres_ps_{enc}.json（官方 α ridge 的逐样本 PCC）。
 Xenium：results/xen_controls/*.json（xen_controls.py），ridge 与图像 oracle 的 β 轮廓取自 results/blocks_xen_bands_base（同协议，非 ok bin 以 0 填充后再滤波）。"""
 import json, glob, os, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results")
+R = os.environ.get("OCTAVE_RESULTS", "results")
 encs = sorted(f.split("hest_controls_")[1][:-5] for f in glob.glob(f"{R}/hest_controls_*.json") if "summary" not in f)
 rows = []; num = {}
 for e in encs:

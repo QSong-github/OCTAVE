@@ -2,7 +2,7 @@
 """邻居 patch 的完整性检查：作者的 save_patches 见文件即跳过，被中断留下的半截 h5 会被当成完整的。
 合格条件：可打开、含 img/coords/barcode、attrs['matched_to_target'] 为真、条码数与目标 patch 一致。不合格者删除以便重切。"""
 import sys, os, glob, h5py, numpy as np
-d = f"/path/to/systema4ST/data/triplex/{sys.argv[1]}"; bad = 0; ok = 0
+d = f"/path/to/project/data/triplex/{sys.argv[1]}"; bad = 0; ok = 0
 for p in sorted(glob.glob(f"{d}/patches/*.h5")):
     sid = os.path.basename(p)[:-3]; n = f"{d}/patches/neighbor/{sid}.h5"
     if not os.path.exists(n): continue

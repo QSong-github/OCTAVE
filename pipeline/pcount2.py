@@ -1,9 +1,9 @@
 import sys, os, json, warnings
 warnings.filterwarnings("ignore")
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 import torch
 from hest_embed_v2 import encoder as load_encoder
-P = "/path/to/systema4ST/results/encoder_params.json"
+P = "/path/to/project/results/encoder_params.json"
 out = json.load(open(P))
 for e in ["dinov2_large", "uni_v1", "uni_v2", "virchow", "virchow2"]:
     try:

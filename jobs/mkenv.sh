@@ -4,14 +4,14 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
 #SBATCH --time=08:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # 建一个共享的 stmethods 环境, 再逐个 import 各方法的入口模块。
 # 不照搬 DeepSpot 那份 pin 死的 conda export(400+ 行含 awscli, 必然解不动)。
 # 能在共享环境跑通的就共用; 跑不通的下一轮单独建 env。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh
 ENV=/path/to/miniconda3/envs/stmethods
-M=/path/to/systema4ST/methods
+M=/path/to/project/methods
 echo "节点 $(hostname)"
 if [ ! -d "$ENV" ]; then
   conda create -y -p $ENV python=3.10 || exit 1

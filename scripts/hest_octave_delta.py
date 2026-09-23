@@ -3,7 +3,7 @@
 Δ_scalar = (PCC_r − PCC_o)/PCC_r，Δ_fine = (β1_r − β1_o)/β1_r（与正文 Xenium 定义一致；oracle 高于 ridge 时为负）。
 逐编码器：样本→队列中位数→10 队列符号计数；再跨 57 编码器汇总。"""
 import json, glob, os, numpy as np
-R = os.environ.get("S4ST_RESULTS", "results")
+R = os.environ.get("OCTAVE_RESULTS", "results")
 encs = sorted(f.split("hest_oracle_bands_")[1][:-5] for f in glob.glob(f"{R}/hest_oracle_bands_*.json"))
 out = []
 for e in encs:

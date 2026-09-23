@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /path/to/systema4ST
+cd /path/to/project
 say(){ echo "[$(date +%H:%M:%S)] $*"; }
 python3 add_ralpha.py; mkdir -p results/ridge_alpha
 ENC=$(ls results/hest_effres_ps_*.json | sed 's#.*/hest_effres_ps_##; s#\.json##' | grep -v '^omiclip_raw$' | tr '\n' ' ')
@@ -9,10 +9,10 @@ cat > jobs/ralpha.sh <<SH
 #!/bin/bash
 #SBATCH -J ralpha
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-209 -c 2 --mem=16G -t 2:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH -o /path/to/project/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST; export OMP_NUM_THREADS=2
+cd /path/to/project; export OMP_NUM_THREADS=2
 E=($ENC); A=(0.1 1 10 100 1000 10000 100000); I=\$SLURM_ARRAY_TASK_ID; N=\${E[\$((I/7))]}; AL=\${A[\$((I%7))]}
 O=results/ridge_alpha/hest_ra_\${N}_a\${AL}.json
 [ -s "\$O" ] && exit 0
@@ -29,10 +29,10 @@ cat > jobs/rselagg.sh <<SH
 #!/bin/bash
 #SBATCH -J rselagg
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 python3 ridge_loco.py $(echo $ENC | tr ' ' ',')
 python3 -u k_sens_rsel.py | grep -E "^\s+k=|跨度|移动|超参|翻转"
 python3 -u cohort_spread_rsel.py | tail -3

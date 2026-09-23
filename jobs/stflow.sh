@@ -1,24 +1,24 @@
 #!/bin/bash
 #SBATCH --job-name=stflow
 #SBATCH --qos=YOUR_QOS
-#SBATCH --gres=gpu:l4:1
+#SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=24:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # STFlow (ICML'25 Spotlight) —— 按作者发布的方式运行, 不做任何改写。
 # 关键: --feature_encoder resnet50_trunc 无需 gated 权重(UNI/GigaPath 都要申请)。
 # source_dataroot 就是每个队列目录, 与我们盘上 bench_data/<COHORT>/ 布局天然一致。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh
 conda activate hest
-V=/path/to/systema4ST/venv_stmethods
+V=/path/to/project/venv_stmethods
 source $V/bin/activate
-M=/path/to/systema4ST/methods/STFlow
+M=/path/to/project/methods/STFlow
 B=/path/to/he2st/HEST/eval/bench_data
-OUT=/path/to/systema4ST/stflow_run
+OUT=/path/to/project/stflow_run
 mkdir -p $OUT/embed $OUT/results
-export HF_HOME=/path/to/systema4ST/.hf
+export HF_HOME=/path/to/project/.hf
 echo "节点 $(hostname)"; nvidia-smi --query-gpu=name --format=csv,noheader
 
 echo "=== 1. 安装 STFlow ==="

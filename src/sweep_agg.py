@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """汇总上下文尺寸扫描与基因面板扫描。"""
 import json, glob, os, numpy as np
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 
 print("="*78); print("上下文尺寸扫描 —— 更大空间上下文 → 有效分辨率变细还是变粗?"); print("="*78)
 rows = [json.load(open(p))["_summary"] for p in sorted(glob.glob(f"{R}/ctx_sweep/*.json"))]

@@ -15,7 +15,7 @@ prep_bin.py 里 obsm['spatial'] = 各 super-bin 【成员 2µm bin 坐标的均�
 import numpy as np, anndata as ad
 from scipy.spatial import cKDTree
 
-H5AD = "/path/to/align_workspace/data/binned_16um.h5ad"
+H5AD = "/path/to/upstream_align/data/binned_16um.h5ad"
 FACTOR = 8          # prep_bin.py: 8×2µm = 16µm super-bin
 UM_PER_UNIT = 2.0   # within_bench.py: obsm['spatial'] 以 2µm bin 为单位
 

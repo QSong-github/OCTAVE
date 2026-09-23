@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-新片的塔嵌入 —— 严格复刻母项目 extract_wsi_emb.py 的协议，保证与 P2/P5 可比。
+新片的塔嵌入 —— 严格复刻上游项目 extract_wsi_emb.py 的协议，保证与 P2/P5 可比。
 
 协议（不可改动，改了等价 σ 就不可比）:
   · openslide 读 level 0
@@ -8,8 +8,8 @@
   · grid=1（单 patch，不做子块池化）
   · trident encoder_factory(name).eval_transforms 做预处理
 
---validate 模式: 用母项目自己的 P2 金字塔 tiff 跑一遍，与母项目的 emb_hibou_l_P2.npy 对比。
-若逐 bin 余弦相似度 ≈1，则证明本脚本与母项目管线等价，新片的嵌入可以直接并列使用。
+--validate 模式: 用上游项目自己的 P2 金字塔 tiff 跑一遍，与上游项目的 emb_hibou_l_P2.npy 对比。
+若逐 bin 余弦相似度 ≈1，则证明本脚本与上游项目管线等价，新片的嵌入可以直接并列使用。
 """
 import os, glob, argparse, numpy as np, torch, anndata as ad
 
@@ -42,14 +42,14 @@ if __name__ == "__main__":
     ap.add_argument("--encoder", default="hibou_l"); ap.add_argument("--ctx_px", type=int, default=224)
     ap.add_argument("--batch", type=int, default=256)
     ap.add_argument("--validate", action="store_true",
-                    help="用母项目 P2 的 tiff+h5ad 复现其 emb_hibou_l_P2.npy")
+                    help="用上游项目 P2 的 tiff+h5ad 复现其 emb_hibou_l_P2.npy")
     ap.add_argument("--val_tiff", default=None,
                     help="验证时改用指定 tiff（用于检验 vips 转换是否引入偏差）")
     a_ = ap.parse_args()
     dev = "cuda" if torch.cuda.is_available() else "cpu"
 
     if a_.validate:
-        PA = "/path/to/align_workspace"
+        PA = "/path/to/upstream_align"
         import h5py
         with h5py.File(f"{PA}/data/binned_16um.h5ad", "r") as h:
             sid = h["obs"]["slide_id"]

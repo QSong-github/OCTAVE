@@ -2,7 +2,7 @@
 """接入扩集的 16 个编码器（15 个探针成功 + DINOv3 ViT-H+ 试用现有 token）。
 原则不变：每个模型走自己官方的预处理（timm 的 data config / HF processor / open_clip 自带 / trident 自带），绝不默认套 ImageNet。"""
 import ast, shutil
-p = "/path/to/systema4ST/src/hest_embed_v2.py"
+p = "/path/to/project/src/hest_embed_v2.py"
 shutil.copy(p, p + ".bak_pre_new15")
 s = open(p).read()
 assert "NEW_TIMM2" not in s
@@ -69,7 +69,7 @@ ast.parse(s); open(p, "w").write(s)
 print("hest_embed_v2.py 已接入 16 个：", "kaiko_vitb8 lunit_vits16 lunit_r50_swav lunit_r50_bt lunit_r50_moco ctranspath gpfm retccl dinov2_base dinov2_giant dinov3_vitb16 dinov3_vith16 clip_vitl14 pathgen_clip siglip2 biomedclip")
 
 # ridge_loco.py：没有地板目录时，从 hest_blocks_<e>.json 取队列归属
-q = "/path/to/systema4ST/ridge_loco.py"; t = open(q).read()
+q = "/path/to/project/ridge_loco.py"; t = open(q).read()
 old = '''    coh = {}
     for f in glob.glob(f"{R}/hest_floor_{e}/*.json"):
         d = json.load(open(f))

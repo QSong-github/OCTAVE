@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """由已调试好的 Hist2ST/HEST 适配器生成 HGGEP 的对应版本，只替换模型与路径。"""
 import os
-B = "/path/to/systema4ST"
+B = "/path/to/project"
 s = open(os.path.join(B, "src/hist2st_hest.py")).read()
 sub = [
-    ("/path/to/systema4ST/methods/Hist2ST",
-     "/path/to/systema4ST/methods/HGGEP"),
+    ("/path/to/project/methods/Hist2ST",
+     "/path/to/project/methods/HGGEP"),
     ("from HIST2ST import Hist2ST", "from HGGEP import HGGEP"),
     ("model = Hist2ST(n_genes=", "model = HGGEP(n_genes="),
     ('default="results/hist2st_hest.json"', 'default="results/hggep_hest.json"'),

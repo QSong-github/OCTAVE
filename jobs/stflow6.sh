@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=stflow6
 #SBATCH --qos=YOUR_QOS
-#SBATCH --gres=gpu:l4:1
+#SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
 #SBATCH --time=48:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # 三处修正:
 #  ① 两脚本路径约定相反: benchmark.py 要队列目录, train.py:147 要父目录(它自己再拼 dataset)
 #  ② STFlow 发布代码(commit 880c2ee)自身 API 不一致: transformer.py:160 给 GeneUpdate 传
@@ -14,11 +14,11 @@
 #     根本不存在的】关键字, 不新增任何行为。改动留痕, 论文需在补充材料说明。
 #  ③ 先诊断为何只有 HCC/SKCM 出了嵌入
 set -u
-V=/path/to/systema4ST/venv_np1
-M=/path/to/systema4ST/methods/STFlow
+V=/path/to/project/venv_np1
+M=/path/to/project/methods/STFlow
 B=/path/to/he2st/HEST/eval/bench_data
-OUT=/path/to/systema4ST/stflow_run
-export HF_HOME=/path/to/systema4ST/.hf
+OUT=/path/to/project/stflow_run
+export HF_HOME=/path/to/project/.hf
 export CHECKPOINT_PATH=$OUT/weights/fm_v1/ciga/tenpercent_resnet18.ckpt
 source $V/bin/activate
 echo "节点 $(hostname)"
@@ -28,10 +28,10 @@ sed -n "19,45p" $M/stflow/model/transformer.py
 
 echo "=== ② 打补丁 ==="
 python - <<'PY'
-p="/path/to/systema4ST/methods/STFlow/stflow/model/transformer.py"
+p="/path/to/project/methods/STFlow/stflow/model/transformer.py"
 s=open(p).read()
 old="GeneUpdate(d_model, n_genes, proj_drop=proj_drop, non_negative=gene_exp_non_negative)"
-new="GeneUpdate(d_model, n_genes, proj_drop=proj_drop)  # [systema4ST] 去掉 GeneUpdate.__init__ 不接受的 non_negative"
+new="GeneUpdate(d_model, n_genes, proj_drop=proj_drop)  # [project] 去掉 GeneUpdate.__init__ 不接受的 non_negative"
 if old in s:
     open(p,"w").write(s.replace(old,new)); print("  ✅ 已修正 GeneUpdate 调用")
 else:

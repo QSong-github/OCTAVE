@@ -2,12 +2,12 @@
 """
 把四个旧实验统一到新表达基准上重跑。
 
-为什么必须重跑：旧线用母项目 binned_16um.h5ad（200 基因面板 + 不同归一化），
+为什么必须重跑：旧线用上游项目 binned_16um.h5ad（200 基因面板 + 不同归一化），
 新线用 10x 原始计数（18,085 基因，log1p only）。实测同一张片同一协议
 PCC 从 0.6976 变成 0.8257 —— 两套数字不在同一基准上，并列即是本文批判的错误。
 
 为什么不必重提嵌入：图像来源受控对照已证明 σ 不受图像管线影响（28 vs 29 µm，
-而嵌入余弦仅 0.888）。且母项目 binned_16um.h5ad 与 st_bench 的 adata_16um.h5ad
+而嵌入余弦仅 0.888）。且上游项目 binned_16um.h5ad 与 st_bench 的 adata_16um.h5ad
 是同一批 bin、同序（fulltx 已断言验证），故上游 25 套塔嵌入可直接接到原始计数上。
 
 协议：跨片（P5 训 P2 / P2 训 P5），训练片选 top-50 HVG，alpha=1e4，天花板用 √c。
@@ -19,8 +19,8 @@ import evaluate as E, retrieval as R
 from baselines import ridge_predict
 from effres import build_operator, calibrate_sigma, PX_PER_UM, SLIDES, SEB
 
-RAW = "/path/to/align_workspace/st_bench/data/{s}/adata_16um.h5ad"
-RES = "/path/to/systema4ST/results/legacy8k"
+RAW = "/path/to/upstream_align/st_bench/data/{s}/adata_16um.h5ad"
+RES = "/path/to/project/results/legacy8k"
 EXCLUDE_BASE = ("res2um","res4um","res8um","res16um","res32um","test_")
 EXCLUDE_VAR  = ("_ctx","_grid")
 

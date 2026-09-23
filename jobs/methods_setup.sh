@@ -4,11 +4,11 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=04:00:00
-#SBATCH --output=/path/to/systema4ST/logs/%x_%j.out
+#SBATCH --output=/path/to/project/logs/%x_%j.out
 # 方法集可行性勘察: 计算节点上先测网络, 再逐个 clone 并读依赖。
 # 不在这里建环境(每个 env 单独作业), 只回答"哪些能装、装了要什么"。
 set -u
-D=/path/to/systema4ST/methods
+D=/path/to/project/methods
 mkdir -p $D; cd $D
 echo "节点 $(hostname)  作业 $SLURM_JOB_ID"
 echo "=== 网络连通性 ==="

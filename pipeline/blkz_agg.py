@@ -2,7 +2,7 @@
 """z-score 稳健性：对每个编码器比较 标准配方 vs PCA 前各维 z-score 的域预言机（K=20/50/200），分母同为留一队列选 α 的 ridge。
 输出 results/hest_blocks_z_summary.json 与一张对照表。"""
 import json, os, glob, numpy as np
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 def cohort_stats(orc, mod, coh):
     by = {}
     for s in orc:

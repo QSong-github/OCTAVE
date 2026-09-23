@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /path/to/systema4ST
+cd /path/to/project
 say(){ echo "[$(date +%H:%M:%S)] $*"; }
 python3 add_mlp.py
 mkdir -p results/mlp_seeds
@@ -12,10 +12,10 @@ cat > jobs/mlpsmoke.sh <<'SH'
 #!/bin/bash
 #SBATCH -J mlpsmoke
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 2:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST; export OMP_NUM_THREADS=2
+cd /path/to/project; export OMP_NUM_THREADS=2
 python -u src/hest_effres_ps.py --encoder ciga --skip_sigma --head mlp --seed 0 --out results/mlp_seeds/hest_mlp_ps_ciga_s0.json
 python - <<'PY'
 import json
@@ -34,10 +34,10 @@ cat > jobs/mlpall.sh <<SH
 #!/bin/bash
 #SBATCH -J mlpall
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION --array=0-89 -c 2 --mem=16G -t 4:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%A_%a.out
+#SBATCH -o /path/to/project/logs/%x_%A_%a.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST; export OMP_NUM_THREADS=2
+cd /path/to/project; export OMP_NUM_THREADS=2
 E=($ENC); I=\$SLURM_ARRAY_TASK_ID; N=\${E[\$((I/3))]}; S=\$((I%3))
 O=results/mlp_seeds/hest_mlp_ps_\${N}_s\${S}.json
 [ -s "\$O" ] && exit 0
@@ -57,10 +57,10 @@ cat > jobs/mlpagg.sh <<'SH'
 #!/bin/bash
 #SBATCH -J mlpagg
 #SBATCH --qos=YOUR_QOS --partition=YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00
-#SBATCH -o /path/to/systema4ST/logs/%x_%j.out
+#SBATCH -o /path/to/project/logs/%x_%j.out
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 python3 -u k_sens_mlp.py | tail -45
 python3 -u cohort_spread_mlp.py | tail -6
 python3 - <<'PY'

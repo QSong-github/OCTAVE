@@ -8,7 +8,7 @@ EarlyStopping(monitor='train_step', patience=3, min_delta=0.01, mode='min')、ma
 --match_steps>0 时按步数反推 max_epochs（作者在 Tumor Profiler 上约 50 步/epoch × 10 epoch ≈ 500 步；同 HisToGene 适配器的做法）。
 划分：HEST 官方折；不做空间下采样（逐 spot 模型不需要）。输出 results/deepspot_hest_{enc}{tag}.json（与 histogene_hest.json 同格式）。"""
 import os, sys, glob, json, math, argparse, numpy as np, torch
-sys.path.insert(0, "/path/to/he2st/HEST/src"); sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/he2st/HEST/src"); sys.path.insert(0, "/path/to/project/src")
 from hest.bench.st_dataset import load_adata
 import evaluate as E
 from sklearn.preprocessing import StandardScaler
@@ -16,7 +16,7 @@ from torch.utils.data import Dataset, DataLoader
 import lightning as L
 from lightning.pytorch.callbacks import EarlyStopping
 from deepspot.spot.model import DeepSpot
-B = "/path/to/he2st/HEST/eval/bench_data"; FE = "/path/to/systema4ST/results/deepspot_emb"
+B = "/path/to/he2st/HEST/eval/bench_data"; FE = "/path/to/project/results/deepspot_emb"
 
 def load_sample(sid, cohort, enc, genes, r=1):
     z = np.load(f"{FE}/{enc}/{cohort}/{sid}.npz", allow_pickle=True)

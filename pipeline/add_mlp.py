@@ -6,7 +6,7 @@ MLP：sklearn MLPRegressor，256→512→50，ReLU，Adam，L2=1e-4，早停用*
 标准化后再拟合，预测时逆变换——PCC 对逐基因仿射不变，此举只为优化稳定，不改度量。
 超参对全部编码器固定，不逐个调。"""
 import ast, shutil
-p = "/path/to/systema4ST/src/hest_effres_ps.py"
+p = "/path/to/project/src/hest_effres_ps.py"
 shutil.copy(p, p + ".bak_pre_mlp")
 s = open(p).read()
 

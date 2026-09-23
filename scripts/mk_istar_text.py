@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """附录：端到端超分方法（iStar）在 16 µm Xenium 上与 ridge 的比较。输入 results/istar_numbers.json（scripts/istar_agg.py）。输出 paper/istar_text.tex。"""
 import json, os
-R = os.environ.get("S4ST_RESULTS", "results"); o = json.load(open(f"{R}/istar_numbers.json"))
+R = os.environ.get("OCTAVE_RESULTS", "results"); o = json.load(open(f"{R}/istar_numbers.json"))
 f3 = lambda a: f"${a['med']:.3f}$"; n = o["n_regions"]; ns = o["istar"]["pcc"]["n"]
 has_h = "ridge_hipt" in o
 hipt = ""

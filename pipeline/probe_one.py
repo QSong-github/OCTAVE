@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """CPU 探针：给定编码器名，走真实的 encoder()+embed_and_barcodes() 跑最小的一片。"""
 import sys, time, numpy as np, torch
-sys.path.insert(0, "/path/to/systema4ST/src")
+sys.path.insert(0, "/path/to/project/src")
 import hest_embed_v2 as H
 P = "/path/to/he2st/HEST/eval/bench_data/CCRCC/patches/INT1.h5"
 torch.set_num_threads(4)

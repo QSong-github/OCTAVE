@@ -31,12 +31,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 
 B = "/path/to/he2st/HEST/eval/bench_data"
-EMB = "/path/to/systema4ST/results/hest_emb"
+EMB = "/path/to/project/results/hest_emb"
 
 
 # 全部开放权重(无需 HF 授权)。UNI/Virchow2/GigaPath/H-optimus/CONCH 是 gated,
 # 本地也无缓存 —— HEST 这条线暂时覆盖不到, 需账号授权。
-# Visium HD 那条线用母项目已提取的 .npy 嵌入, 不受此限(见 tower_sweep.py 的 25 塔)。
+# Visium HD 那条线用上游项目已提取的 .npy 嵌入, 不受此限(见 tower_sweep.py 的 25 塔)。
 HF_REPOS = {"phikon": "owkin/phikon", "phikon_v2": "owkin/phikon-v2",
             "hibou_b": "histai/hibou-b",
             "dinov2_large": "facebook/dinov2-large",
@@ -49,7 +49,7 @@ TIMM_REPOS = {"lunit_vits8": "hf_hub:1aurent/vit_small_patch8_224.lunit_dino",
               "kaiko_vitb16": "hf_hub:1aurent/vit_base_patch16_224.kaiko_ai_towards_large_pathology_fms",
               "kaiko_vits16": "hf_hub:1aurent/vit_small_patch16_224.kaiko_ai_towards_large_pathology_fms",
               "kaiko_vitl14": "hf_hub:1aurent/vit_large_patch14_reg4_dinov2.kaiko_ai_towards_large_pathology_fms"}
-CIGA_CKPT = "/path/to/systema4ST/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
+CIGA_CKPT = "/path/to/project/stflow_run/weights/fm_v1/ciga/tenpercent_resnet18.ckpt"
 # trident 路径：uni/virchow/gigapath/conch 等 gated 权重已在本地 HF 缓存，
 # HF_HUB_OFFLINE=1 即可加载（实测 13/14 可用，仅 gpfm 的 checkpoint 损坏）。
 TRIDENT_ENC = ["uni_v1", "uni_v2", "virchow", "virchow2", "gigapath", "conch_v1",
@@ -65,7 +65,7 @@ NEW_CLIP = {"plip": "vinid/plip", "quiltnet": "wisdomik/QuiltNet-B-32",
 NEW_HF2 = {"genbio_pathfm": "genbio-ai/genbio-pathfm"}
 # OmiCLIP（Nature Methods 2025）：220 万对 Visium 图块与表达训练，直接针对
 # H&E 与空间转录组的对齐，是本文任务域内最贴题的编码器。权重开放。
-OMICLIP_CKPT = "/path/to/systema4ST/methods/OmiCLIP/checkpoint.pt"
+OMICLIP_CKPT = "/path/to/project/methods/OmiCLIP/checkpoint.pt"
 # 2026-09-03 扩集：timm hf-hub（各自 data config 预处理）、SigLIP2、BiomedCLIP、RetCCL、更多 HF/CLIP 通用基线
 NEW_TIMM2 = {"kaiko_vitb8": "hf-hub:1aurent/vit_base_patch8_224.kaiko_ai_towards_large_pathology_fms",
              "lunit_vits16": "hf-hub:1aurent/vit_small_patch16_224.lunit_dino",
@@ -95,7 +95,7 @@ GIGA_FLASH = {"gigapath_flash": "prov-gigapath/prov-gigapath-flash"}
 # 所以不走 NEW_TIMM2 的 resolve_model_data_config。
 MSTAR = {"mstar": "hf-hub:Wangyh/mSTAR"}
 # LitePath / LiteFM（2026-02，arXiv 2602.14010）：Virchow2+H-optimus-1+UNI2 三教师蒸馏；四个发布的图块编码器。
-LITEFM_DIR = "/path/to/systema4ST/methods/LitePath/inference"
+LITEFM_DIR = "/path/to/project/methods/LitePath/inference"
 LITEFM = {"litefm": ("small", "LiteFM.pth"), "litefm_s": ("tiny", "LiteFM-S.pth"),
           "litefm_l": ("base", "LiteFM-L.pth"), "litevirchow2": ("small", "LiteVirchow2.pth")}
 ALL_ENC = ["resnet50", "ciga"] + list(HF_REPOS) + list(TIMM_REPOS) + TRIDENT_ENC + NEW_ENC + list(GIGA_FLASH) + list(MSTAR) + list(LITEFM)

@@ -5,8 +5,8 @@ gcn.py 的 aggregate:  num_neigh = adj.sum(1); mask = adj.div(num_neigh)
 """
 import os, sys, json, glob
 import numpy as np, h5py
-sys.path.insert(0, "/path/to/systema4ST/src/shims")
-sys.path.insert(1, "/path/to/systema4ST/methods/Hist2ST")
+sys.path.insert(0, "/path/to/project/src/shims")
+sys.path.insert(1, "/path/to/project/methods/Hist2ST")
 from graph_construction import calcADJ
 import anndata as ad
 

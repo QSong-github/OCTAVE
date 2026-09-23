@@ -12,7 +12,7 @@ k_sens.py 的队列统计量 = 该队列内**逐样本配对差的中位数**；
 """
 import glob, json, os
 import numpy as np
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 # 编码器表自动发现（2026-08-29 从 15 扩到 27）。omiclip_raw 是 omiclip 的
 # 未归一化变体，同一模型，排除以免占两行。
 import glob as _g, os as _o

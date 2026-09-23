@@ -100,7 +100,7 @@ def main():
     print(f"\n=== iStar 投影(同 bin 同基因) ===")
     print(f"{'fold':14s}{'iStar PCC':>11s}{'等价 σ':>10s}{'imageKNN→σ':>12s}{'Ridge→σ':>10s}")
     for fold, d in out.items():
-        p = f"/path/to/systema4ST/istar_run/{fold}/eval_result_top50.json"
+        p = f"/path/to/project/istar_run/{fold}/eval_result_top50.json"
         if not os.path.exists(p):
             print(f"{fold:14s}{'(缺 eval)':>11s}"); continue
         istar = json.load(open(p))

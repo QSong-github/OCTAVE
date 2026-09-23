@@ -5,7 +5,7 @@
 # 两臂之差本身有信息：若 pubcfg（步数少得多）反而更好，说明瓶颈是片数不是步数。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 export PYTHONDONTWRITEBYTECODE=1 TQDM_DISABLE=1
 COH=(SKCM HCC LUNG PAAD COAD READ IDC LYMPH_IDC PRAD CCRCC)
 N=${#COH[@]}

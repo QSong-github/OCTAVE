@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""补充图 S1–S13。样式与主图共用（nature-figure skill 的 PALETTE）。
+"""补充图 S1–S13。样式与主图共用（统一调色板）。
 
 原则与主图一致：
   · 只从 results/ 读数，不写死数值；

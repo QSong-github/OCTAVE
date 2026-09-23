@@ -17,7 +17,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 
 warnings.filterwarnings("ignore")
-SRC = "/path/to/systema4ST/src"
+SRC = "/path/to/project/src"
 sys.path.insert(0, SRC)
 from hest_effres import build_operator, calibrate_sigma, per_gene_pcc, B, EMB, LADDER
 

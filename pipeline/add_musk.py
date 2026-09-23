@@ -6,7 +6,7 @@
    该仓库没有 config.json 也没有 timm 配置，所以 AutoModel 与 timm 的通用路径都
    认不出来 —— 必须用作者的 musk 包注册模型再手动载权重。"""
 import ast
-p = "/path/to/systema4ST/src/hest_embed_v2.py"
+p = "/path/to/project/src/hest_embed_v2.py"
 s = open(p).read()
 assert "musk" not in s
 s = s.replace('NEW_ENC = list(NEW_TIMM) + list(NEW_CLIP) + list(NEW_HF2) + ["omiclip", "omiclip_raw"]',

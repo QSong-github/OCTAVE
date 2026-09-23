@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""轨道 1：把母项目已测的已发表方法放进本文表 2 的框架。
+"""轨道 1：把上游项目已测的已发表方法放进本文表 2 的框架。
 
 口径必须与表 2 一致：报告分数用逐样本均值；队列统计量用「队列内逐样本配对差的
 中位数」，与符号检验同源。方法与编码器共用同一批 72 个样本、同一 HEST 划分。
@@ -7,7 +7,7 @@
 import glob, json, os
 import numpy as np
 from math import comb
-R = "/path/to/systema4ST/results"
+R = "/path/to/project/results"
 
 
 def signp(k, n):

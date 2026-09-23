@@ -3,7 +3,7 @@
 输入：results/blocks_xen_bands_{base,k4,k12,lazy75}/*.json（src/blocks_xen_bands.py，--knn/--cut_um/--lazy）、
       results/xen_band_ceiling/*.json（xen_band_ceiling.py，二项拆半，3 次重复）。聚合与正文一致：区域→标本中位数→跨标本中位数。"""
 import json, glob, os, numpy as np
-os.environ.setdefault("S4ST_RESULTS", "results"); R = os.environ["S4ST_RESULTS"]
+os.environ.setdefault("OCTAVE_RESULTS", "results"); R = os.environ["OCTAVE_RESULTS"]
 SPEC = ["Human_Breast_Biomarkers_S1", "Human_Breast_Biomarkers_S2", "Human_Breast_Biomarkers_S3", "Human_Breast_Biomarkers_S4",
         "Xenium_Prime_Cervical", "Xenium_Prime_Ovarian", "Xenium_V1_Human_Kidney", "Xenium_V1_Human_Ovary",
         "Lung", "Xenium_Prime_Breast_Cancer", "Xenium_Prime_Human_Prostate", "Xenium_Prime_Human_Skin", "Xenium_Prime_Human_Lymph_Node"]   # 2026-09-14 新增 5 个标本

@@ -100,7 +100,7 @@ def fig1():
     TAU = "0.2"
 
     # Archetype: quantitative grid, hero = panel b。三格科学权重不等，
-    # 故不做等宽（skill Pattern 15）。
+    # 故不做等宽。
     fig, axes = plt.subplots(1, 3, figsize=(183 * MM, 57 * MM),
                              gridspec_kw={"width_ratios": [1.0, 1.45, 1.15]})
 
@@ -382,7 +382,7 @@ def fig4():
         vals = [np.mean([p for p, c in mm.values() if c == ch])
                 if any(c == ch for _, c in mm.values()) else np.nan for ch in present]
         tab[nm] = vals
-        # hatch：teal 与 violet 的灰度亮度只差 18/255，黑白打印下不可分（skill Pattern 6）
+        # hatch：teal 与 violet 的灰度亮度只差 18/255，黑白打印下不可分
         ax.bar(x + (i - 1) * w, vals, width=w, color=col, edgecolor=P["grey_d"],
                lw=0.4, label=nm, hatch=HATCH[i])
         # 有几个队列该方法的均值≈0 甚至为负，柱子在 0.55 的量程下不可见；

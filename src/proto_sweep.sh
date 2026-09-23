@@ -5,7 +5,7 @@
 # 本扫描把它扩到 Xenium 16 片 × 4 种划分，检验该结论是否稳健。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest
-cd /path/to/systema4ST
+cd /path/to/project
 FILES=($(ls data/prepped_xen/*_bin16.h5ad))
 GRIDS=(16 8 4 2)
 N=${#FILES[@]}

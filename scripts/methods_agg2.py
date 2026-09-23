@@ -5,7 +5,7 @@ import glob, json, os, re
 import numpy as np
 from math import comb
 _here = os.path.dirname(os.path.abspath(__file__))
-for R in (os.environ.get("OCTAVE_RESULTS"), "/path/to/systema4ST/results",
+for R in (os.environ.get("OCTAVE_RESULTS"), "/path/to/project/results",
           os.path.join(_here, "results"), os.path.join(os.path.dirname(_here), "results")):
     if R and os.path.isdir(R):
         break
