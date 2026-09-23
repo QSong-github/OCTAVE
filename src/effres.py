@@ -109,7 +109,7 @@ def main():
     img = np.nan_to_num(np.concatenate([
         np.load(os.path.join(SEB.EMBDIR, f"emb_{args.tower}_P2.npy")),
         np.load(os.path.join(SEB.EMBDIR, f"emb_{args.tower}_P5.npy"))]).astype(np.float32))
-    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(SEB.EXT_ST).obsm["img_emb"], np.float32)),
+    ST = {"ext_st": np.nan_to_num(np.asarray(ad.read_h5ad(SEB.EXT_ST).obsm["img_emb"], np.float32)),
           "st_pca": np.asarray(a.obsm["st_pca"], np.float32)}
     for m in ("nicheformer", "scgpt", "novae", "scgpt_spatial"):
         e = SEB.load_model_emb(m, n, nps)
@@ -137,7 +137,7 @@ def main():
         for enc, st in ST.items():
             al = build_aligner("mlp", hidden=0, jepa_weight=args.jepa,
                                temp=args.temp, epochs=40).fit(img[tr], st[tr])
-            preds[("ours" if enc == "collab" else enc)] = R.retrieve_cross_modal(
+            preds[enc] = R.retrieve_cross_modal(
                 al.project_img(img[te]), al.project_st(st[tr]), Ytr, k=args.k)
         print(f"  预测完成: {list(preds)}", flush=True)
 

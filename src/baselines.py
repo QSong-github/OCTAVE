@@ -102,7 +102,7 @@ def main():
     img = np.nan_to_num(np.concatenate([
         np.load(os.path.join(EMBDIR, f"emb_{args.tower}_P2.npy")),
         np.load(os.path.join(EMBDIR, f"emb_{args.tower}_P5.npy"))]).astype(np.float32))
-    collab = np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32))
+    ext_st = np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32))
     print(f"塔={args.tower}({img.shape[1]}d)  N={n}  k={args.k}", flush=True)
 
     ALPHAS = [1.0, 10.0, 100.0, 1000.0, 10000.0]
@@ -131,8 +131,8 @@ def main():
         p = R.image_floor(img[te], img[tr], Ytr, k=args.k)
         add("kNN图像检索(下界)", float(E.per_gene_pcc(p, expr[te], gidx).mean()))
         # 5) ST 编码器基线
-        alg = build_aligner("mlp", hidden=0, jepa_weight=args.jepa, temp=args.temp, epochs=40).fit(img[tr], collab[tr])
-        p = R.retrieve_cross_modal(alg.project_img(img[te]), alg.project_st(collab[tr]), Ytr, k=args.k)
+        alg = build_aligner("mlp", hidden=0, jepa_weight=args.jepa, temp=args.temp, epochs=40).fit(img[tr], ext_st[tr])
+        p = R.retrieve_cross_modal(alg.project_img(img[te]), alg.project_st(ext_st[tr]), Ytr, k=args.k)
         add("ST encoder + alignment + retrieval", float(E.per_gene_pcc(p, expr[te], gidx).mean()))
 
     rows = sorted(((k, float(np.mean(v)), float(np.std(v))) for k, v in acc.items()),

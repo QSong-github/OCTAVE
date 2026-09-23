@@ -71,7 +71,7 @@ def main():
     n = a.n_obs
     n_per_slide = [int((slide == s).sum()) for s in SLIDES]
 
-    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32)),
+    ST = {"ext_st": np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32)),
           "st_pca": np.asarray(a.obsm["st_pca"], np.float32)}
     for m in MODELS:
         e = load_model_emb(m, n, n_per_slide)

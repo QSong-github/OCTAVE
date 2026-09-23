@@ -69,7 +69,7 @@ def main():
     img = np.nan_to_num(np.concatenate([
         np.load(os.path.join(EMBDIR, f"emb_{args.tower}_P2.npy")),
         np.load(os.path.join(EMBDIR, f"emb_{args.tower}_P5.npy"))]).astype(np.float32))
-    ST = {"collab": np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32)),
+    ST = {"ext_st": np.nan_to_num(np.asarray(ad.read_h5ad(EXT_ST).obsm["img_emb"], np.float32)),
           "st_pca": np.asarray(a.obsm["st_pca"], np.float32)}
     for m in ("nicheformer", "scgpt_spatial", "scgpt", "novae"):
         e = load_model_emb(m, n, nps)
@@ -101,7 +101,7 @@ def main():
             al = build_aligner("mlp", hidden=0, jepa_weight=args.jepa,
                                temp=args.temp, epochs=40).fit(img[tr], st[tr])
             p = R.retrieve_cross_modal(al.project_img(img[te]), al.project_st(st[tr]), Ytr, k=args.k)
-            nm = "ST=external" if enc == "collab" else f"ST={enc}"
+            nm = "ST=external" if enc == "ext_st" else f"ST={enc}"
             add(nm, E.per_gene_pcc(p, expr[te], gidx).mean())
 
     rows = sorted(((k, float(np.mean(v)), float(np.std(v))) for k, v in acc.items()),
