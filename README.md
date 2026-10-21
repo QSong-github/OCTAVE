@@ -1,7 +1,7 @@
 # Octave
 
 Code for **Octave: Scale-Resolved Evaluation of Spatial Gene Expression Prediction from Histology**
-(manuscript under review).
+([bioRxiv preprint](https://doi.org/10.64898/2026.09.25.754484)).
 
 Octave evaluates histology-to-spatial-transcriptomics prediction at the scales the measurement
 actually resolves. It provides (i) a *domain oracle*, the best predictor that only recognises
@@ -130,7 +130,15 @@ adjust the paths in the job scripts.
 
 ## Citation
 
-The manuscript is under review. A citation entry will be added when it is public.
+```bibtex
+@article{wang2026octave,
+  title   = {{Octave}: Scale-Resolved Evaluation of Spatial Gene Expression Prediction from Histology},
+  author  = {Wang, Qing and Gu, Sipei and Lan, Qizhen and Jiang, Xiaoqian and Chen, Yijiang and Song, Qianqian},
+  journal = {bioRxiv},
+  year    = {2026},
+  doi     = {10.64898/2026.09.25.754484}
+}
+```
 
 ## License
 
