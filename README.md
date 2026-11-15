@@ -58,6 +58,8 @@ python pipeline/ridge_loco.py hoptimus0
 python pipeline/blk_agg.py && python pipeline/blkz_agg.py
 # 4. tables and headline numbers from the result files
 python scripts/mk_tables.py && python scripts/headline_numbers.py
+# 5. every benchmark summary under the one summary rule (see Conventions), then the benchmark tables
+python scripts/hest_rule_numbers.py && python scripts/mk_tab_hest_rule.py <paper dir>
 ```
 
 `pipeline/drv_one.sh <encoder ...>` chains these stages on SLURM. The end-to-end methods are run fold by
@@ -126,6 +128,13 @@ adjust the paths in the job scripts.
   checks it before any full run.
 - Statistics are computed at the specimen level (Xenium) or cohort level (benchmark) with exact
   two-sided sign tests.
+- Every number follows one summary rule. It is formed per sample (benchmark) or per region (Xenium,
+  Visium HD), with ratios and differences also formed on each sample or region, and then reduced to its
+  median within each cohort or specimen, across cohorts or specimens, and across encoders. No summary
+  uses a mean. `scripts/hest_rule_numbers.py` computes every benchmark summary this way and
+  `scripts/mk_tab_hest_rule.py` writes the benchmark tables from its output; they replace the
+  benchmark summaries of `mk_tables.py`, `mk_tab_hestsummary.py`, `mk_tab_controls.py`,
+  `methods_agg2.py`, `family_spearman.py` and `mk_tab_triplex.py`.
 - Embeddings, weights, data and logs are excluded by `.gitignore` and never committed.
 
 ## Citation
