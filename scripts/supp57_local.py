@@ -115,6 +115,6 @@ for r in rowsC:
     lab, (m, ps) = r; OUT["controls_xen"][lab] = dict(pcc=m, lo=min(ps.values()), hi=max(ps.values()), frac=r3(m) / mod)
     L.append(f"{lab} & {m:.3f} & {min(ps.values()):.3f}--{max(ps.values()):.3f} & {100 * r3(m) / mod:.0f}\\% \\\\")
 L += [r"\bottomrule", r"\end{tabular}"]
-open(f"{PAPER}/tab_controls_xen.tex", "w").write("\n".join(L) + "\n")
+# 划分对照表由 scripts/mk_tab_controls_supp.py 与 HEST 合成一张；这里只把数写进 results/supp57_local.json
 json.dump(OUT, open(f"{R}/supp57_local.json", "w"), indent=1)
 print("\n".join(L))

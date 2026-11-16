@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """按统一汇总规则 重写附录里 HEST 的表（规则见 scripts/hest_rule_numbers.py：每个分数逐样本得到，在 72 个样本上取中位数，再跨 57 个编码器取中位数；
 比值与差值由印出的中位数算，队列只用于计数）。
-写出 tab_hestblocks.tex、tab_hestsummary.tex、tab_zscore.tex、tab_controls_hest.tex、tab_methods.tex，并把 tab_triplex.tex 的汇总行改成中位数。
+写出 tab_hestblocks.tex（含标准化特征上的 oracle 一列与按大小分组的中位数行）；HEST 划分对照的数由 mk_tab_controls_supp.py 读同一个 JSON。
 输入 results/hest_rule_numbers.json。
 用法：在项目根目录运行 python3 scripts/mk_tab_hest_rule.py <论文目录>。"""
 import json, os, sys, numpy as np
@@ -74,20 +74,35 @@ LABEL = {"biomedclip": r"BiomedCLIP \citep{biomedclip}",
 LBL = {e: LABEL[e] for e in E}; MPAR = {e: f"{E[e]['params_M']:.0f}" for e in E}
 assert len(LBL) == 57
 
-# tab_hestblocks：去掉 |t| 列，差值改为逐样本差的中位数
-L = ["\\begin{tabular}{lrrrrrrrrr}", "\\toprule",
-     " & & \\multicolumn{5}{c}{PCC} & \\multicolumn{3}{c}{{\\scshape Octave}} \\\\", "\\cmidrule(lr){3-7}\\cmidrule(lr){8-10}",
-     "Encoder & M & Trained model & Domain oracle & Ratio & Difference & Cohorts & Trained model & Domain oracle & Ratio \\\\", "\\midrule"]
+# tab_hestblocks：57 个编码器全表，另含标准化特征上的 oracle 一列（原 tab_zscore）与按大小分组的中位数行（原 tab_hestsummary）
 P3 = lambda e, k: round(E[e][k], 3)                      # 每行的比值与差值也由印出的三位小数算（统一汇总规则）
 sgn = lambda x: f"${'+' if x > 5e-10 else ('-' if x < -5e-10 else '')}{abs(x):.3f}$"   # 0.000 不带符号
+DISTILLED = {"litevirchow2", "h0_mini", "litefm", "litefm_l", "litefm_s", "distillpath_is16", "distillpath_ks16", "pathryoshka_b"}   # 同 hest_rule_numbers.py
+par = {e: E[e]["params_M"] for e in E}
+MEM = {"all": list(E), "lt100": [e for e in E if par[e] < 100], "100to600": [e for e in E if 100 <= par[e] <= 600], "gt600": [e for e in E if par[e] > 600],
+       "distilled": [e for e in E if e in DISTILLED], "scratch_lt100": [e for e in E if par[e] < 100 and e not in DISTILLED]}
+L = ["\\begin{tabular}{lrrrrrrrrrr}", "\\toprule",
+     " & & \\multicolumn{6}{c}{PCC} & \\multicolumn{3}{c}{{\\scshape Octave}} \\\\", "\\cmidrule(lr){3-8}\\cmidrule(lr){9-11}",
+     "Encoder & M & Trained model & Domain oracle & Domain oracle, std. & Ratio & Difference & Cohorts & Trained model & Domain oracle & Ratio \\\\", "\\midrule"]
 for e in sorted(E, key=lambda e: -E[e]["model_pcc"]):
-    o = E[e]; m_, d_, b_, bo_ = P3(e, "model_pcc"), P3(e, "oracle_pcc"), P3(e, "b1_model"), P3(e, "b1_oracle")
-    L.append(f"{LBL[e]} & {MPAR[e]} & {m_:.3f} & {d_:.3f} & {pc(d_ / m_)} & {sgn(d_ - m_)} & "
+    o = E[e]; m_, d_, z_, b_, bo_ = P3(e, "model_pcc"), P3(e, "oracle_pcc"), P3(e, "oracle_z_pcc"), P3(e, "b1_model"), P3(e, "b1_oracle")
+    L.append(f"{LBL[e]} & {MPAR[e]} & {m_:.3f} & {d_:.3f} & {z_:.3f} & {pc(d_ / m_)} & {sgn(d_ - m_)} & "
              f"{o['oracle_coh']}/10 & {b_:.3f} & {bo_:.3f} & {pc(bo_ / b_)} \\\\")
-r3 = lambda k: round(med(k), 3)   # 汇总行的比值与差值由印出的中位数算（统一汇总规则）
-L += ["\\midrule", f"\\textbf{{Median of 57}} & & {r3('model_pcc'):.3f} & {r3('oracle_pcc'):.3f} & {pc(r3('oracle_pcc') / r3('model_pcc'))} & {sgn(r3('oracle_pcc') - r3('model_pcc'))} & "
-      f"{med('oracle_coh'):.0f}/10 & {r3('b1_model'):.3f} & {r3('b1_oracle'):.3f} & {pc(r3('b1_oracle') / r3('b1_model'))} \\\\", "\\bottomrule", "\\end{tabular}"]
+gm = lambda k, es: round(float(np.median([E[e][k] for e in es])), 3)   # 组内中位数，印出值
+GLAB = [("all", "\\textbf{Median of 57}"), ("lt100", "Median, $<100$M ($25$)"), ("100to600", "Median, $100$--$600$M ($17$)"), ("gt600", "Median, $>600$M ($15$)"),
+        ("distilled", "Median, distilled, $6$--$87$M ($8$)"), ("scratch_lt100", "Median, from scratch, $<100$M ($17$)")]
+L.append("\\midrule")
+for g, lab in GLAB:
+    es = MEM[g]; assert f"({len(es)})" in lab.replace("$", "") or g == "all", (g, len(es))
+    m_, d_, z_, b_, bo_ = gm("model_pcc", es), gm("oracle_pcc", es), gm("oracle_z_pcc", es), gm("b1_model", es), gm("b1_oracle", es)
+    rr = [P3(e, "oracle_pcc") / P3(e, "model_pcc") for e in es]
+    coh = float(np.median([E[e]["oracle_coh"] for e in es])); n10 = sum(E[e]["oracle_coh"] == 10 for e in es)
+    L.append(f"{lab} & & {m_:.3f} & {d_:.3f} & {z_:.3f} & {pc(d_ / m_)} [{100 * min(rr):.0f}, {100 * max(rr):.0f}] & {sgn(d_ - m_)} & "
+             f"{coh:.0f}/10 ({n10}) & {b_:.3f} & {bo_:.3f} & {pc(bo_ / b_)} \\\\")
+    if g == "all": L.append("\\midrule")
+L += ["\\bottomrule", "\\end{tabular}"]
 wr("tab_hestblocks.tex", L)
+r3 = lambda k: round(med(k), 3)   # 其余汇总由印出的中位数算（统一汇总规则）
 
 # tab_hestsummary
 G = S["groups"]
@@ -104,7 +119,7 @@ for name, g in lab:
     L.append(f"{name} & {v['n']} & {v['model_pcc']:.3f} & {v['oracle_pcc']:.3f} & {pc(round(v['oracle_pcc'], 3) / round(v['model_pcc'], 3))} & {100 * min(rr):.0f}--{100 * max(rr):.0f}\\% & "
              f"{v['coh_median']:.0f}/10 ({v['n_all10']} at $10/10$) \\\\")
 L += ["\\bottomrule", "\\end{tabular}"]
-wr("tab_hestsummary.tex", L)
+# tab_hestsummary 已并入附录表 9 或合并表（原表不再收录），这里不再写文件
 
 # tab_zscore
 L = ["\\begin{tabular}{lrrrrrr}", "\\toprule", "Encoder & Domain oracle & Domain oracle, std. & Difference & Ratio & Ratio, std. & Cohorts, raw $\\to$ std. \\\\", "\\midrule"]
@@ -116,7 +131,7 @@ ZTXT = dict(max_abs_diff=max(abs(v) for v in ZD.values()), max_ratio_pts=max(abs
 print("tab_zscore 文字用：", ZTXT)
 L += ["\\midrule", f"\\textbf{{Median of 57}} & {r3('oracle_pcc'):.3f} & {r3('oracle_z_pcc'):.3f} & {sgn(r3('oracle_z_pcc') - r3('oracle_pcc'))} & {pc(r3('oracle_pcc') / r3('model_pcc'))} & {pc(r3('oracle_z_pcc') / r3('model_pcc'))} & \\\\",
       "\\bottomrule", "\\end{tabular}"]
-wr("tab_zscore.tex", L)
+# tab_zscore 已并入附录表 9 或合并表（原表不再收录），这里不再写文件
 
 # tab_controls_hest
 rng = lambda k: f"{S[k]['range'][0]:.3f}--{S[k]['range'][1]:.3f}"
@@ -130,7 +145,7 @@ L = ["\\begin{tabular}{lrrr}", "\\toprule", "Predictor on HEST & PCC (median ove
      f"Coordinate partition, means from training samples & {S['train_coord_pcc']['median']:.3f} & {rng('train_coord_pcc')} & {coh('train_coord')} \\\\",
      f"Image partition learned on training samples, means from training samples & {S['inductive_pcc']['median']:.3f} & {rng('inductive_pcc')} & {coh('inductive')} \\\\",
      "\\bottomrule", "\\end{tabular}"]
-wr("tab_controls_hest.tex", L)
+# tab_controls_hest 已并入附录表 9 或合并表（原表不再收录），这里不再写文件
 
 # tab_methods：PCC、高于该方法的编码器数、与最强编码器的差值（逐样本差的中位数）、高于最强编码器的队列数
 M = S["methods"]

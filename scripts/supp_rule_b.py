@@ -181,7 +181,7 @@ L = [r"\begin{tabular}{lrrrrr}", r"\toprule", r"Evaluation grid & PCC, $8\,\mu$m
      f"Prediction's own grid & {GF['p8']:.3f} & {GF['p64']:.3f} & \\textbf{{{sg(GF['change'])}\\%}} & {sg(GF['lo'])} to {sg(GF['hi'])}\\% & {GF['spec_pos']}/{ns} \\\\",
      f"Fixed at $16\\,\\mu$m & {GX['p8']:.3f} & {GX['p64']:.3f} & \\textbf{{{sg(GX['change'])}\\%}} & {sg(GX['lo'])} to {sg(GX['hi'])}\\% & {GX['spec_pos']}/{ns} \\\\",
      r"\bottomrule", r"\end{tabular}"]
-wr("tab_grid.tex", L)
+# tab_grid 的数已写进附录正文，表不再收录
 OUT["grid"] = dict(follow=GF, fixed=GX, n_regions=nr, n_specimens=ns, P=signp(ns, ns))
 
 # ═══ 57 个编码器（tab_multi）：每个编码器的分数先按统一汇总规则 汇总，比值由各编码器的中位数算
@@ -242,7 +242,7 @@ L = [r"\begin{tabular}{lrr}", r"\toprule", r"Quantity & Median over $57$ encoder
      f"Finest-band $\\beta_1$, trained model & {np.median([o['b1_model'] for o in HE]):.3f} & {rg('b1_model')} \\\\", f"Finest-band $\\beta_1$, domain oracle & {np.median([o['b1_oracle'] for o in HE]):.3f} & {rg('b1_oracle')} \\\\",
      r"\midrule", f"Cohorts with domain oracle above trained model, PCC & {oc[0]:.0f}/10 & {oc[1]}--{oc[2]} \\\\", f"Cohorts with domain oracle above trained model, finest band & {fc[0]:.0f}/10 & {fc[1]}--{fc[2]} \\\\",
      f"Finest-band width $\\sigma_1$ ($\\mu$m), set by the grid & {sig1:.1f} & {sig1:.1f}--{sig1:.1f} \\\\", r"\bottomrule", r"\end{tabular}"]
-wr("tab_hestdelta.tex", L)
+# tab_hestdelta 的数已在附录正文与表 9 的中位数行，表不再收录
 OUT["hestdelta"] = dict(model=float(np.median([o['model_pcc'] for o in HE])), oracle=float(np.median([o['oracle_pcc'] for o in HE])), b1m=float(np.median([o['b1_model'] for o in HE])),
                         b1o=float(np.median([o['b1_oracle'] for o in HE])), oracle_coh=oc, fine_coh=fc, n_all10_pcc=sum(o["oracle_coh"] == 10 for o in HE),
                         n_majority_fine=sum(o["fine_coh"] >= 6 for o in HE), n_all10_fine=sum(o["fine_coh"] == 10 for o in HE), n_fine_ahead=sum(o["b1_oracle"] > o["b1_model"] for o in HE), sig1=sig1)
