@@ -56,7 +56,7 @@ agree = sum(z[5] > z[4] for z in rows)
 L = [r"\begin{tabular}{lrrrrrr}", r"\toprule",
      r"Specimen & Regions & $\mathrm{PCC}_{\mathrm{mod}}$ & $\mathrm{PCC}_{\mathrm{dom}}$ & $\Delta_{\mathrm{PCC}}$ & $\Delta_{\mathrm{fine}}$ & $\Delta_{\mathrm{fine}}/\Delta_{\mathrm{PCC}}$ \\", r"\midrule"]
 for n_, k_, a_, b_, dp_, df_, rt_ in rows: L.append(f"{n_} & {k_} & {a_:.3f} & {b_:.3f} & {dp_:.1f}\\% & {df_:.1f}\\% & {rt_:.2f} \\\\")
-L += [r"\midrule", f"Median over $13$ specimens & $22$ & {a:.3f} & {b:.3f} & {DP:.1f}\\% & {DF:.1f}\\% & \\textbf{{{RT:.2f}}} \\\\", r"\bottomrule", r"\end{tabular}"]
+L += [r"\midrule", f"All $13$ specimens & $22$ & {a:.3f} & {b:.3f} & {DP:.1f}\\% & {DF:.1f}\\% & \\textbf{{{RT:.2f}}} \\\\", r"\bottomrule", r"\end{tabular}"]
 open(f"{PAPER}/tab_specimens.tex", "w").write("\n".join(L) + "\n")
 OUT = dict(spec=dict(pcc_mod=a, pcc_dom=b, d_pcc=DP, d_fine=DF, ratio=RT, agree=agree, P=signp(agree, 13),
                      ratio_min=min(z[6] for z in rows), ratio_max=max(z[6] for z in rows),
@@ -108,12 +108,12 @@ rowsC = [("Ridge on frozen features", summ(lambda e, x: x["pred"]["ridge"]["pcc"
          ("Coordinate partition, measured means ($K=200$)", summ_one(lambda x: x["K200"]["oracle_coord"]["pcc"]))]
 if ROB: rowsC.append(("Image partition, means from training blocks ($K=200$)", summ_src(ROB, lambda x: x["ctrl_K200"]["trainonly_image"])))
 mod = r3(rowsC[0][1][0])
-L = [r"\begin{tabular}{lrrr}", r"\toprule", r"Predictor on Xenium ($22$ regions, $13$ specimens) & PCC & Range over specimens & Fraction of model \\", r"\midrule"]
+L = [r"\begin{tabular}{lrrr}", r"\toprule", r"Predictor on Xenium ($22$ regions, $13$ specimens) & PCC & Range over specimens & Of model \\", r"\midrule"]
 OUT["controls_xen"] = {}
 for r in rowsC:
     if r is None: L.append(r"\midrule"); continue
     lab, (m, ps) = r; OUT["controls_xen"][lab] = dict(pcc=m, lo=min(ps.values()), hi=max(ps.values()), frac=r3(m) / mod)
-    L.append(f"{lab} & {m:.3f} & {min(ps.values()):.3f}--{max(ps.values()):.3f} & {r3(m) / mod:.2f} \\\\")
+    L.append(f"{lab} & {m:.3f} & {min(ps.values()):.3f}--{max(ps.values()):.3f} & {100 * r3(m) / mod:.0f}\\% \\\\")
 L += [r"\bottomrule", r"\end{tabular}"]
 open(f"{PAPER}/tab_controls_xen.tex", "w").write("\n".join(L) + "\n")
 json.dump(OUT, open(f"{R}/supp57_local.json", "w"), indent=1)

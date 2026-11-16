@@ -145,14 +145,6 @@ for k in sorted(names, key=lambda k: -M[k]["pcc"]):
 L += ["\\midrule", f"Frozen encoder and ridge & {rng('model_pcc')} & & & \\\\", "\\bottomrule", "\\end{tabular}"]
 wr("tab_methods.tex", L)
 
-# tab_triplex：汇总行由跨队列均值改为跨队列中位数（各队列条目是作者规则下逐 fold 的值，不变）
-t = rd("tab_triplex.tex")
-rows = [l for l in t.split("\n") if l.count("&") == 6 and not l.startswith(("Cohort", " &", "Mean", "Median"))]
-assert len(rows) == 10, len(rows)
-val = lambda s: float(s.split("\\rlap")[0])
-cols = [[val(r.split("&")[j].strip().rstrip("\\").strip()) for r in rows] for j in range(2, 7)]
-medrow = "Median & & " + " & ".join(f"{np.median(c):.3f}" + ("\\rlap{$^{\\dagger}$}" if j == 0 else "") for j, c in enumerate(cols)) + " \\\\"
-t2 = "\n".join(medrow if l.startswith(("Mean", "Median")) else l for l in t.split("\n"))
-open(f"{PAPER}/tab_triplex.tex", "w").write(t2)
+# tab_triplex 由 scripts/mk_tab_triplex.py 直接写出（跨折、跨样本与跨队列都取中位数），本脚本不再改写。
+medrow = ''
 print("写出 6 张表；最强编码器", S["strongest_encoder"], f"{S['strongest_pcc']:.3f}")
-print(medrow)

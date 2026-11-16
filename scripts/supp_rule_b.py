@@ -211,15 +211,15 @@ _t = ast.parse(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "mk
 LABEL = next(ast.literal_eval(n.value) for n in _t.body if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "LABEL")
 KEY = {re.sub(r" \\citep\{[^}]*\}", "", v): k for k, v in LABEL.items()}
 ms = OUT["multi_summary"]
-med_frac = ms["med_oracle"] / ms["med_pcc"]; med_ratio = (1 - ms["med_b1o"] / ms["med_b1"]) / (1 - med_frac)
+med_frac = ms["med_oracle"] / ms["med_pcc"]; med_ratio = round(100 * (1 - ms["med_b1o"] / ms["med_b1"]), 1) / round(100 * (1 - med_frac), 1)   # 与 tab_specimens 末行同为印出的两个差距之比
 def block(c):
     name = c[0].strip()
     if name.startswith("\\textit{Median"):
         assert abs(float(c[2]) - ms["med_pcc"]) < 6e-4 and abs(float(c[3]) - ms["med_b1"]) < 6e-4 and abs(float(c[4]) - ms["med_b6"]) < 6e-4, c
-        return c[:5] + [f" {med_frac:.2f} ", f" {med_ratio:.2f} "]
+        return c[:5] + [f" {100 * med_frac:.0f}\\% ", f" {med_ratio:.2f} "]
     v = M[KEY[name]]
     for j, k in ((2, "pcc"), (3, "b1"), (4, "b6")): assert abs(float(c[j]) - v[k]) < 6e-4, (name, k, c[j], v[k])
-    return c[:5] + [f" {v['frac']:.2f} ", f" {v['ratio']:.2f} "]
+    return c[:5] + [f" {100 * v['frac']:.0f}\\% ", f" {v['ratio']:.2f} "]
 T = []
 for line in src.split("\n"):
     c = line.rstrip().rstrip("\\").split("&")
@@ -290,7 +290,9 @@ for o in HE:
 T["hest_ctrl_dev"] = dict(median=float(np.median(devs)), max=max(devs), sample_max=devmax)
 # D 节：前 16 个区域上 oracle PCC 在 16 个种子间的极差
 first16 = sorted(json.load(open(f))["name"] for f in glob.glob(f"{R}/istar_xen/*.json"))
-T["seed_range_median"] = float(np.median([max(x["dom_pcc"] for x in S[n]["seeds"]) - min(x["dom_pcc"] for x in S[n]["seeds"]) for n in first16]))
+_sr = {}
+for n in first16: _sr.setdefault(sp(n), []).append(max(x["dom_pcc"] for x in S[n]["seeds"]) - min(x["dom_pcc"] for x in S[n]["seeds"]))
+T["seed_range_median"] = float(np.median([np.median(v) for v in _sr.values()]))   # 标本内中位数，再跨标本
 # 引言：MSSI 下 oracle 落后模型的差距（统一汇总规则），与 PCC 下的差距比较
 MS = load("xen_mssi")
 mm_, mms_ = spec({n: x["pred"]["ridge"]["mssi"] for n, x in MS.items()}); mo_, mos_ = spec({n: x["pred"]["dom20"]["mssi"] for n, x in MS.items()})
