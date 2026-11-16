@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Figure 2 under rule B: scores per region, medians within and then across the 13 specimens; gaps from those medians.
-a  relative gap between the domain oracle and the trained model in each band (Hibou-L), dashed line under PCC
+a  relative gap between the domain oracle and the trained model in each band, dashed line under PCC
+Panels a and b use all 57 encoders: per encoder, medians within and then across specimens; then the median over encoders.
+The specimen counts compare, per specimen, the medians over encoders of the within-specimen medians.
 b  share of each map's variance in each band
 c  rank of the 57 encoders under PCC against the rank in the finest band"""
 import json, glob, os, re, itertools
@@ -40,24 +42,29 @@ def spec_medians(D, f):
     return {s: np.median(np.vstack(v), axis=0) for s, v in sp.items()}
 
 
-D = load("blocks_xen_bands"); TS = sorted(int(t) for t in next(iter(D.values()))["pred"]["ridge"]["bands"])
+enc = sorted(json.load(open(os.path.join(R, "xen_multi_rank.json")))["encoders"]); assert len(enc) == 57
+DE = {e: load("blocks_xen_bands_base" if e == "hibou_l" else f"blocks_xen_bands_{e}") for e in enc}
+assert all(len(De) == 22 for De in DE.values())
+D0 = DE[enc[0]]; TS = sorted(int(t) for t in next(iter(D0.values()))["pred"]["ridge"]["bands"])
 arr = lambda x, p, key: np.array([x["pred"][p][key][str(t)] for t in TS])
-SPm = spec_medians(D, lambda x: np.r_[x["pred"]["ridge"]["pcc"], arr(x, "ridge", "bands")])
-SPo = spec_medians(D, lambda x: np.r_[x["pred"]["dom20"]["pcc"], arr(x, "dom20", "bands")])
-SIG = spec_medians(D, lambda x: np.array([x["sigma_um"][str(t)] for t in TS]))
-names = sorted(SPm); assert len(names) == 13
+SPm_e = {e: spec_medians(DE[e], lambda x: np.r_[x["pred"]["ridge"]["pcc"], arr(x, "ridge", "bands")]) for e in enc}
+SPo_e = {e: spec_medians(DE[e], lambda x: np.r_[x["pred"]["dom20"]["pcc"], arr(x, "dom20", "bands")]) for e in enc}
+names = sorted(SPm_e[enc[0]]); assert len(names) == 13
 med = lambda S: np.median(np.vstack([S[s] for s in names]), axis=0)
-M, O, sig = med(SPm), med(SPo), med(SIG)
+emed = lambda SE: np.median(np.vstack([med(SE[e]) for e in enc]), axis=0)                     # over specimens, then over encoders
+smed = lambda SE: {s: np.median(np.vstack([SE[e][s] for e in enc]), axis=0) for s in names}    # per specimen, over encoders
+M, O = emed(SPm_e), emed(SPo_e); SPm, SPo = smed(SPm_e), smed(SPo_e)
+SIGe = {e: med(spec_medians(DE[e], lambda x: np.array([x["sigma_um"][str(t)] for t in TS]))) for e in enc}
+sig = SIGe[enc[0]]; assert all(np.allclose(v, sig) for v in SIGe.values())          # the graph does not depend on the encoder
 gap = 100 * (1 - O / M); gP, gB = gap[0], gap[1:]
-k = sum(1 for s in names if (1 - SPo[s][1] / SPm[s][1]) > (1 - SPo[s][0] / SPm[s][0])); Pv = signp(k, 13)
-V = {key: med(spec_medians(D, lambda x, p=p: arr(x, p, "band_var"))) for key, p in (("vt", "truth"), ("vb", "dom20"), ("vr", "ridge"))}
+kb = [sum(1 for s in names if (1 - SPo[s][i] / SPm[s][i]) > (1 - SPo[s][0] / SPm[s][0])) for i in range(1, len(TS) + 1)]
+k = kb[0]; Pv = signp(k, 13)
+V = {key: np.median(np.vstack([med(spec_medians(DE[e], lambda x, p=p: arr(x, p, "band_var"))) for e in enc]), axis=0)
+     for key, p in (("vt", "truth"), ("vb", "dom20"), ("vr", "ridge"))}
+VT = [med(spec_medians(DE[e], lambda x: arr(x, "truth", "band_var"))) for e in enc]; assert all(np.allclose(v, VT[0]) for v in VT)
 
 # encoders: per-encoder scores under the same rule
-enc = json.load(open(os.path.join(R, "xen_multi_rank.json")))["encoders"]
-sc = {}
-for e in enc:
-    De = load("blocks_xen_bands_base" if e == "hibou_l" else f"blocks_xen_bands_{e}"); assert len(De) == 22, e
-    sc[e] = med(spec_medians(De, lambda x: np.array([x["pred"]["ridge"]["pcc"], x["pred"]["ridge"]["bands"]["1"]])))
+sc = {e: med(spec_medians(DE[e], lambda x: np.array([x["pred"]["ridge"]["pcc"], x["pred"]["ridge"]["bands"]["1"]]))) for e in enc}
 E = sorted(sc); pcc = np.array([sc[e][0] for e in E]); b1 = np.array([sc[e][1] for e in E])
 rk = lambda v: (-v).argsort().argsort() + 1
 rp, rb = rk(pcc), rk(b1)
@@ -97,9 +104,9 @@ letter(ax, "b", -0.22)
 ax = fig.add_subplot(gs[2])
 ax.plot([1, 57], [1, 57], ls="--", lw=0.8, color=P["grey_m"], zorder=1)
 ax.scatter(rp, rb, s=9, color=P["grey_d"], zorder=2, linewidths=0)
-for e, lab, col, off in (("conch_v1", "CONCH v1", P["red"], (5, -2)), ("keep", "KEEP", P["blue"], (5, -2))):
+for e, lab, col, off, ha in (("conch_v1", "CONCH v1", P["red"], (5, -2), "left"), ("keep", "KEEP", P["blue"], (-5, -2), "right")):
     i = E.index(e); ax.scatter([rp[i]], [rb[i]], s=18, color=col, zorder=3)
-    ax.annotate(lab, (rp[i], rb[i]), textcoords="offset points", xytext=off, fontsize=6.0, color=col, fontweight="bold")
+    ax.annotate(lab, (rp[i], rb[i]), textcoords="offset points", xytext=off, ha=ha, fontsize=6.0, color=col, fontweight="bold")
 ax.set_xlim(0, 58); ax.set_ylim(58, 0)
 ax.set_xlabel("rank under PCC", labelpad=1); ax.set_ylabel("rank in the finest band", labelpad=2)
 ax.set_title(f"rank of the {len(E)} encoders", fontsize=7.4, pad=6)
@@ -109,7 +116,8 @@ letter(ax, "c", -0.25)
 
 fig.suptitle("Xenium, scored in each band", fontsize=9.2, y=0.985, fontweight="bold")
 fig.savefig(os.path.join(OUT, "Fig2_scale.pdf")); fig.savefig(os.path.join(OUT, "Fig2_scale.png"), dpi=200)
-print(f"gap PCC {gP:.2f}  bands {np.round(gB[:5], 1)}  widths {np.round(sig[1:6], 1)}  k {k}/13 P {Pv:.5f}")
+print(f"gap PCC {gP:.2f}  bands {np.round(gB, 1)}  widths {np.round(sig, 1)}  k per band {kb}  P {Pv:.5f}")
+print(f"medians model {np.round(M, 3)}"); print(f"medians oracle {np.round(O, 3)}")
 print(f"variance finest: measured {100*V['vt'][0]:.1f}  oracle {100*V['vb'][0]:.1f}  model {100*V['vr'][0]:.1f}")
 print(f"encoders {len(E)}  reversed {rev}  rank r {rs:.3f}")
 print("CONCH v1", np.round(sc['conch_v1'], 4), "KEEP", np.round(sc['keep'], 4), "DINOv3-H+", np.round(sc.get('dinov3_vith16', [np.nan, np.nan]), 4))

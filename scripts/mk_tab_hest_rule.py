@@ -78,33 +78,43 @@ assert len(LBL) == 57
 L = ["\\begin{tabular}{lrrrrrrrrr}", "\\toprule",
      " & & \\multicolumn{5}{c}{PCC} & \\multicolumn{3}{c}{{\\scshape Octave}} \\\\", "\\cmidrule(lr){3-7}\\cmidrule(lr){8-10}",
      "Encoder & M & Model & Oracle & Ratio & Difference & Cohorts & Model & Oracle & Ratio \\\\", "\\midrule"]
+P3 = lambda e, k: round(E[e][k], 3)                      # 每行的比值与差值也由印出的三位小数算（统一汇总规则）
+sgn = lambda x: f"${'+' if x > 5e-10 else ('-' if x < -5e-10 else '')}{abs(x):.3f}$"   # 0.000 不带符号
 for e in sorted(E, key=lambda e: -E[e]["model_pcc"]):
-    o = E[e]
-    L.append(f"{LBL[e]} & {MPAR[e]} & {o['model_pcc']:.3f} & {o['oracle_pcc']:.3f} & {pc(o['oracle_ratio'])} & ${o['oracle_minus_model']:+.3f}$ & "
-             f"{o['oracle_coh']}/10 & {o['b1_model']:.3f} & {o['b1_oracle']:.3f} & {pc(o['fine_ratio'])} \\\\")
+    o = E[e]; m_, d_, b_, bo_ = P3(e, "model_pcc"), P3(e, "oracle_pcc"), P3(e, "b1_model"), P3(e, "b1_oracle")
+    L.append(f"{LBL[e]} & {MPAR[e]} & {m_:.3f} & {d_:.3f} & {pc(d_ / m_)} & {sgn(d_ - m_)} & "
+             f"{o['oracle_coh']}/10 & {b_:.3f} & {bo_:.3f} & {pc(bo_ / b_)} \\\\")
 r3 = lambda k: round(med(k), 3)   # 汇总行的比值与差值由印出的中位数算（统一汇总规则）
-L += ["\\midrule", f"\\textbf{{Median of 57}} & 6--1136 & {r3('model_pcc'):.3f} & {r3('oracle_pcc'):.3f} & {pc(r3('oracle_pcc') / r3('model_pcc'))} & ${r3('oracle_pcc') - r3('model_pcc'):+.3f}$ & "
+L += ["\\midrule", f"\\textbf{{Median of 57}} & & {r3('model_pcc'):.3f} & {r3('oracle_pcc'):.3f} & {pc(r3('oracle_pcc') / r3('model_pcc'))} & {sgn(r3('oracle_pcc') - r3('model_pcc'))} & "
       f"{med('oracle_coh'):.0f}/10 & {r3('b1_model'):.3f} & {r3('b1_oracle'):.3f} & {pc(r3('b1_oracle') / r3('b1_model'))} \\\\", "\\bottomrule", "\\end{tabular}"]
 wr("tab_hestblocks.tex", L)
 
 # tab_hestsummary
 G = S["groups"]
 lab = [("All encoders", "all"), ("$<100$M parameters", "lt100"), ("$100$--$600$M", "100to600"), ("$>600$M", "gt600"),
-       ("Distilled students ($6$--$87$M)", "distilled"), ("Trained from scratch, $<100$M", "scratch_lt100")]
+       ("Distilled encoders ($6$--$87$M)", "distilled"), ("Trained from scratch, $<100$M", "scratch_lt100")]
 L = ["\\begin{tabular}{lrrrrrr}", "\\toprule", "Encoders & $n$ & Model PCC & Oracle PCC & Ratio & Range & Cohorts \\\\", "\\midrule"]
+DISTILLED = {"litevirchow2", "h0_mini", "litefm", "litefm_l", "litefm_s", "distillpath_is16", "distillpath_ks16", "pathryoshka_b"}   # 同 hest_rule_numbers.py
+par = {e: E[e]["params_M"] for e in E}
+MEM = {"all": list(E), "lt100": [e for e in E if par[e] < 100], "100to600": [e for e in E if 100 <= par[e] <= 600], "gt600": [e for e in E if par[e] > 600],
+       "distilled": [e for e in E if e in DISTILLED], "scratch_lt100": [e for e in E if par[e] < 100 and e not in DISTILLED]}
 for name, g in lab:
-    v = G[g]
-    L.append(f"{name} & {v['n']} & {v['model_pcc']:.3f} & {v['oracle_pcc']:.3f} & {pc(v['ratio'])} & {100 * v['ratio_range'][0]:.0f}--{100 * v['ratio_range'][1]:.0f}\\% & "
+    v = G[g]; assert len(MEM[g]) == v["n"], g
+    rr = [P3(e, "oracle_pcc") / P3(e, "model_pcc") for e in MEM[g]]          # 范围：各编码器印出的比值
+    L.append(f"{name} & {v['n']} & {v['model_pcc']:.3f} & {v['oracle_pcc']:.3f} & {pc(round(v['oracle_pcc'], 3) / round(v['model_pcc'], 3))} & {100 * min(rr):.0f}--{100 * max(rr):.0f}\\% & "
              f"{v['coh_median']:.0f}/10 ({v['n_all10']} at $10/10$) \\\\")
 L += ["\\bottomrule", "\\end{tabular}"]
 wr("tab_hestsummary.tex", L)
 
 # tab_zscore
 L = ["\\begin{tabular}{lrrrrrr}", "\\toprule", "Encoder & Oracle & Oracle, std. & Difference & Ratio & Ratio, std. & Cohorts, raw $\\to$ std. \\\\", "\\midrule"]
-for e in sorted(E, key=lambda e: (E[e]["oracle_z_minus_oracle"], e)):
+ZD = {e: P3(e, "oracle_z_pcc") - P3(e, "oracle_pcc") for e in E}             # 差值与两个比值由印出的值算
+for e in sorted(E, key=lambda e: (round(ZD[e], 3), e)):
     o = E[e]
-    L.append(f"{LBL[e]} & {o['oracle_pcc']:.3f} & {o['oracle_z_pcc']:.3f} & {o['oracle_z_minus_oracle']:+.3f} & {pc(o['oracle_ratio'])} & {pc(o['oracle_z_ratio'])} & {o['oracle_coh']}$\\to${o['oracle_z_coh']} \\\\")
-L += ["\\midrule", f"\\textbf{{Median of 57}} & {r3('oracle_pcc'):.3f} & {r3('oracle_z_pcc'):.3f} & {r3('oracle_z_pcc') - r3('oracle_pcc'):+.3f} & {pc(r3('oracle_pcc') / r3('model_pcc'))} & {pc(r3('oracle_z_pcc') / r3('model_pcc'))} & \\\\",
+    L.append(f"{LBL[e]} & {P3(e, 'oracle_pcc'):.3f} & {P3(e, 'oracle_z_pcc'):.3f} & {sgn(ZD[e])} & {pc(P3(e, 'oracle_pcc') / P3(e, 'model_pcc'))} & {pc(P3(e, 'oracle_z_pcc') / P3(e, 'model_pcc'))} & {o['oracle_coh']}$\\to${o['oracle_z_coh']} \\\\")
+ZTXT = dict(max_abs_diff=max(abs(v) for v in ZD.values()), max_ratio_pts=max(abs(round(100 * P3(e, 'oracle_z_pcc') / P3(e, 'model_pcc')) - round(100 * P3(e, 'oracle_pcc') / P3(e, 'model_pcc'))) for e in E))
+print("tab_zscore 文字用：", ZTXT)
+L += ["\\midrule", f"\\textbf{{Median of 57}} & {r3('oracle_pcc'):.3f} & {r3('oracle_z_pcc'):.3f} & {sgn(r3('oracle_z_pcc') - r3('oracle_pcc'))} & {pc(r3('oracle_pcc') / r3('model_pcc'))} & {pc(r3('oracle_z_pcc') / r3('model_pcc'))} & \\\\",
       "\\bottomrule", "\\end{tabular}"]
 wr("tab_zscore.tex", L)
 
@@ -131,7 +141,7 @@ names = {"deepspot_hoptimus0_steps500": "DeepSpot, H-optimus-0, 500 steps", "dee
 L = ["\\begin{tabular}{lrrrr}", "\\toprule", "Method & PCC & Encoders above & Margin & Cohorts above \\\\", "\\midrule"]
 for k in sorted(names, key=lambda k: -M[k]["pcc"]):
     v = M[k]
-    L.append(f"{names[k]} & {v['pcc']:.3f} & {v['enc_above']}/57 & ${v['margin']:+.3f}$ & {v['coh_above_best']}/10 \\\\")
+    L.append(f"{names[k]} & {v['pcc']:.3f} & {v['enc_above']}/57 & {sgn(round(v['pcc'], 3) - round(S['strongest_pcc'], 3))} & {v['coh_above_best']}/10 \\\\")   # 差值由印出的 PCC 算
 L += ["\\midrule", f"Frozen encoder and ridge & {rng('model_pcc')} & & & \\\\", "\\bottomrule", "\\end{tabular}"]
 wr("tab_methods.tex", L)
 

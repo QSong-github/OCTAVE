@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """附录 Xenium 各表按统一汇总规则 重算。统一汇总规则：每个分数逐区域得到，标本内取中位数，再跨 13 个标本取中位数；
 差距与比值都由这些中位数算，输入印在旁边时用印出的四舍五入值；计数比较每个标本的两个中位数；不用均值和标准差。
-重写 <论文目录>/tab_specimens、tab_ablate、tab_operator、tab_reliab、tab_grid、tab_multi、tab_controls_xen 的分数比，
+重写 <论文目录>/tab_ablate、tab_operator、tab_reliab、tab_grid、tab_multi 的分数比（tab_specimens 与 tab_controls_xen 由 supp57_local.py 生成），
 并把附录正文要用的数写到 results/supp_rule_b.json。用法：在项目根目录运行 python3 scripts/supp_rule_b.py <论文目录>。"""
 import json, glob, os, re, sys, numpy as np
 from math import comb
@@ -77,7 +77,7 @@ L = [r"\begin{tabular}{lrrrrrr}", r"\toprule",
 for n_, k_, a_, b_, dp_, df_, rt_ in rows: L.append(f"{n_} & {k_} & {a_:.3f} & {b_:.3f} & {dp_:.1f}\\% & {df_:.1f}\\% & {rt_:.2f} \\\\")
 L += [r"\midrule", f"Median over $13$ specimens & $22$ & {a:.3f} & {b:.3f} & {DP:.1f}\\% & {DF:.1f}\\% & \\textbf{{{RT:.2f}}} \\\\",
       f"${NS}$ $K$-means seeds & & & & {mr(0)}\\% & {mr(1)}\\% & {mr(2)} \\\\", r"\bottomrule", r"\end{tabular}"]
-wr("tab_specimens.tex", L)
+# tab_specimens 改由 scripts/supp57_local.py 生成（57 个编码器的中位数），本脚本只保留 Hibou-L 的数供核对，不再写表。
 OUT["spec"] = dict(pcc_mod=a, pcc_dom=b, d_pcc=DP, d_fine=DF, ratio=RT, agree=agree, P=signp(agree, 13), ratio_min=min(z[6] for z in rows), ratio_max=max(z[6] for z in rows),
                    ratio_min_spec=min(rows, key=lambda z: z[6])[0], ratio_max_spec=max(rows, key=lambda z: z[6])[0], band_gap=band_gap, width=width,
                    seeds=dict(n=NS, d_pcc=[float(np.median(seed[:, 0])), float(seed[:, 0].min()), float(seed[:, 0].max())],
@@ -176,9 +176,10 @@ def gchg(key):
     return dict(p8=m8, p64=m64, change=100 * (r3(m64) / r3(m8) - 1), lo=min(ch.values()), hi=max(ch.values()), reg_pos=sum(x > 0 for x in reg), spec_pos=sum(x > 0 for x in ch.values()))
 GF, GX = gchg("follow_curve"), gchg("fixed_curve")
 nr, ns = len(G["by_region"]), len(per)
-L = [r"\begin{tabular}{lrrrrrr}", r"\toprule", r"Evaluation grid & PCC, $8\,\mu$m & PCC, $64\,\mu$m & Change & Range over specimens & Regions $>0$ & Specimens $>0$ \\", r"\midrule",
-     f"Prediction's own grid & {GF['p8']:.3f} & {GF['p64']:.3f} & \\textbf{{{GF['change']:+.1f}\\%}} & {GF['lo']:+.1f} to {GF['hi']:+.1f}\\% & {GF['reg_pos']}/{nr} & {GF['spec_pos']}/{ns} \\\\",
-     f"Fixed at $16\\,\\mu$m & {GX['p8']:.3f} & {GX['p64']:.3f} & \\textbf{{{GX['change']:+.1f}\\%}} & {GX['lo']:+.1f} to {GX['hi']:+.1f}\\% & {GX['reg_pos']}/{nr} & {GX['spec_pos']}/{ns} \\\\",
+sg = lambda x: f"${x:+.1f}$"   # 数学模式的正负号
+L = [r"\begin{tabular}{lrrrrr}", r"\toprule", r"Evaluation grid & PCC, $8\,\mu$m & PCC, $64\,\mu$m & Change & Range over specimens & Specimens $>0$ \\", r"\midrule",
+     f"Prediction's own grid & {GF['p8']:.3f} & {GF['p64']:.3f} & \\textbf{{{sg(GF['change'])}\\%}} & {sg(GF['lo'])} to {sg(GF['hi'])}\\% & {GF['spec_pos']}/{ns} \\\\",
+     f"Fixed at $16\\,\\mu$m & {GX['p8']:.3f} & {GX['p64']:.3f} & \\textbf{{{sg(GX['change'])}\\%}} & {sg(GX['lo'])} to {sg(GX['hi'])}\\% & {GX['spec_pos']}/{ns} \\\\",
      r"\bottomrule", r"\end{tabular}"]
 wr("tab_grid.tex", L)
 OUT["grid"] = dict(follow=GF, fixed=GX, n_regions=nr, n_specimens=ns, P=signp(ns, ns))
@@ -228,26 +229,7 @@ for line in src.split("\n"):
 open(f"{PAPER}/tab_multi.tex", "w").write("\n".join(T))
 OUT["multi_summary"].update(med_frac=med_frac, med_ratio=med_ratio)
 
-# ═══ tab_controls_xen：Hibou-L 列的分数比改为印出的 PCC 相除；57 个编码器列取正文表 1 的 Xenium 列（同为统一汇总规则）
-X = open(f"{PAPER}/tab_controls_xen.tex").read().split("\n")
-main = open(f"{PAPER}/tab_controls_main.tex").read()
-x57 = {}
-for lab_main, lab_supp in (("Ridge on frozen features (trained model)", "Ridge on frozen features"), ("Image partition, measured means (domain oracle)", "Image partition, measured means ($K=20$, domain oracle)"),
-                           ("Coordinate partition, measured means", "Coordinate partition, measured means ($K=20$)"), ("Random matched-size partition, measured means", "Random matched-size partition, measured means ($K=20$)"),
-                           ("Image partition, means learned from training data", "Image partition, means from training blocks ($K=20$)"),
-                           ("Image partition and means both learned from training data", "Image partition learned on training blocks, means from training blocks ($K=20$)")):
-    row = next(l for l in main.split("\n") if l.startswith(lab_main)).split("&")
-    x57[lab_supp] = float(row[3]) / float(next(l for l in main.split("\n") if l.startswith("Ridge on frozen")).split("&")[3])
-ridge = None; T = []
-for line in X:
-    c = line.rstrip().rstrip("\\").split("&")
-    if len(c) == 5 and re.match(r"\s*0\.\d{3}\s*$", c[1]):
-        lab = c[0].strip(); p = float(c[1]); ridge = ridge or p
-        c[3] = f" {p / ridge:.2f} "; c[4] = f" {x57[lab]:.2f} " if lab in x57 else " "
-        line = "&".join(c).rstrip() + " \\\\"
-    T.append(line)
-open(f"{PAPER}/tab_controls_xen.tex", "w").write("\n".join(T))
-OUT["controls_xen57"] = x57
+# tab_controls_xen 改由 scripts/supp57_local.py 生成（57 个编码器的中位数），本脚本不再改写它。
 
 # ═══ tab_hestdelta：HEST 上按统一汇总规则（72 个样本的中位数，再跨编码器）
 HJ = json.load(open(f"{R}/hest_rule_numbers.json")); HE = HJ["encoders"]; HS = HJ["summary"]
