@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """评测 Xenium 上的官方 iStar 超分输出（half 折）并与同折的 ridge / 上下文 ridge / 域 oracle 比标量 PCC 与最细带 β1。
-采样链复刻 src/istar_eval.py：he-raw → he.jpg(×scale) → 超分网格(//rescale_factor)，3×3 邻域均值（win=1）。
+采样链与官方 iStar 评测一致：he-raw → he.jpg(×scale) → 超分网格(//rescale_factor)，3×3 邻域均值（win=1）。
 所有预测器在同一批测试 bin、同一 200 基因上评测；β1 用 per_gene_xen.build_operator 在测试 bin 坐标上构图（k=8, 29 µm）。"""
 import argparse, glob, json, os, pickle, sys, numpy as np
 from PIL import Image

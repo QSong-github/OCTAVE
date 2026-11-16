@@ -3,7 +3,7 @@
 #SBATCH --qos=YOUR_QOS --partition=YOUR_GPU_PARTITION --gres=gpu:1 --array=0-19 -c 8 --mem=64G -t 36:00:00
 #SBATCH -o /path/to/project/logs/%x_%A_%a.out
 # TRIPLEX 在 HEST 基准上：作者代码原样（script/01-preprocess_hest_bench.sh + train_hest.sh 的流程），只换数据源与配置路径。
-# 两个主干：cigar（CVPR 论文所用 ResNet18 SSL，模型配置取 config/ST/andersson/TRIPLEX.yaml，emb_dim 512）；
+# 两个主干：cigar（TRIPLEX 论文所用 ResNet18 SSL，模型配置取 config/ST/andersson/TRIPLEX.yaml，emb_dim 512）；
 #           uni_v1（仓库 HEST-bench 脚本的默认主干，配置取 config/GSE240429/TRIPLEX.yaml，emb_dim 1024）。训练超参取 GSE240429/default.yaml（Visium）。
 set -u
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate triplex

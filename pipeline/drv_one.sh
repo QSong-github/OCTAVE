@@ -39,6 +39,6 @@ python -u src/hest_effres_ps.py --encoder \$X --skip_sigma --ridge_alpha \$a --o
 EOF
 J2=$(sbatch --parsable jobs/ds_${TAG}.sh); say "下游数组 $J2 已发（$((NOK*13)) 任务）"
 while squeue -j $J2 -h 2>/dev/null | grep -q .; do sleep 60; done
-J3=$(sbatch --parsable --qos=YOUR_QOS -p YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00 -J agg_${TAG} -o logs/agg_${TAG}_%j.out --wrap="source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest; cd /path/to/project; python3 ridge_loco.py $(echo $OK | tr ' ' ',') && python3 blk_agg.py | tail -8 && python3 methods_agg2.py | tail -12 && python3 pcount3.py $OK && OCTAVE_RESULTS=results python3 headline_numbers.py")
+J3=$(sbatch --parsable --qos=YOUR_QOS -p YOUR_CPU_PARTITION -c 2 --mem=16G -t 1:00:00 -J agg_${TAG} -o logs/agg_${TAG}_%j.out --wrap="source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate hest; cd /path/to/project; python3 ridge_loco.py $(echo $OK | tr ' ' ',') && python3 pcount3.py $OK && OCTAVE_RESULTS=results python3 scripts/hest_rule_numbers.py")
 while squeue -j $J3 -h 2>/dev/null | grep -q .; do sleep 20; done
 say "汇总完成"; grep -v "^$" logs/agg_${TAG}_${J3}.out | tail -40

@@ -7,7 +7,7 @@ forward(patches, centers, adj) -> (x, extra, h) 相同；training_step 的损失
 configure_optimizers 同为 StepLR(step_size=50, gamma=0.9)。
 
 因此本文件由 src/hist2st_hest.py 改成，只替换模型类与作者代码路径，
-训练循环一字未动——包括 §32 查出的三处修正：孤立点补边、StepLR、完整损失。
+训练循环一字未动——包括三处修正：孤立点补边、StepLR、完整损失。
 calcADJ 用 HGGEP 自己那份（与 Hist2ST 的差别只是多一个默认关闭的 all_conn）。
 """
 import os, sys, glob, json, argparse, time

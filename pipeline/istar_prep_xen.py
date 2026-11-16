@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""把 Xenium 区域转成官方 iStar 输入（与 src/istar_prep.py 的 Visium HD 版同构）。
+"""把 Xenium 区域转成官方 iStar 输入。
 image：每区域一次 → he-raw.jpg（金字塔层 ~1 µm/px）、pixel-size-raw.txt、pixel-size.txt、level-downsample.txt、heraw-dims.txt。
 fold：train/test 用 within_bench.make_split(xy_um, "half", 320 µm 块, 64 µm 隔离带)，与 Visium HD 折同协议；
      cnts.tsv 喂训练 bin 的 log1p 表达（200 个最高方差基因，与 blocks_xen_bands 同选法），locs-raw.tsv 为 he-raw 像素坐标，

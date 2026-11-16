@@ -2,7 +2,7 @@
 """
 Visium HD 线的下游指标 —— 与 HEST 广度线口径对齐。
 
-hest_downstream.py 已在 72 个 HEST 样本(100µm 栅格)上做了 pcc/ret@1/dom1/ari/Moran,
+此前已在 72 个 HEST 样本(100µm 栅格)上做了 pcc/ret@1/dom1/ari/Moran,
 但深度线(Visium HD, 16µm)还只有 pcc。两条线指标不对齐就没法互相印证。本脚本补齐。
 
 Visium HD 能做而 HEST 做不到的: 最细频带到 ~10µm, 所以 Moran's I 膨胀和检索准确率

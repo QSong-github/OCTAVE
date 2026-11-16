@@ -4,11 +4,11 @@ Code for **Octave: Scale-Resolved Evaluation of Spatial Gene Expression Predicti
 ([bioRxiv preprint](https://doi.org/10.64898/2026.09.25.754484)).
 
 Octave evaluates histology-to-spatial-transcriptomics prediction at the scales the measurement
-actually resolves. It provides (i) a *domain oracle*, the best predictor that only recognises
-image domains, built from a frozen encoder's own features; (ii) the calibration of a correlation
-score into an effective resolution, and the proof that within one fold this is a monotone
-reparameterisation of the score; and (iii) the band-resolved correlation over dyadic diffusion
-scales that gives the method its name.
+actually resolves. It provides (i) the band score, the correlation between prediction and measurement in
+each band of spatial scale over dyadic diffusion scales, which gives the method its name; (ii) a *domain
+oracle*, the best predictor that only recognises image domains, built from a frozen encoder's own
+features, as a reference; and (iii) a benchmark of 57 frozen image encoders and end-to-end methods on
+Xenium, Visium HD and the HEST benchmark under one protocol and one summary rule.
 
 ## Installation
 
@@ -28,9 +28,9 @@ nowhere else, and each source keeps its own licence and access conditions.
 
 | Dataset | What we use | Where it comes from |
 |---|---|---|
-| HEST-Benchmark | 72 samples, 10 cohorts, official splits and 50-gene panels | `huggingface.co/datasets/MahmoodLab/hest`, CC BY-NC-SA 4.0 and gated: make an account, accept the terms, download, then point `B` in `src/hest_embed_v2.py` and `src/hest_effres_ps.py` at your `bench_data/` |
-| Xenium | 22 regions from 13 specimens, binned to 16 µm | 10x Genomics public datasets (`www.10xgenomics.com/datasets`), files served from `cf.10xgenomics.com/samples/xenium/`. `src/fetch_xenium.sh` lists the 16 sample names and pulls the H\&E image, its alignment matrix and the cell-feature matrix; `src/xen_prep.py` bins them to 16 µm |
-| Visium HD | Two colon sections at 16 µm | Same source, files served from `cf.10xgenomics.com/samples/spatial-exp/3.0.0/`. `src/fetch_hd.sh` and `src/fetch_p5.sh` name the sections and pull the 16 µm bins and the full-resolution H\&E; `src/hd_prep.py` prepares them |
+| HEST-Benchmark | 72 samples, 10 cohorts, official splits and 50-gene panels | `huggingface.co/datasets/MahmoodLab/hest`, CC BY-NC-SA 4.0 and gated: make an account, accept the terms, download, then point `B` in `src/hest_embed_v2.py` and `src/hest_effres_ps.py` at your `bench_data/`. TRIPLEX also needs the whole-slide images (`jobs/fetch_hest_wsis.sh`, `jobs/fetch_hest_st.sh`, `jobs/fetch_hest_seg.sh`) |
+| Xenium | 22 regions from 13 specimens, binned to 16 µm | 10x Genomics public datasets (`www.10xgenomics.com/datasets`), files served from `cf.10xgenomics.com/samples/xenium/`. `jobs/fetch_xenium22.sh` names the 22 regions, pulls the H\&E image, its alignment matrix and the cell-feature matrix, and bins them to 16 µm with `src/xen_prep.py` |
+| Visium HD | Two colon sections at 16 µm | Same source, files served from `cf.10xgenomics.com/samples/spatial-exp/3.0.0/`. `jobs/fetch_vhd_p2p5.sh` pulls the 2 sections, and `jobs/vhd_prep2.sh` writes the pyramidal H\&E and the 16 µm bins (`src/hd_prep.py`, `src/rebuild_binned16.py`) |
 
 ## Models
 
@@ -45,61 +45,75 @@ the ridge baseline is not weak.
 
 ## Usage
 
-**Benchmark: domain oracle against a trained model, per encoder.**
+Run every command from the project root. Result files go to `results/` (or `$OCTAVE_RESULTS`), and the
+table and figure scripts write into `paper/` unless a paper directory is given as their argument. The
+`jobs/` scripts run the same steps on SLURM.
+
+**HEST benchmark: frozen encoders, domain oracle and controls.**
 
 ```bash
-# 1. embeddings for one encoder (GPU); 57 encoder names are listed in src/hest_embed_v2.py
+# 1. embeddings for one encoder (GPU); the 57 encoder names are listed in src/hest_embed_v2.py
 python src/hest_embed_v2.py --encoder hoptimus0 --batch 128
-# 2. ridge at the benchmark's alpha, an alpha grid, and the domain oracle at K = 20, 50, 200 (CPU)
+# 2. per-sample ridge and band scores, the domain oracle at K = 20, 50, 200, and the partition controls (CPU)
 python src/hest_effres_ps.py --encoder hoptimus0 --skip_sigma --out results/hest_effres_ps_hoptimus0.json
 BLK_K=20,50,200 python pipeline/hest_blocks.py hoptimus0        # add BLK_ZSCORE=1 to standardise features first
-# 3. leave-one-cohort-out alpha, then the aggregate over encoders
+python pipeline/hest_controls.py --encoder hoptimus0
+python pipeline/hest_inductive.py --encoder hoptimus0
+python pipeline/hest_oracle_bands.py --encoder hoptimus0
+python pipeline/hest_trainonly_coord.py                          # coordinate partition with training means
+# 3. leave-one-cohort-out ridge penalty
 python pipeline/ridge_loco.py hoptimus0
-python pipeline/blk_agg.py && python pipeline/blkz_agg.py
-# 4. tables and headline numbers from the result files
-python scripts/mk_tables.py && python scripts/headline_numbers.py
-# 5. every benchmark summary under the one summary rule (see Conventions), then the benchmark tables
-python scripts/hest_rule_numbers.py && python scripts/mk_tab_hest_rule.py <paper dir>
+# 4. every HEST summary under the summary rule (see Conventions), then the HEST tables
+python scripts/hest_rule_numbers.py && python scripts/mk_tab_triplex.py && python scripts/mk_tab_controls.py
+python scripts/mk_tab_hest_rule.py paper
+python scripts/hest_octave_delta.py                              # widths of HEST's finest band
 ```
 
 `pipeline/drv_one.sh <encoder ...>` chains these stages on SLURM. The end-to-end methods are run fold by
-fold with `src/<method>_hest.py`, merged with `pipeline/merge_folds.py` and compared with
-`pipeline/methods_agg2.py`.
+fold with `src/<method>_hest.py` and merged with `pipeline/merge_folds.py`; `jobs/cp10k_rsel.sh` repeats
+the ridge models under a second expression normalisation.
 
-**Xenium and Visium HD: calibration curves, band scores and shortfalls.**
-
-```bash
-python src/blocks_xen_bands.py <region>          # per region: calibration curve, band scores, shortfalls
-python pipeline/blocks_xen_agg.py                # aggregate to specimens
-python pipeline/split_sens.py                    # spatial block cross-validation sweep
-python pipeline/band_homog.py                    # band homogeneity across samples
-python pipeline/make_figs_new.py 3               # figures (run with 32 threads; a reproducibility guard aborts on drift)
-```
-
-**Controls, attribution and comparisons.** Each of these keeps the protocol of the corresponding
-main run and changes one ingredient; the aggregators write the tables and the appendix text.
+**Xenium: band scores, all encoders, controls.**
 
 ```bash
-# partition controls: coordinate, random matched-size, means learned from training data
-python pipeline/hest_controls.py --encoder <enc>            # benchmark
-python pipeline/xen_controls.py --name <region>             # Xenium
-# inductive partition: PCA and K-means fitted on training data only, test spots assigned to centres
-python pipeline/hest_inductive.py --encoder <enc>
-python pipeline/xen_inductive.py --name <region>            # also fits ridge with spatial context
-# split the model's own prediction into between- and within-cluster parts (no test label)
-python pipeline/xen_attrib.py --name <region>
-python pipeline/xen_addsplit.py --name <region>             # exact additive split of the correlation
-# the benchmark resolved by scale, and the noise ceiling per band
-python pipeline/hest_oracle_bands.py --encoder <enc>
-python pipeline/xen_band_ceiling.py --name <region>         # binomial thinning, Spearman-Brown
-# an end-to-end super-resolution method under the same protocol, and its backbone-matched control
-python pipeline/istar_prep_xen.py --name <region>           # then jobs/istar_xen_gpu.sh, istar_eval_xen.py
-python pipeline/istar_hipt_ridge_xen.py --name <region>     # ridge on iStar's own HIPT features
-# all encoders on Xenium: embeddings, then the band decomposition per encoder and region
-python pipeline/xen_embed_all.py --encoder <enc> --name <region>
+python src/blocks_xen_bands.py --name <region>                   # ridge on Hibou-L and the domain oracle, every band
+python pipeline/xen_embed_all.py --encoder <enc> --h5ad <bins.h5ad> --tiff <he.tif> --out <emb.npy>   # other encoders (jobs/xen_emb_all.sh); then blocks_xen_bands.py --tower <enc>
 python pipeline/xen_pf_cut.py ... && python pipeline/xen_pf_embed_shard.py ...   # Path Foundation, two stages
-python scripts/xen_multi_rank.py && python scripts/beta1_rank_boot.py            # ranking and its bootstrap
+python scripts/xen_multi_rank.py && python scripts/beta1_rank_boot.py && python scripts/mk_tab_multi.py
+python src/blocks_xen_seeds.py --name <region> --nseed 16 && python src/blocks_xen_ablate.py --name <region>   # K-means seeds, one setting at a time
+python pipeline/xen_controls.py --name <region> && python pipeline/xen_inductive.py --name <region>
+python pipeline/xen_ctrl57.py --name <region> && python pipeline/agg_xen_ctrl57.py   # controls for all 57 encoders
+python pipeline/xen_attrib.py --name <region> && python pipeline/xen_addsplit.py --name <region>
+python pipeline/xen_band_ceiling.py --name <region>              # split-half reliability per band
+python pipeline/istar_prep_xen.py --name <region>                # then jobs/istar_xen_gpu.sh and pipeline/istar_eval_xen.py
+python pipeline/istar_hipt_ridge_xen.py --name <region>          # ridge on iStar's own HIPT features
+python pipeline/xen_altmetrics.py --name <region> && python pipeline/xen_mssi.py --name <region>   # MSSI (separate env, jobs/mk_env_mssi.sh)
+python pipeline/grid_table.py                                    # scoring on the prediction's own grid and on a fixed grid
 ```
+
+**Visium HD.** `jobs/vhd_emb.sh` embeds both sections with every encoder, `jobs/vhd_bands.sh` runs
+`src/blocks_vhd_bands.py`, `jobs/vhd_ctrl57.sh` and `jobs/vhd_ind57.sh` run `pipeline/vhd_ctrl57.py`, and
+`pipeline/agg_vhd_ctrl57.py` and `scripts/vhd57_bench.py` summarise them. `jobs/vhd_repro2.sh` and
+`src/vhd_repro_run.py` reproduce the fold and window analyses, and `jobs/protocol_choices.sh` the effect of
+the gene panel and the exclusion buffer.
+
+**Tables and figures of the paper, in this order.**
+
+```bash
+python scripts/mk_tab_controls_main.py paper                     # Table 1 (3 datasets)
+python scripts/supp_rule_b.py paper                              # supplementary Xenium tables and numbers
+python scripts/mk_octave_bench.py paper && python scripts/mk_tab_bench57.py paper   # Table 2
+python scripts/mk_attrib.py && python scripts/istar_agg.py       # supplementary attribution and iStar tables
+OCTAVE_ROOT=. OUT=paper/figs python scripts/fig2_scale.py        # Figure 2
+python pipeline/fig3_lymph_node.py                               # Figure 3 (see jobs/fig3_lymph_node.sh)
+python scripts/fig4_bench.py paper && python scripts/fig5_encoders.py paper   # Figures 4 and 5
+python src/fig1_framework_data.py && python src/fig1_v3_data.py  # Figure 1 data (jobs/fig1_framework.sh, jobs/fig1_v3.sh)
+python scripts/fig1_v4.py paper/figs                             # Figure 1 layers: background, raster and labels
+```
+
+`scripts/fig1_v4.py` writes Figure 1 as three layers, which were combined in a vector editor; its encoder
+icon is in `scripts/fig1_icons.py`. The window figure of the supplement is drawn by `pipeline/fig1_windows.py`
+through `jobs/fig1_windows.sh`.
 
 ## Repository structure
 
@@ -111,13 +125,13 @@ pipeline/     top-level drivers and aggregation: domain oracle, leave-one-cohort
 jobs/         SLURM job scripts. Site-specific values are placeholders: `/path/to` for the project
               directory, `YOUR_QOS` for the QOS and `YOUR_CPU_PARTITION` / `YOUR_GPU_PARTITION` for the
               partitions. Set all four for your cluster before submitting anything.
-scripts/      table, text and source-data generators: every measured number in the manuscript is written
-              by one of these from a result file; the one hand-typed table is the protocol-settings table
+scripts/      table and figure generators: every measured number in the manuscript is written by one of
+              these from a result file; the one hand-typed table is the protocol-settings table
 environment/  conda environment exports
 ```
 
 The job scripts assume a flat project root: they `cd` into the project directory and call each module by
-its bare file name (`python3 -u ablate_agg.py`). The release groups those same files into `src/` and
+its bare file name (`python3 -u xen_ctrl57.py`). The release groups those same files into `src/` and
 `pipeline/`, so copy or symlink both directories' contents into the project root before submitting, or
 adjust the paths in the job scripts.
 
@@ -126,15 +140,17 @@ adjust the paths in the job scripts.
 - Every encoder uses the preprocessing its authors specify (mean/std, input size, pooling); the choice is
   recorded next to each entry in `src/hest_embed_v2.py`, and a CPU probe (`pipeline/probe_cfg.py`)
   checks it before any full run.
-- Statistics are computed at the specimen level (Xenium) or cohort level (benchmark) with exact
-  two-sided sign tests.
-- Every number follows one summary rule. It is formed per sample (benchmark) or per region (Xenium,
-  Visium HD), with ratios and differences also formed on each sample or region, and then reduced to its
-  median within each cohort or specimen, across cohorts or specimens, and across encoders. No summary
-  uses a mean. `scripts/hest_rule_numbers.py` computes every benchmark summary this way and
-  `scripts/mk_tab_hest_rule.py` writes the benchmark tables from its output; they replace the
-  benchmark summaries of `mk_tables.py`, `mk_tab_hestsummary.py`, `mk_tab_controls.py`,
-  `methods_agg2.py`, `family_spearman.py` and `mk_tab_triplex.py`.
+- Sign tests are exact and two-sided, at the specimen level (Xenium) or the cohort level (HEST).
+- Every number follows one summary rule. Each score is computed per sample (HEST) or per region
+  (Xenium, Visium HD). It is summarised by its median over the 72 HEST samples, or within each Xenium
+  specimen and then across the 13 specimens, with the 2 Visium HD sections in place of specimens.
+  Across encoders the median is taken again. Every ratio, gap or difference is formed from these
+  medians, and from the printed values when these are shown beside it. No summary uses a mean or a
+  standard deviation. Cohorts and specimens are used to count how often one score is above another.
+  `scripts/hest_rule_numbers.py` and `scripts/mk_tab_hest_rule.py` apply the rule to HEST, and
+  `scripts/supp_rule_b.py` and `scripts/mk_tab_controls_main.py` to Xenium and Visium HD.
+  `scripts/mk_tables.py` is kept only for its encoder name table; it writes older versions of the
+  tables, so do not run it after the scripts above.
 - Embeddings, weights, data and logs are excluded by `.gitignore` and never committed.
 
 ## Citation

@@ -2,7 +2,7 @@
 #SBATCH -J istarxen
 #SBATCH --qos=YOUR_QOS --gres=gpu:1 --array=0-15 -c 8 --mem=96G -t 24:00:00
 #SBATCH -o /path/to/project/logs/%x_%A_%a.out
-# 官方 iStar（只读仓库，istar 环境）在 Xenium 区域上：图像侧一次 + half 折训练/超分。协议同 jobs/istar_gpu.sh。
+# 官方 iStar（只读仓库，istar 环境）在 Xenium 区域上：图像侧一次 + half 折训练/超分。
 set -e
 source /path/to/miniconda3/etc/profile.d/conda.sh; conda activate /path/to/miniconda3/envs/istar
 ISTAR=/path/to/upstream_istar; RUN=/path/to/project/istar_run; export PYTHONWARNINGS=ignore TQDM_DISABLE=1

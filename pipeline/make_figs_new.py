@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""新增主图。与 make_figs.py 共用样式与调色板（统一调色板）。
+"""新增主图。绘图样式与调色板见下。
 
 FigM「报告的 PCC 到底在测什么」—— 方案里价值最高的一张，此前完全没画。
 核心结论：报告分数很大程度上在测**组织本身有多平滑**，而不是模型有多好；
@@ -45,8 +45,8 @@ RES, OUT = "results", "figures"
 # conversion_rate.json 的条目名是中文（内部记录用）；投稿图必须英文。
 PROTO_EN = {
     "深度线 · 25 个图像编码器（跨片）": "25 image encoders\ncross-section",
-    "方法 · 片内块 CV（旧 200 基因基准）": "200-gene benchmark\nwithin-section block CV",
-    "方法 · 跨片留一（旧 200 基因基准）": "200-gene benchmark\nleave-one-section-out",
+    "方法 · 片内块 CV（旧 200 基因基准）": "200-gene run\nwithin-section block CV",
+    "方法 · 跨片留一（旧 200 基因基准）": "200-gene run\nleave-one-section-out",
     "多尺度分箱（对照）": "Multi-scale binning\n(control)",
 }
 
@@ -132,12 +132,11 @@ def fig_moran():
     ax.set_ylabel("Moran's $I$ of expression")
     up = int((mp > mt).sum())
     ups = sum(1 for k, v in by_spec(nm, (mp - mt)).items() if v > 0)
-    ax.set_title("Prediction inflates spatial autocorrelation")
+    ax.set_title("Moran's $I$ is higher in the prediction")
     _ovv = np.array(sorted(by_spec(nm, mp - mt).values()))
     ax.text(0.5, -0.17, f"{up}/{len(mt)} regions, {ups}/{NSP} specimens "
-            f"(P = {signp(ups, NSP):.4f});  median gap +{np.median(_ovv):.2f}\n"
-            f"specimen range {_ovv.min():.2f}–{_ovv.max():.2f}; "
-            f"shape of the gap not resolvable at n = {NSP}",
+            f"(P = {signp(ups, NSP):.4f}), median rise +{np.median(_ovv):.2f}\n"
+            f"specimen range {_ovv.min():.2f}–{_ovv.max():.2f}",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.4,
             linespacing=1.45, color=P["grey_d"])
     ax.legend(fontsize=5.5, loc="upper left", handlelength=1.0, borderpad=0.1)
@@ -181,7 +180,7 @@ def fig_moran():
                facecolor="none", edgecolor=P["black"], lw=0.9, zorder=4)
     r_r, r_p = pearsonr(sg[m], infl[m])
     rs_r, _ = pearsonr([sp_sig[k] for k in ks], [sp_inf[k] for k in ks])
-    ax.set_xlabel("Effective resolution $\\sigma$ (µm, estimator A)")
+    ax.set_xlabel("Effective resolution $\\sigma_{\\mathrm{A}}$ (µm)")
     ax.set_ylabel("Moran's $I$ inflation\n(predicted − measured)")
     # 两个方向的声称都不成立：
     #   「独立佐证」错 —— 膨胀与 PCC 共享 76–80% 方差。
@@ -200,10 +199,10 @@ def fig_moran():
     _sp_c = np.array(list(by_spec(np.array(nm)[m], ce[m]).values()))
     _pr = pearsonr(_resid(_sp_i, [_sp_p]), _resid(_sp_s, [_sp_p]))[0]
     _pc_ = pearsonr(_resid(_sp_i, [_sp_c]), _resid(_sp_s, [_sp_c]))[0]
-    ax.set_title("Inflation tracks effective resolution\n"
-                 "beyond what PCC explains")
-    ax.text(0.5, -0.30, f"specimen medians $r$ = {rs_r:+.3f} (n = {len(ks)});  partial "
-            f"given PCC {_pr:+.3f};  given noise ceiling {_pc_:+.3f}",
+    ax.set_title("Rise in Moran's $I$ from measurement\n"
+                 "to prediction, against $\\sigma_{\\mathrm{A}}$")
+    ax.text(0.5, -0.30, f"specimen medians $r$ = {rs_r:+.3f} (n = {len(ks)}), partial "
+            f"given PCC {_pr:+.3f}, given noise ceiling {_pc_:+.3f}",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.4,
             color=P["grey_d"])
     lab(ax, "b", x=-0.14)
@@ -225,7 +224,7 @@ def fig_moran():
     _pexact = _cnt / factorial(len(_x))
     ax.set_xlabel("Measured Moran's $I$ of the tissue")
     ax.set_ylabel("Reported PCC")
-    ax.set_title("Score ranks tissue\nsmoothness", fontsize=6.6)
+    ax.set_title("PCC against Moran's $I$\nof the measured map", fontsize=6.6)
     ax.text(0.03, 0.97, f"$r$ = {rc:.3f}\n$R^2$ = {rc**2:.3f}\n"
             f"n = {len(mt)} regions\nP = {_pexact:.4f} ({len(_x)} specimens)",
             transform=ax.transAxes, ha="left", va="top", fontsize=5.4, color=P["grey_d"])
@@ -259,9 +258,9 @@ def fig_moran():
         sp_p = by_spec(nmg, rp); sp_e = by_spec(nmg, re_)
         kk = sorted(sp_p)
         kgap = sum(1 for k in kk if abs(sp_p[k]) > abs(sp_e[k]))
-        ax.set_title("Confound hits PCC far\nharder than $\\sigma$", fontsize=6.6)
-        ax.text(0.5, -0.34, f"median {np.median(list(sp_p.values())):+.2f} vs "
-                f"{np.median(list(sp_e.values())):+.2f};  {kgap}/{len(kk)} specimens "
+        ax.set_title("Per-gene correlation\nwith Moran's $I$", fontsize=6.6)
+        ax.text(0.5, -0.34, f"median {np.median(list(sp_p.values())):+.2f} and "
+                f"{np.median(list(sp_e.values())):+.2f}, {kgap}/{len(kk)} specimens "
                 f"(P = {signp(kgap, len(kk)):.4f})", transform=ax.transAxes,
                 ha="center", va="top", fontsize=5.6, color=P["grey_d"])
     lab(ax, "d", x=-0.16)
@@ -278,9 +277,9 @@ def fig_moran():
     ax.set_yticks([]); ax.set_ylabel(f"{len(S)} regions", fontsize=6)
     ax.set_xlabel("PCC", fontsize=6, labelpad=1)
     _kc = sum(1 for v in by_spec(nm, ce - pc).values() if v > 0)
-    ax.set_title(f"The attainable target is {np.median(ce):.2f}, not 1.00", fontsize=6.4)
+    ax.set_title(f"Split-half noise ceiling, median {np.median(ce):.2f}", fontsize=6.4)
     ax.legend(fontsize=5.0, loc="upper left", handlelength=1.2, borderpad=0.2)
-    ax.text(0.5, -0.30, f"ceiling exceeds achieved PCC in {int((ce>pc).sum())}/{len(S)} "
+    ax.text(0.5, -0.30, f"noise ceiling exceeds PCC in {int((ce>pc).sum())}/{len(S)} "
             f"regions and {_kc}/{NSP} specimens (P = {signp(_kc, NSP):.4f})",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.2,
             color=P["grey_d"])
@@ -299,11 +298,9 @@ def fig_moran():
     ax.set_xticklabels(["raw PCC", "PCC / ceiling"], fontsize=6)
     ax.set_ylabel("rank (0 = best)", fontsize=6); ax.invert_yaxis()
     _fr = (1 - ce) / (1 - pc)
-    ax.set_title("Dividing out the noise floor\nbarely reorders anything", fontsize=6.4)
-    ax.text(0.5, -0.22, f"Spearman $r_s$ = {spearmanr(pc, sk_).statistic:.3f}; "
-            f"max shift {int(np.abs(rp_-rs_).max())} places\n"
-            f"irreducible noise is {100*np.median(_fr):.0f}% of the remaining gap "
-            f"({100*_fr.min():.0f}–{100*_fr.max():.0f}%)",
+    ax.set_title("Region ranks before and after\ndividing PCC by the noise ceiling", fontsize=6.4)
+    ax.text(0.5, -0.22, f"Spearman $r_s$ = {spearmanr(pc, sk_).statistic:.3f}, "
+            f"max shift {int(np.abs(rp_-rs_).max())} places",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.2,
             linespacing=1.4, color=P["grey_d"])
     lab(ax, "f", x=-0.16, y=1.14)
@@ -315,7 +312,7 @@ def fig_moran():
 def fig1_intro():
     """Fig 1 = 背景/框架/方法/数据集 + 度量的三段论。
 
-    archetype 改为 schematic-led composite：
+    archetype 改为 schematic-led composite（skill Pattern 12）：
     上半是两格示意图（任务与度量的定义），下半是四格定量证据。
     示意图不由 matplotlib 画 —— 留出精确占位框，另附生成提示词，
     最终在 Illustrator 里合成。占位框的长宽比即成图应满足的长宽比。
@@ -470,7 +467,7 @@ def fig1_intro():
         print(f"  占位框 {letter}: {w_mm:.1f} x {h_mm:.1f} mm | 长宽比 "
               f"{w_mm/h_mm:.2f}:1 | 600dpi = {w_mm/25.4*600:.0f} x {h_mm/25.4*600:.0f} px",
               flush=True)
-    # 2026-08-19: 本图已被 fig1_blocks.py 的动机图取代，五格内容移入 S14。
+    # 2026-08-19: 本图已不在论文中。
     # 保留函数以便复现历史版本，但改名输出，避免覆盖或与新 Fig 1 混淆。
     save(fig, "Fig1_intro_SUPERSEDED")
 
@@ -494,21 +491,25 @@ def fig_knobs():
     """
     import re as _re
     # ── 归一化（HEST 队列，与下面的扫描不同队列，不可同轴比较）──
-    enc = sorted(os.path.basename(f)[len("hest_cp10k_"):-5]
-                 for f in glob.glob(f"{RES}/hest_cp10k_*.json"))
-    _A = {e: json.load(open(f"{RES}/hest_reported_pcc_{e}.json")) for e in enc}
-    _B = {e: json.load(open(f"{RES}/hest_cp10k_{e}.json"))["per_sample_pcc"] for e in enc}
-    ids0 = sorted(set(k for k, v in _A[enc[0]].items()
-                      if isinstance(v, dict) and "pcc" in v) & set(_B[enc[0]]))
-    X0 = np.array([np.mean([_A[e][i]["pcc"] for i in ids0]) for e in enc])
+    # 两臂同用表 1 的留一队列岭回归 α（log1p 臂即表 1 本身）
+    enc = sorted(os.path.basename(f)[len("hest_cp10k_rsel_"):-5]
+                 for f in glob.glob(f"{RES}/hest_cp10k_rsel_*.json"))
+    _C = json.load(open(f"{RES}/hest_reported_pcc_{enc[0]}.json"))        # 只取队列归属
+    _L = {e: json.load(open(f"{RES}/hest_rsel_ps_{e}.json"))["per_sample_pcc"] for e in enc}
+    _B = {e: json.load(open(f"{RES}/hest_cp10k_rsel_{e}.json"))["per_sample_pcc"] for e in enc}
+    ids0 = sorted(set(_L[enc[0]]) & set(_B[enc[0]]))
+    X0 = np.array([np.mean([_L[e][i] for i in ids0]) for e in enc])
     Y0 = np.array([np.mean([_B[e][i] for i in ids0]) for e in enc])
-    coh = {i: _A[enc[0]][i]["cohort"] for i in ids0}
-    dcoh = {c: float(np.mean([np.mean([_B[e][i] - _A[e][i]["pcc"]
+    coh = {i: _C[i]["cohort"] for i in ids0}
+    dcoh = {c: float(np.mean([np.mean([_B[e][i] - _L[e][i]
                                        for i in ids0 if coh[i] == c]) for e in enc]))
             for c in sorted(set(coh.values()))}
 
     # ── 两个扫描（Visium HD P2/P5，单塔 hibou_l）──
     LADCAP = 410.23     # 该轮阶梯的最粗档；σ 超过它即右删失
+    # Visium HD 的各项扫描改用重建输入上的重算（results/repro_vhd，），
+    # 编码器跨度改用论文的 57 个编码器（tower_sweep57），不再用旧的 25 个
+    VHD = f"{RES}/repro_vhd"
 
     def sweep(pat, key, extra=None):
         out = []
@@ -543,13 +544,13 @@ def fig_knobs():
                             moran=float(np.mean([d[s]["moran_true"] for s in sl])),
                             lad=float(np.mean([d[s]["ladder"]["8"]["pcc"] for s in sl]))))
         return sorted(out, key=lambda r: r["x"])
-    CTX = sweep(f"{RES}/ctx_sweep/hibou_l_ctx*.json", "ctx",
-                f"{RES}/tower_sweep/hibou_l.json")
-    PAN = sweep(f"{RES}/panel_sweep_hvg*/hibou_l.json", "hvg")
+    CTX = sweep(f"{VHD}/ctx_sweep/hibou_l_ctx*.json", "ctx",
+                f"{VHD}/tower_sweep/hibou_l.json")
+    PAN = sweep(f"{VHD}/panel_sweep_hvg*/hibou_l.json", "hvg")
 
-    # 同协议的 25 编码器跨度 —— panel d 唯一合法的参照
+    # 同协议的 57 编码器跨度 —— panel d 唯一合法的参照
     TW = []
-    for f in sorted(glob.glob(f"{RES}/tower_sweep/*.json")):
+    for f in sorted(glob.glob(f"{VHD}/tower_sweep57/*.json")):
         sm = json.load(open(f)).get("_summary", {})
         if "pcc" in sm and "Ridge_HEST" in sm["pcc"]:
             TW.append(sm["pcc"]["Ridge_HEST"])
@@ -566,11 +567,11 @@ def fig_knobs():
     ax.scatter([1] * len(Y0), Y0, s=13, color=P["red"], marker="v", zorder=3)
     ax.plot([0, 1], [X0.mean(), Y0.mean()], "-", color=P["black"], lw=2, zorder=4)
     ax.set_xlim(-0.3, 1.3); ax.set_xticks([0, 1])
-    ax.set_xticklabels(["log1p\n(as scored)", "CP10K"], fontsize=5.8)
-    ax.set_ylabel("Mean per-gene PCC")
-    ax.set_title(f"Normalisation choice\ncosts {100*(X0.mean()-Y0.mean())/X0.mean():.0f}% of the score", fontsize=6.4)
+    ax.set_xticklabels(["log1p", "CP10K"], fontsize=5.8)
+    ax.set_ylabel("PCC")
+    ax.set_title("PCC on HEST\nunder 2 normalisations", fontsize=6.4)
     ax.text(0.5, -0.34, f"{int((Y0 < X0).sum())}/{len(X0)} encoders and "
-            f"{sum(1 for v in dcoh.values() if v < 0)}/{len(dcoh)} cohorts fall;\n"
+            f"{sum(1 for v in dcoh.values() if v < 0)}/{len(dcoh)} cohorts fall.\n"
             f"mean {X0.mean():.4f} → {Y0.mean():.4f} "
             f"({100*(Y0.mean()-X0.mean())/X0.mean():+.1f}%)  ·  HEST benchmark, 72-sample mean",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.2,
@@ -591,10 +592,10 @@ def fig_knobs():
     tau = (conc - (npair - conc)) / npair
     ax.set_xlim(-0.3, 1.3); ax.set_xticks([0, 1])
     ax.set_xticklabels(["log1p", "CP10K"], fontsize=6)
-    ax.set_ylabel("Leaderboard rank"); ax.invert_yaxis()
-    ax.set_title("It moves the level,\nnot the order", fontsize=6.4)
-    ax.text(0.5, -0.30, f"Spearman $r_s$ = {spearmanr(X0, Y0).statistic:.3f};  "
-            f"Kendall $\\tau$ = {tau:.3f}\n{npair-conc}/{npair} discordant pairs;  "
+    ax.set_ylabel("Encoder rank"); ax.invert_yaxis()
+    ax.set_title("Encoder rank\nunder 2 normalisations", fontsize=6.4)
+    ax.text(0.5, -0.30, f"Spearman $r_s$ = {spearmanr(X0, Y0).statistic:.3f},  "
+            f"Kendall $\\tau$ = {tau:.3f}\n{npair-conc}/{npair} pairs reversed, "
             f"max rank shift {int(np.abs(rx-ry).max())}",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.2,
             linespacing=1.4, color=P["grey_d"])
@@ -607,7 +608,7 @@ def fig_knobs():
         ax.plot([r["pcc"] for r in v], [r["sig"] for r in v], mk + "-", color=col,
                 lw=1.2, ms=3.5, label=nm_)
     ax.set_yscale("log")
-    ax.set_xlabel("Reported PCC"); ax.set_ylabel("Effective $\\sigma$ (µm)")
+    ax.set_xlabel("PCC"); ax.set_ylabel("$\\sigma_{\\mathrm{A}}$ (µm)")
     def ratio(v):
         """逐片比值；两端都未删失才算「确定」，否则只作下界。"""
         ok, lo = [], []
@@ -616,11 +617,11 @@ def fig_knobs():
             (ok if fa == "ok" and fb == "ok" else lo).append(b_ / a_)
         return ok, lo
     cok, clo = ratio(CTX); pok, plo = ratio(PAN)
-    ax.set_title("Same score change,\nvery different blur", fontsize=6.4)
-    _ct = (f"crop {np.mean(cok):.1f}× (n = {len(cok)} uncensored"
-           + (f"; {len(clo)} censored, $\\geq${np.mean(clo):.1f}×)" if clo else ")"))
-    _pt = (f"panel {min(pok):.2f}–{max(pok):.2f}× (n = {len(pok)}, none censored)"
-           if pok else "panel: all censored")
+    ax.set_title("$\\sigma_{\\mathrm{A}}$ against PCC\nfor each sweep", fontsize=6.4)
+    _ct = (f"encoder patch {np.mean(cok):.1f}×"
+           + (f" and $\\geq${np.mean(clo):.1f}×" if clo else ""))
+    _pt = (f"gene panel {min(pok):.2f}× and {max(pok):.2f}×"
+           if pok else "gene panel: no value")
     ax.text(0.5, -0.34, _ct + "\n" + _pt, transform=ax.transAxes,
             ha="center", va="top", fontsize=5.2, linespacing=1.4, color=P["grey_d"])
     ax.legend(fontsize=5.2, loc="upper right", handlelength=1.2)
@@ -634,17 +635,17 @@ def fig_knobs():
             color=[P["teal"], P["violet"], P["grey_m"]],
             edgecolor=P["grey_d"], lw=0.4, height=0.6)
     ax.set_yticks([2, 1, 0])
-    ax.set_yticklabels(["gene panel\n20→200 HVG", "encoder patch\n224→1344 px",
+    ax.set_yticklabels(["gene panel\n20→200 genes", "encoder patch\n224→1344 px",
                         f"all {len(TW)} encoders\n(best−worst)"], fontsize=5.4)
     ax.set_xlabel("|ΔPCC|")
     ax.axvline(SPAN, color=P["grey_d"], lw=0.8, ls="--", zorder=0)
     for yy, vv in zip([2, 1, 0], [dp, dc, SPAN]):
         ax.text(vv + 0.005, yy, f"{vv:.3f}", va="center", fontsize=5.6, color=P["grey_d"])
     ax.set_xlim(0, max(dp, SPAN) * 1.30)
-    ax.set_title(f"One protocol choice beats\nthe encoder spread ({dp/SPAN:.2f}×)",
+    ax.set_title(f"Change in PCC from each choice\nand across {len(TW)} encoders",
                  fontsize=6.4)
-    ax.text(0.5, -0.30, "reference refit on the same 2 sections,\n"
-            "same 50-HVG target and estimator",
+    ax.text(0.5, -0.30, f"{len(TW)} encoders scored on the same\n"
+            "2 sections and 50 genes",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.0,
             linespacing=1.4, color=P["grey_m"])
     lab(ax, "d", x=-0.62, y=1.16)
@@ -657,18 +658,18 @@ def fig_knobs():
     ax.bar(xs - w/2, dmo, w, color=P["blue"], edgecolor=P["grey_d"], lw=0.4,
            label="target Moran's $I$")
     ax.bar(xs + w/2, dla, w, color=P["blue2"], edgecolor=P["grey_d"], lw=0.4,
-           hatch="///", label="blur calibration")
+           hatch="///", label="calibration curve")
     ax.set_xticks(xs); ax.set_xticklabels(["gene panel", "encoder patch"], fontsize=6)
-    ax.set_ylabel("|change| in the reference")
+    ax.set_ylabel("|change|")
     for i, (a_, b_) in enumerate(zip(dmo, dla)):
         ax.text(i - w/2, a_ + 0.006, f"{a_:.3f}", ha="center", fontsize=5.4,
                 color=P["grey_d"])
         ax.text(i + w/2, b_ + 0.006, f"{b_:.3f}", ha="center", fontsize=5.4,
                 color=P["grey_d"])
     ax.set_ylim(0, max(dmo + dla) * 1.30)
-    ax.set_title("The gene panel changes the target;\nthe encoder patch does not", fontsize=6.4)
+    ax.set_title("Change in the target\nand its calibration curve", fontsize=6.4)
     ax.legend(fontsize=5.0, loc="upper right", handlelength=1.1)
-    ax.text(0.5, -0.30, "the crop sweep leaves the target and its calibration curve\n"
+    ax.text(0.5, -0.30, "the encoder patch sweep leaves the target and its calibration curve\n"
             "numerically unchanged at every setting",
             transform=ax.transAxes, ha="center", va="top", fontsize=5.2,
             linespacing=1.4, color=P["grey_d"])
@@ -676,7 +677,7 @@ def fig_knobs():
 
     # ── f  阴性对照：缓冲区几乎不花分数 ──
     ax = fig.add_subplot(gs[1, 4:])
-    B = json.load(open(f"{RES}/buffer_cv.json"))
+    B = json.load(open(f"{VHD}/buffer_cv.json"))
     DS = [0, 25, 50, 100, 200, 400, 800]
     worst = 0.0
     for g, col, mk in ((4, P["blue"], "o"), (8, P["blue2"], "s"), (16, P["teal"], "^")):
@@ -689,10 +690,10 @@ def fig_knobs():
                 label=f"{g}×{g} blocks")
     ax.axhline(0, color=P["grey_m"], lw=0.8)
     ax.set_xlabel("Exclusion buffer (µm)"); ax.set_ylabel("PCC change (%)")
-    ax.set_title("Control: spatial exclusion\nbuffer costs little", fontsize=6.4)
+    ax.set_title("PCC change against\nthe exclusion buffer", fontsize=6.4)
     ax.legend(fontsize=5.0, loc="lower left", handlelength=1.2)
-    ax.text(0.97, 0.95, f"n = 2 sections; worst single\ncell {worst:.1f}%; curve has not\n"
-            "saturated by 800 µm",
+    ax.text(0.97, 0.95, f"n = 2 sections, largest\nchange {worst:.1f}%, curve has not\n"
+            "flattened by 800 µm",
             transform=ax.transAxes, ha="right", va="top", fontsize=4.8,
             linespacing=1.35, color=P["grey_m"])
     lab(ax, "f", x=-0.42, y=1.16)
@@ -707,7 +708,7 @@ def fig_protocol():
 
     a–c  评测栅格跟随 vs 固定（15 区域 / 7 样本）
     d–f  空间块划分从 16×16 扫到 2×2（16 区域）
-    g–h  换算率：陡峭，且随划分几何而变（≠ 随基准而变，见 §33.3）
+    g–h  换算率：陡峭，且随划分几何而变
     """
     BINS_ = [8, 16, 32, 64]
     pair = []
@@ -745,22 +746,22 @@ def fig_protocol():
         ax.plot(BINS_, ow, "-", color=P["red"], lw=0.6, alpha=0.4)
         ax.plot(BINS_, fx, "-", color=P["blue"], lw=0.6, alpha=0.4)
     ax.plot(BINS_, np.median([p[1] for p in pair], 0), "o-", color=P["red"], lw=2, ms=4,
-            label="grid follows prediction")
+            label="prediction's own grid")
     ax.plot(BINS_, np.median([p[2] for p in pair], 0), "s-", color=P["blue"], lw=2, ms=4,
             label="grid fixed at 16 µm")
     ax.set_xscale("log", base=2); ax.set_xticks(BINS_); ax.set_xticklabels(BINS_)
-    ax.set_xlabel("Prediction bin size (µm)"); ax.set_ylabel("Reported PCC")
-    ax.set_title(f"Identical predictions, opposite conclusion "
-                 f"({N} regions / {NSP} specimens)", fontsize=6.6)
+    ax.set_xlabel("Prediction bin size (µm)"); ax.set_ylabel("PCC")
+    ax.set_title(f"Coarsening raises PCC on its own grid and lowers it on a fixed grid "
+                 f"({N} regions, {NSP} specimens)", fontsize=6.6)
     ax.legend(fontsize=5.4, loc="lower left", handlelength=1.4)
     lab(ax, "a", x=-0.09, y=1.20)
 
     # ── d/e  划分几何扫描 ──
     xg = np.arange(len(GR))
     for sl, key, ylb, col, ttl, letter in (
-            (gs[1, :3], "pcc", "Reported PCC", P["blue"], "PCC barely moves", "b"),
-            (gs[1, 3:], "eq_sigma", "$\\sigma$ (µm)", P["grey_d"],
-             "$\\sigma$ moves much more", "c")):
+            (gs[1, :3], "pcc", "PCC", P["blue"], "PCC falls by 1.95%", "b"),
+            (gs[1, 3:], "eq_sigma", "$\\sigma_{\\mathrm{A}}$ (µm)", P["grey_d"],
+             "$\\sigma_{\\mathrm{A}}$ rises by 10.70%", "c")):
         ax = fig.add_subplot(sl)
         for k in full:
             ax.plot(xg, [full[k][g][key] for g in GR], "-", color=P["grey_l"],
@@ -801,10 +802,10 @@ def fig_protocol():
     r2 = 1 - ((np.log(sg) - (aa + bb * pc)) ** 2).sum() / \
              ((np.log(sg) - np.log(sg).mean()) ** 2).sum()
     per = (np.exp(0.01 * bb) - 1) * 100
-    ax.set_yscale("log"); ax.set_xlabel("Reported PCC", fontsize=6)
-    ax.set_ylabel("Effective $\\sigma$ (µm)", fontsize=6)
-    ax.set_title("Steep score-to-blur\nslope", fontsize=6.4)
-    ax.text(0.97, 0.95, f"+0.01 PCC $\\Rightarrow$ {per:+.1f}% $\\sigma$\n"
+    ax.set_yscale("log"); ax.set_xlabel("PCC", fontsize=6)
+    ax.set_ylabel("$\\sigma_{\\mathrm{A}}$ (µm)", fontsize=6)
+    ax.set_title("$\\sigma_{\\mathrm{A}}$ against PCC\nfor 25 encoders", fontsize=6.4)
+    ax.text(0.97, 0.95, f"+0.01 PCC $\\Rightarrow$ {per:+.1f}% $\\sigma_{{\\mathrm{{A}}}}$\n"
             f"$R^2$ = {r2:.3f},  n = {len(rows)}", transform=ax.transAxes,
             ha="right", va="top", fontsize=5.4, color=P["grey_d"])
     lab(ax, "d", x=-0.16, y=1.18)
@@ -820,15 +821,14 @@ def fig_protocol():
     ax.barh(y, vals, color=P["blue"], edgecolor=P["grey_d"], lw=0.5, height=0.6)
     ax.axvline(0, color=P["grey_m"], lw=0.8)
     ax.set_yticks([])
-    ax.set_xlabel("$\\sigma$ change per +0.01 PCC (%)", fontsize=6)
+    ax.set_xlabel("$\\sigma_{\\mathrm{A}}$ change per +0.01 PCC (%)", fontsize=6)
     ax.set_xlim(vals.min() * 1.32, abs(vals.min()) * 0.92)
     for yi, v, nmm in zip(y, vals, names):
         ax.text(v - 0.4, yi, f"{v:+.1f}", va="center", ha="right", fontsize=5.4,
                 color=P["grey_d"])
         ax.text(0.5, yi, nmm.replace("\n", " · "), va="center", ha="left",
                 fontsize=4.8, color=P["grey_d"])
-    ax.set_title(f"Rate spans {vals.min():.1f} to {vals.max():.1f}%\n"
-                 "within one benchmark", fontsize=6.4)
+    ax.set_title("Change in $\\sigma_{\\mathrm{A}}$\nper +0.01 PCC", fontsize=6.4)
     lab(ax, "e", x=-0.16, y=1.18)
 
     save(fig, "Fig3_evaluation_protocol")

@@ -10,7 +10,7 @@ for e in encs:
     C = json.load(open(f"{R}/hest_controls_{e}.json"))["samples"]; B = json.load(open(f"{R}/hest_blocks_{e}.json"))["samples"]; P = json.load(open(f"{R}/hest_rsel_ps_{e}.json"))["per_sample_pcc"]  # 统一基线：留一队列选 α 的 ridge（与 Table 2 相同）
     sids = list(C); img = np.array([B[s]["blk_k20"] for s in sids]); img2 = np.array([C[s]["oracle_image"] for s in sids]); co = np.array([C[s]["oracle_coord"] for s in sids])
     ra = np.array([C[s]["oracle_random"] for s in sids]); tr = np.array([C[s]["trainonly_image"] for s in sids]); rg = np.array([P[s] for s in sids])
-    TOC = json.load(open(f"{R}/hest_trainonly_coord.json"))["samples"]; toc = np.array([TOC[s]["trainonly_coord"] for s in sids])  # PAT：坐标分区 + 训练侧均值（与编码器无关）
+    TOC = json.load(open(f"{R}/hest_trainonly_coord.json"))["samples"]; toc = np.array([TOC[s]["trainonly_coord"] for s in sids])  # 坐标分区 + 训练侧均值（与编码器无关）
     IND = f"{R}/hest_inductive_{e}.json"; ind = np.array([json.load(open(IND))["samples"][s]["inductive"] for s in sids]) if os.path.exists(IND) else np.full(len(sids), np.nan)  # 归纳式：分区与均值都只用训练样本
     coh = {}
     for i, s in enumerate(sids): coh.setdefault(C[s]["cohort"], []).append(i)

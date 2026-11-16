@@ -30,7 +30,7 @@ def load_pkl(p):
 
 
 def grid_ij(pxl_raw, scale, rf_i, rf_j, Hg, Wg):
-    """复刻 istar_eval.py 的坐标链：he-raw → he.jpg(×scale) → 特征网格(//rescale_factor)。"""
+    """复刻官方 iStar 评测的坐标链：he-raw → he.jpg(×scale) → 特征网格(//rescale_factor)。"""
     gi = np.floor(pxl_raw[:, 1] * scale / rf_i).astype(int)
     gj = np.floor(pxl_raw[:, 0] * scale / rf_j).astype(int)
     inb = (gi >= 0) & (gi < Hg) & (gj >= 0) & (gj < Wg)
@@ -38,7 +38,7 @@ def grid_ij(pxl_raw, scale, rf_i, rf_j, Hg, Wg):
 
 
 def sample_stack(arr, gi, gj, inb, win):
-    """arr: (C,Hg,Wg) → 每个点取 (2win+1)² 窗口均值，与 istar_eval 的采样一致。"""
+    """arr: (C,Hg,Wg) → 每个点取 (2win+1)² 窗口均值，与官方 iStar 评测的采样一致。"""
     C = arr.shape[0]
     out = np.full((len(gi), C), np.nan, np.float32)
     Hg, Wg = arr.shape[1], arr.shape[2]

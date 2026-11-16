@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-"""HEST 上全部数字按同一汇总规则计算。
-规则：每个数先逐样本得到（PCC 值、比值或差值都一样，比值与差值先在单个样本上算），
-再在队列内取中位数，再跨 10 个队列取中位数，最后跨 57 个编码器取中位数。
-队列计数：该队列内逐样本比值的中位数大于 1，算该队列里前者高于后者。
-输入：hest_blocks_{e}、hest_blocks_z_{e}、hest_controls_{e}、hest_inductive_{e}、hest_trainonly_coord、hest_rsel_ps_{e}（模型：留一队列选 λ 的 ridge）、
-hest_oracle_bands_{e} 与 hest_effres_ps_selfull_{e}（最细带 β1）、encoder_params，以及端到端方法的逐样本文件。输出 results/hest_rule_numbers.json。"""
+"""HEST 上全部数字按统一汇总规则 计算。
+统一汇总规则：每个分数逐样本算，直接在 72 个样本上取中位数（不再按队列），再跨 57 个编码器取中位数；
+比值和差值都用这些中位数算。队列只用于计数：比较每个队列内两者的中位数。
+输出 results/hest_rule_numbers.json（可用环境变量 OUT 改路径）。"""
 import json, glob, os, collections, numpy as np
 
 R = os.environ.get("OCTAVE_RESULTS", "results")
@@ -31,17 +29,17 @@ def cohorts(sids, coh_of):
     return [c[k] for k in sorted(c)]
 
 
-def val(x, coh):                       # PCC 值：样本 → 队列中位数 → 跨队列中位数
-    return float(np.median([np.median(x[ix]) for ix in coh]))
+def val(x, coh):
+    return float(np.median(x))
 
 
 def ratio(num, den, coh):              # 比值：逐样本比值 → 队列中位数 → 跨队列中位数；另给高于 1 的队列数
-    cm = np.array([np.median(num[ix] / den[ix]) for ix in coh])
-    return float(np.median(cm)), int((cm > 1).sum())
+    cm = np.array([np.median(num[ix]) / np.median(den[ix]) for ix in coh])
+    return float(np.median(num) / np.median(den)), int((cm > 1).sum())
 
 
 def diff(a, b, coh):                   # 差值：逐样本差 → 队列中位数 → 跨队列中位数
-    return float(np.median([np.median(a[ix] - b[ix]) for ix in coh]))
+    return float(np.median(a) - np.median(b))
 
 
 SIDS = None; COH_OF = None; RIDGE = {}
@@ -75,7 +73,8 @@ def per_encoder(e):
     out["coord_over_oracle"], _ = ratio(X["coord"], X["oracle"], coh)
     out["random_over_oracle"], _ = ratio(X["random"], X["oracle"], coh)
     out["oracle_minus_model"] = diff(X["oracle"], model, coh)
-    out["oracle_z_minus_oracle"] = out["oracle_z_pcc"] - out["oracle_pcc"]
+    out["oracle_z_minus_oracle"] = diff(X["oracle_z"], X["oracle"], coh)        # 逐样本差 → 规则
+    out["oracle_z_ratio_change"] = ratio(X["oracle_z"], model, coh)[0] - ratio(X["oracle"], model, coh)[0]   # 比值的变化也逐样本算
     return out
 
 
@@ -113,6 +112,11 @@ for k in ["oracle", "train", "inductive", "coord", "random", "train_coord", "ora
     S[k + "_ratio"] = dict(median=med(k + "_ratio"), range=rng_(k + "_ratio"))
     S[k + "_coh"] = dict(median=med(k + "_coh"), range=rng_(k + "_coh"), n_all10=sum(o[k + "_coh"] == 10 for o in E),
                          n_majority=sum(o[k + "_coh"] >= 6 for o in E), not_all10=[o["enc"] for o in E if o[k + "_coh"] < 10])
+S["B_summary"] = {k: S[k + "_pcc"]["median"] / S["model_pcc"]["median"] for k in ["oracle", "train", "inductive", "coord", "random", "train_coord", "oracle_z"]}
+S["B_summary"]["fine"] = S["b1_oracle"]["median"] / S["b1_model"]["median"]
+S["B_summary"]["oracle_minus_model"] = S["oracle_pcc"]["median"] - S["model_pcc"]["median"]
+S["B_summary"]["coord_over_oracle"] = S["coord_pcc"]["median"] / S["oracle_pcc"]["median"]
+S["B_summary"]["random_over_oracle"] = S["random_pcc"]["median"] / S["oracle_pcc"]["median"]
 S["coord_over_oracle"] = med("coord_over_oracle"); S["random_over_oracle"] = med("random_over_oracle")
 S["oracle_minus_model"] = med("oracle_minus_model")
 S["n_fine_oracle_ahead"] = sum(o["fine_ratio"] > 1 for o in E)
@@ -137,7 +141,7 @@ S["spearman_params"] = sp
 grp = {"all": encs, "lt100": [e for e in encs if par[e] < 100], "100to600": [e for e in encs if 100 <= par[e] <= 600],
        "gt600": [e for e in encs if par[e] > 600], "distilled": [e for e in encs if e in DISTILLED],
        "scratch_lt100": [e for e in encs if par[e] < 100 and e not in DISTILLED]}
-S["groups"] = {g: dict(n=len(es), model_pcc=med("model_pcc", es), oracle_pcc=med("oracle_pcc", es), ratio=med("oracle_ratio", es),
+S["groups"] = {g: dict(n=len(es), model_pcc=med("model_pcc", es), oracle_pcc=med("oracle_pcc", es), ratio=med("oracle_pcc", es) / med("model_pcc", es),
                        ratio_range=rng_("oracle_ratio", es), coh_median=med("oracle_coh", es), n_all10=sum(by[e]["oracle_coh"] == 10 for e in es))
                for g, es in grp.items()}
 # 端到端方法：同样的规则；最强编码器 = ridge 值最高的编码器
@@ -154,7 +158,23 @@ xs = np.max(np.vstack([np.array([json.load(open(f"{R}/{f}"))[s]["pcc"] for s in 
 M["deepspot_best_of_4"] = dict(pcc=val(xs, COH), margin=diff(xs, RIDGE[best], COH), coh_above_best=ratio(xs, RIDGE[best], COH)[1],
                                ratio_to_best=ratio(xs, RIDGE[best], COH)[0])
 S["methods"] = M
-json.dump(dict(summary=S, encoders=E), open(f"{R}/hest_rule_numbers.json", "w"), indent=1)
+CPK = {}
+for e in encs:
+    L1 = json.load(open(f"{R}/hest_rsel_ps_{e}.json"))["per_sample_pcc"]; CP = json.load(open(f"{R}/hest_cp10k_rsel_{e}.json"))["per_sample_pcc"]
+    a = np.array([L1[s] for s in SIDS], float); b = np.array([CP[s] for s in SIDS], float)
+    r, c_up = ratio(b, a, COH); cm = np.array([np.median(b[ix]) / np.median(a[ix]) for ix in COH])
+    CPK[e] = dict(log1p=val(a, COH), cp10k=val(b, COH), ratio=r, coh_lower=int((cm < 1).sum()), fall=diff(a, b, COH))
+X1 = [CPK[e]["log1p"] for e in encs]; Y1 = [CPK[e]["cp10k"] for e in encs]
+rk = lambda v: {e: i for i, e in enumerate(sorted(encs, key=lambda e: -v[encs.index(e)]))}
+rx, ry = rk(X1), rk(Y1); shift = [abs(rx[e] - ry[e]) for e in encs]
+rev = sum(1 for i in range(len(encs)) for j in range(i + 1, len(encs)) if (X1[i] - X1[j]) * (Y1[i] - Y1[j]) < 0)
+S["cp10k"] = dict(ratio=float(np.median([CPK[e]["ratio"] for e in encs])), n_lower=sum(CPK[e]["ratio"] < 1 for e in encs),
+                  coh_lower_median=float(np.median([CPK[e]["coh_lower"] for e in encs])), n_all10=sum(CPK[e]["coh_lower"] == 10 for e in encs),
+                  fall=float(np.median([CPK[e]["fall"] for e in encs])), log1p_range=(min(X1), max(X1)), spearman=spearman(X1, Y1),
+                  reversed_pairs=rev, shift_median=float(np.median(shift)), shift_ge5=sum(x >= 5 for x in shift), shift_max=max(shift),
+                  log1p_median=float(np.median(X1)), cp10k_median=float(np.median(Y1)))
+for o in E: o.update({"cp10k_" + k: v for k, v in CPK[o["enc"]].items()})
+json.dump(dict(summary=S, encoders=E), open(os.environ.get("OUT", f"{R}/hest_rule_numbers.json"), "w"), indent=1)
 
 pc = lambda x: f"{100 * x:.1f}%"
 print(f"编码器 {S['n_enc']}；两份 ridge 逐样本最大差 {S['ridge_check_max']:.2e}")
@@ -175,5 +195,6 @@ for k, v in M.items(): print(f"方法 {k:28s} PCC {v['pcc']:.4f}  " + " ".join(f
 om = by["openmidnight"]; others = [o for o in E if o["enc"] != "openmidnight"]
 print(f"OpenMidnight：模型 {om['model_pcc']:.3f} oracle {om['oracle_pcc']:.3f} 比值 {pc(om['oracle_ratio'])} 队列 {om['oracle_coh']}；K=50 队列 {om['oracle_k50_coh']} K=200 {om['oracle_k200_coh']}；"
       f"标准化 oracle {om['oracle_z_pcc']:.3f} 比值 {pc(om['oracle_z_ratio'])} 队列 {om['oracle_z_coh']}；差值 {om['oracle_minus_model']:+.4f}")
-print(f"其他编码器标准化后：oracle 最大变化 {max(abs(o['oracle_z_minus_oracle']) for o in others):.4f}，比值最大变化 {100 * max(abs(o['oracle_z_ratio'] - o['oracle_ratio']) for o in others):.1f} 点，"
+print(f"其他编码器标准化后：oracle 最大变化 {max(abs(o['oracle_z_minus_oracle']) for o in others):.4f}，比值最大变化 {100 * max(abs(o['oracle_z_ratio_change']) for o in others):.1f} 点，"
       f"队列数变化 {[o['enc'] for o in others if o['oracle_z_coh'] != o['oracle_coh']]}")
+print("规范化：", {k: (round(v, 4) if isinstance(v, float) else v) for k, v in S["cp10k"].items()})

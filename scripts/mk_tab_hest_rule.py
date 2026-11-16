@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""按统一汇总规则写 HEST 的表（规则见 scripts/hest_rule_numbers.py：每个数先逐样本得到，比值与差值也先逐样本算，
-再队列内中位数、跨 10 个队列中位数、跨 57 个编码器中位数）。
+"""按统一汇总规则 重写附录里 HEST 的表（规则见 scripts/hest_rule_numbers.py：每个分数逐样本得到，在 72 个样本上取中位数，再跨 57 个编码器取中位数；
+比值与差值由印出的中位数算，队列只用于计数）。
 写出 tab_hestblocks.tex、tab_hestsummary.tex、tab_zscore.tex、tab_controls_hest.tex、tab_methods.tex，并把 tab_triplex.tex 的汇总行改成中位数。
 输入 results/hest_rule_numbers.json。
 用法：在项目根目录运行 python3 scripts/mk_tab_hest_rule.py <论文目录>。"""
@@ -13,7 +13,7 @@ med = lambda k: float(np.median([E[e][k] for e in E]))
 rd = lambda f: open(f"{PAPER}/{f}").read()
 wr = lambda f, L: open(f"{PAPER}/{f}", "w").write("\n".join(L) + "\n")
 
-# 编码器在表中的显示名与引用键，参数量取自 encoder_params
+# 编码器在表中的显示名与引用键（与正文表 2 一致），参数量取自 encoder_params
 LABEL = {"biomedclip": r"BiomedCLIP \citep{biomedclip}",
          "ciga": r"CIGA \citep{ciga}",
          "clip_vitl14": r"CLIP-L/14 \citep{clip}",
@@ -82,8 +82,9 @@ for e in sorted(E, key=lambda e: -E[e]["model_pcc"]):
     o = E[e]
     L.append(f"{LBL[e]} & {MPAR[e]} & {o['model_pcc']:.3f} & {o['oracle_pcc']:.3f} & {pc(o['oracle_ratio'])} & ${o['oracle_minus_model']:+.3f}$ & "
              f"{o['oracle_coh']}/10 & {o['b1_model']:.3f} & {o['b1_oracle']:.3f} & {pc(o['fine_ratio'])} \\\\")
-L += ["\\midrule", f"\\textbf{{Median of 57}} & 6--1136 & {med('model_pcc'):.3f} & {med('oracle_pcc'):.3f} & {pc(med('oracle_ratio'))} & ${med('oracle_minus_model'):+.3f}$ & "
-      f"{med('oracle_coh'):.0f}/10 & {med('b1_model'):.3f} & {med('b1_oracle'):.3f} & {pc(med('fine_ratio'))} \\\\", "\\bottomrule", "\\end{tabular}"]
+r3 = lambda k: round(med(k), 3)   # 汇总行的比值与差值由印出的中位数算（统一汇总规则）
+L += ["\\midrule", f"\\textbf{{Median of 57}} & 6--1136 & {r3('model_pcc'):.3f} & {r3('oracle_pcc'):.3f} & {pc(r3('oracle_pcc') / r3('model_pcc'))} & ${r3('oracle_pcc') - r3('model_pcc'):+.3f}$ & "
+      f"{med('oracle_coh'):.0f}/10 & {r3('b1_model'):.3f} & {r3('b1_oracle'):.3f} & {pc(r3('b1_oracle') / r3('b1_model'))} \\\\", "\\bottomrule", "\\end{tabular}"]
 wr("tab_hestblocks.tex", L)
 
 # tab_hestsummary
@@ -103,7 +104,7 @@ L = ["\\begin{tabular}{lrrrrrr}", "\\toprule", "Encoder & Oracle & Oracle, std. 
 for e in sorted(E, key=lambda e: (E[e]["oracle_z_minus_oracle"], e)):
     o = E[e]
     L.append(f"{LBL[e]} & {o['oracle_pcc']:.3f} & {o['oracle_z_pcc']:.3f} & {o['oracle_z_minus_oracle']:+.3f} & {pc(o['oracle_ratio'])} & {pc(o['oracle_z_ratio'])} & {o['oracle_coh']}$\\to${o['oracle_z_coh']} \\\\")
-L += ["\\midrule", f"\\textbf{{Median of 57}} & {med('oracle_pcc'):.3f} & {med('oracle_z_pcc'):.3f} & & {pc(med('oracle_ratio'))} & {pc(med('oracle_z_ratio'))} & \\\\",
+L += ["\\midrule", f"\\textbf{{Median of 57}} & {r3('oracle_pcc'):.3f} & {r3('oracle_z_pcc'):.3f} & {r3('oracle_z_pcc') - r3('oracle_pcc'):+.3f} & {pc(r3('oracle_pcc') / r3('model_pcc'))} & {pc(r3('oracle_z_pcc') / r3('model_pcc'))} & \\\\",
       "\\bottomrule", "\\end{tabular}"]
 wr("tab_zscore.tex", L)
 
