@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""正文表 1（tab_controls_main.tex）：域 oracle 与其他划分对训练模型，3 个数据集并排，统一汇总规则。
+"""正文表 1（tab_controls_main.tex）：域 oracle 与其他划分对训练模型，3 个数据集并排，统一汇总规则，由本脚本生成。
 HEST：results/hest_rule_numbers.json（每个编码器取 72 个样本的中位数，再跨 57 个编码器取中位数）。
 Xenium：每个编码器逐区域 → 标本内中位数 → 跨 13 个标本中位数，再跨 57 个编码器取中位数。
   模型与图像 oracle 取自 results/blocks_xen_bands_<编码器>（Hibou-L 为 blocks_xen_bands_base），训练侧均值与随机划分取自 results/xen_ctrl57，
@@ -57,7 +57,7 @@ ROWS = [("Ridge on frozen features (trained model)", "ridge"), ("Image partition
 cell = lambda m, k: f"{m[k]:.3f} & {100 * round(m[k], 3) / round(m['ridge'], 3):.0f}\\%"
 L = [r"\begin{tabular}{lrrrrrr}", r"\toprule",
      r" & \multicolumn{2}{c}{HEST, $\sim\!100\,\mu$m} & \multicolumn{2}{c}{Xenium, $16\,\mu$m} & \multicolumn{2}{c}{Visium HD, $16\,\mu$m} \\",
-     r"Predictor ($K=20$) & PCC & of model & PCC & of model & PCC & of model \\", r"\midrule"]
+     r"Predictor ($K=20$) & PCC & of trained model & PCC & of trained model & PCC & of trained model \\", r"\midrule"]
 for lab, k in ROWS: L.append(f"{lab} & {cell(hm, k)} & {cell(xm, k)} & {cell(vh, k)} \\\\")
 L += [r"\bottomrule", r"\end{tabular}"]
 out = "\n".join(L) + "\n"

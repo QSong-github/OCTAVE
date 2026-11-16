@@ -108,7 +108,7 @@ rowsC = [("Ridge on frozen features", summ(lambda e, x: x["pred"]["ridge"]["pcc"
          ("Coordinate partition, measured means ($K=200$)", summ_one(lambda x: x["K200"]["oracle_coord"]["pcc"]))]
 if ROB: rowsC.append(("Image partition, means from training blocks ($K=200$)", summ_src(ROB, lambda x: x["ctrl_K200"]["trainonly_image"])))
 mod = r3(rowsC[0][1][0])
-L = [r"\begin{tabular}{lrrr}", r"\toprule", r"Predictor on Xenium ($22$ regions, $13$ specimens) & PCC & Range over specimens & Of model \\", r"\midrule"]
+L = [r"\begin{tabular}{lrrr}", r"\toprule", r"Predictor on Xenium ($22$ regions, $13$ specimens) & PCC & Range over specimens & Of trained model \\", r"\midrule"]
 OUT["controls_xen"] = {}
 for r in rowsC:
     if r is None: L.append(r"\midrule"); continue

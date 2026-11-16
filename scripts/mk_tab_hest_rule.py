@@ -77,7 +77,7 @@ assert len(LBL) == 57
 # tab_hestblocks：去掉 |t| 列，差值改为逐样本差的中位数
 L = ["\\begin{tabular}{lrrrrrrrrr}", "\\toprule",
      " & & \\multicolumn{5}{c}{PCC} & \\multicolumn{3}{c}{{\\scshape Octave}} \\\\", "\\cmidrule(lr){3-7}\\cmidrule(lr){8-10}",
-     "Encoder & M & Model & Oracle & Ratio & Difference & Cohorts & Model & Oracle & Ratio \\\\", "\\midrule"]
+     "Encoder & M & Trained model & Domain oracle & Ratio & Difference & Cohorts & Trained model & Domain oracle & Ratio \\\\", "\\midrule"]
 P3 = lambda e, k: round(E[e][k], 3)                      # 每行的比值与差值也由印出的三位小数算（统一汇总规则）
 sgn = lambda x: f"${'+' if x > 5e-10 else ('-' if x < -5e-10 else '')}{abs(x):.3f}$"   # 0.000 不带符号
 for e in sorted(E, key=lambda e: -E[e]["model_pcc"]):
@@ -93,7 +93,7 @@ wr("tab_hestblocks.tex", L)
 G = S["groups"]
 lab = [("All encoders", "all"), ("$<100$M parameters", "lt100"), ("$100$--$600$M", "100to600"), ("$>600$M", "gt600"),
        ("Distilled encoders ($6$--$87$M)", "distilled"), ("Trained from scratch, $<100$M", "scratch_lt100")]
-L = ["\\begin{tabular}{lrrrrrr}", "\\toprule", "Encoders & $n$ & Model PCC & Oracle PCC & Ratio & Range & Cohorts \\\\", "\\midrule"]
+L = ["\\begin{tabular}{lrrrrrr}", "\\toprule", "Encoders & $n$ & Trained model PCC & Domain oracle PCC & Ratio & Range & Cohorts \\\\", "\\midrule"]
 DISTILLED = {"litevirchow2", "h0_mini", "litefm", "litefm_l", "litefm_s", "distillpath_is16", "distillpath_ks16", "pathryoshka_b"}   # 同 hest_rule_numbers.py
 par = {e: E[e]["params_M"] for e in E}
 MEM = {"all": list(E), "lt100": [e for e in E if par[e] < 100], "100to600": [e for e in E if 100 <= par[e] <= 600], "gt600": [e for e in E if par[e] > 600],
@@ -107,7 +107,7 @@ L += ["\\bottomrule", "\\end{tabular}"]
 wr("tab_hestsummary.tex", L)
 
 # tab_zscore
-L = ["\\begin{tabular}{lrrrrrr}", "\\toprule", "Encoder & Oracle & Oracle, std. & Difference & Ratio & Ratio, std. & Cohorts, raw $\\to$ std. \\\\", "\\midrule"]
+L = ["\\begin{tabular}{lrrrrrr}", "\\toprule", "Encoder & Domain oracle & Domain oracle, std. & Difference & Ratio & Ratio, std. & Cohorts, raw $\\to$ std. \\\\", "\\midrule"]
 ZD = {e: P3(e, "oracle_z_pcc") - P3(e, "oracle_pcc") for e in E}             # 差值与两个比值由印出的值算
 for e in sorted(E, key=lambda e: (round(ZD[e], 3), e)):
     o = E[e]
@@ -121,7 +121,7 @@ wr("tab_zscore.tex", L)
 # tab_controls_hest
 rng = lambda k: f"{S[k]['range'][0]:.3f}--{S[k]['range'][1]:.3f}"
 coh = lambda k: f"{S[k + '_coh']['median']:.0f}/10"
-L = ["\\begin{tabular}{lrrr}", "\\toprule", "Predictor on HEST & PCC (median over encoders) & Range over encoders & Cohorts above model \\\\", "\\midrule",
+L = ["\\begin{tabular}{lrrr}", "\\toprule", "Predictor on HEST & PCC (median over encoders) & Range over encoders & Cohorts above trained model \\\\", "\\midrule",
      f"Ridge on frozen features (cohort-selected $\\lambda$) & {S['model_pcc']['median']:.3f} & {rng('model_pcc')} & n/a \\\\",
      f"Image partition, measured means (domain oracle) & {S['oracle_pcc']['median']:.3f} & {rng('oracle_pcc')} & {coh('oracle')} \\\\",
      f"Coordinate partition, measured means & {S['coord_pcc']['median']:.3f} & {rng('coord_pcc')} & {coh('coord')} \\\\",

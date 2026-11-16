@@ -90,7 +90,7 @@ A = load("blocks_xen_ablate")
 LAB = {"alpha": ("Ridge $\\lambda$", lambda k: "$10^{%d}$" % round(np.log10(float(k)))), "ngene": ("Genes", lambda k: k), "K": ("Clusters $K$", lambda k: k)}
 DEF = {"alpha": "10000.0", "ngene": "200", "K": "20"}
 L = [r"\begin{tabular}{llrrrrrr}", r"\toprule",
-     r"Setting & Value & Oracle/model & $\Delta_{\mathrm{PCC}}$ & $\Delta_{\mathrm{fine}}$ & $\Delta_{\mathrm{fine}}/\Delta_{\mathrm{PCC}}$ & Specimens & $P$ \\", r"\midrule"]
+     r"Setting & Value & \shortstack{Domain oracle,\\\% of trained model} & $\Delta_{\mathrm{PCC}}$ & $\Delta_{\mathrm{fine}}$ & $\Delta_{\mathrm{fine}}/\Delta_{\mathrm{PCC}}$ & Specimens & $P$ \\", r"\midrule"]
 OUT["ablate"] = {}
 for ax in ("alpha", "ngene", "K"):
     keys = sorted(next(iter(A.values()))[ax], key=float)
@@ -112,7 +112,7 @@ wr("tab_ablate.tex", L)
 
 # ═══ 图、游走与基因口径（tab_operator）
 L = [r"\begin{tabular}{llrrrrrr}", r"\toprule",
-     r"Setting & Value & $\sigma_1$ ($\mu$m) & $\beta_1$ model & $\beta_1$ oracle & $\Delta_{\mathrm{fine}}$ & $\Delta_{\mathrm{fine}}/\Delta_{\mathrm{PCC}}$ & Specimens \\", r"\midrule"]
+     r"Setting & Value & $\sigma_1$ ($\mu$m) & $\beta_1$ trained model & $\beta_1$ domain oracle & $\Delta_{\mathrm{fine}}$ & $\Delta_{\mathrm{fine}}/\Delta_{\mathrm{PCC}}$ & Specimens \\", r"\midrule"]
 OUT["operator"] = {}
 def oprow(D, key):
     s1 = spec({n: d["sigma_um"]["1"] for n, d in D.items()})[0]
@@ -238,9 +238,9 @@ rg = lambda k: f"{min(o[k] for o in HE):.3f}--{max(o[k] for o in HE):.3f}"
 cm = lambda k: (float(np.median([o[k] for o in HE])), min(o[k] for o in HE), max(o[k] for o in HE))
 oc, fc = cm("oracle_coh"), cm("fine_coh")
 L = [r"\begin{tabular}{lrr}", r"\toprule", r"Quantity & Median over $57$ encoders & Range \\", r"\midrule",
-     f"PCC, ridge & {np.median([o['model_pcc'] for o in HE]):.3f} & {rg('model_pcc')} \\\\", f"PCC, domain oracle & {np.median([o['oracle_pcc'] for o in HE]):.3f} & {rg('oracle_pcc')} \\\\",
-     f"Finest-band $\\beta_1$, ridge & {np.median([o['b1_model'] for o in HE]):.3f} & {rg('b1_model')} \\\\", f"Finest-band $\\beta_1$, domain oracle & {np.median([o['b1_oracle'] for o in HE]):.3f} & {rg('b1_oracle')} \\\\",
-     r"\midrule", f"Cohorts with oracle above ridge, PCC & {oc[0]:.0f}/10 & {oc[1]}--{oc[2]} \\\\", f"Cohorts with oracle above ridge, finest band & {fc[0]:.0f}/10 & {fc[1]}--{fc[2]} \\\\",
+     f"PCC, trained model & {np.median([o['model_pcc'] for o in HE]):.3f} & {rg('model_pcc')} \\\\", f"PCC, domain oracle & {np.median([o['oracle_pcc'] for o in HE]):.3f} & {rg('oracle_pcc')} \\\\",
+     f"Finest-band $\\beta_1$, trained model & {np.median([o['b1_model'] for o in HE]):.3f} & {rg('b1_model')} \\\\", f"Finest-band $\\beta_1$, domain oracle & {np.median([o['b1_oracle'] for o in HE]):.3f} & {rg('b1_oracle')} \\\\",
+     r"\midrule", f"Cohorts with domain oracle above trained model, PCC & {oc[0]:.0f}/10 & {oc[1]}--{oc[2]} \\\\", f"Cohorts with domain oracle above trained model, finest band & {fc[0]:.0f}/10 & {fc[1]}--{fc[2]} \\\\",
      f"Finest-band width $\\sigma_1$ ($\\mu$m), set by the grid & {sig1:.1f} & {sig1:.1f}--{sig1:.1f} \\\\", r"\bottomrule", r"\end{tabular}"]
 wr("tab_hestdelta.tex", L)
 OUT["hestdelta"] = dict(model=float(np.median([o['model_pcc'] for o in HE])), oracle=float(np.median([o['oracle_pcc'] for o in HE])), b1m=float(np.median([o['b1_model'] for o in HE])),
